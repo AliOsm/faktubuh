@@ -50,14 +50,14 @@ export default function Edit() {
                   </div>
 
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">الإسم الأول</Label>
-                    <Input name="first_name" type="text" value={data.user.first_name} onChange={handleInputChange} placeholder="الإسم الأول" />
+                    <Label htmlFor="name">الاسم الأول</Label>
+                    <Input name="first_name" type="text" value={data.user.first_name} onChange={handleInputChange} placeholder="الاسم الأول" required={true} />
                     {errors.first_name && <p className="text-red-500 text-sm mt-1">{errors.first_name}</p>}
                   </div>
 
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">الإسم الأخير</Label>
-                    <Input name="last_name" type="text" value={data.user.last_name} onChange={handleInputChange} placeholder="الإسم الأخير" />
+                    <Label htmlFor="name">الاسم الأخير</Label>
+                    <Input name="last_name" type="text" value={data.user.last_name} onChange={handleInputChange} placeholder="الاسم الأخير" required={true} />
                     {errors.last_name && <p className="text-red-500 text-sm mt-1">{errors.last_name}</p>}
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Navbar } from '@/components/navbar'
-import { usePage } from "@inertiajs/react"
+import { Head, usePage } from "@inertiajs/react"
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/hooks/use-toast'
 
@@ -28,6 +28,8 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <Head title="فاكتبوه." />
+
       <main>
         <Navbar />
 
