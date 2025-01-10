@@ -1,0 +1,9 @@
+ar:
+  activerecord:
+    attributes:
+      user:
+        first_name: الإسم الأول
+        last_name: الإسم الأخير
+  faktubuh: فاكتبوه.
+  user_information_not_confirmed: يُرجى تأكيد بياناتك الشخصية للبدأ في استخدام فاكتبوه.
+  user_information_updated: تم تحديث بياناتك الشخصية بنجاح.

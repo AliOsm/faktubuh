@@ -1,0 +1,102 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ruby-rails-postgres
+{
+  "name": "Faktubuh",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/node": {},
+    "ghcr.io/devcontainers/features/docker-in-docker": {},
+    "ghcr.io/rails/devcontainer/features/activestorage": {},
+    "ghcr.io/jungaretti/features/vim": {},
+    "ghcr.io/devcontainers/features/common-utils:latest": {
+      "installOhMyZsh": true,
+      "installOhMyZshConfig": true,
+      "configureZshAsDefaultShell": true
+    }
+  },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // This can be used to network with other containers or the host.
+  "forwardPorts": [
+    3000
+  ],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": ".devcontainer/setup.sh",
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "workbench": {
+          "iconTheme": "vscode-icons"
+        },
+        "editor": {
+          "formatOnSave": true,
+          "quickSuggestions": {
+            "strings": "on"
+          }
+        },
+        "files": {
+          "associations": {
+            "*.css": "tailwindcss"
+          }
+        },
+        "[ruby]": {
+          "editor": {
+            "defaultFormatter": "Shopify.ruby-lsp",
+            "formatOnSave": true,
+            "tabSize": 2,
+            "insertSpaces": true,
+            "semanticHighlighting.enabled": true,
+            "formatOnType": true
+          }
+        },
+        "rubyLsp": {
+          "rubyVersionManager": {
+            "identifier": "rbenv"
+          },
+          "formatter": "rubocop"
+        },
+        "railsI18n": {
+          "localeFilePattern": "config/locales/**/*.yml",
+          "priorityOfLocales": [
+            "ar"
+          ]
+        },
+        "tailwindCSS": {
+          "includeLanguages": {
+            "plaintext": "html"
+          }
+        },
+        "emeraldwalk.runonsave": {
+          "commands": [
+            {
+              "match": "\\.css$",
+              "cmd": "rustywind --write --custom-regex \"@apply ([_a-zA.-Z0-9-:\\[\\] ]+)( !important)?;\" ${file}"
+            }
+          ]
+        },
+        "livePreview": {
+          "portNumber": 9620
+        }
+      },
+      "extensions": [
+        "Postman.postman-for-vscode",
+        "aki77.rails-db-schema",
+        "aki77.rails-i18n",
+        "aki77.rails-partial",
+        "bradlc.vscode-tailwindcss",
+        "bung87.vscode-gemfile",
+        "eamodio.gitlens",
+        "emeraldwalk.RunOnSave",
+        "marcoroth.stimulus-lsp",
+        "ms-vscode.live-server",
+        "vscode-icons-team.vscode-icons",
+        "waderyan.gitblame"
+      ]
+    }
+  }
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
+}

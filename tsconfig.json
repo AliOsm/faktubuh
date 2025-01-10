@@ -1,0 +1,18 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "compilerOptions": {
+    /* Fixes https://github.com/shadcn-ui/ui/issues/3411 */
+    "baseUrl": "./app/frontend",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
