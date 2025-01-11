@@ -7,6 +7,13 @@ class User < ApplicationRecord
 
   validates :first_name, :last_name, presence: true
 
+  has_many :debts_as_debtor, class_name: "Debt", foreign_key: "debtor_id"
+  has_many :debts_as_creditor, class_name: "Debt", foreign_key: "creditor_id"
+
+  def name
+    "#{first_name} #{last_name}"
+  end
+
   def self.from_omniauth(auth)
     user = find_or_create_by_auth(auth)
 

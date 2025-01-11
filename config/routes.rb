@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   devise_scope :user do
     authenticated :user do
-      root to: "pages#home"
+      root to: "pages#dashboard"
     end
 
     unauthenticated :user do

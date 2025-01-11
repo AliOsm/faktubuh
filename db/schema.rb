@@ -10,7 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_08_094716) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_10_201655) do
+  create_table "debts", force: :cascade do |t|
+    t.decimal "amount", precision: 18, scale: 2, null: false
+    t.string "currency", default: "USD", null: false
+    t.string "description"
+    t.integer "debtor_id", null: false
+    t.integer "creditor_id", null: false
+    t.date "settle_date"
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creditor_id"], name: "index_debts_on_creditor_id"
+    t.index ["debtor_id"], name: "index_debts_on_debtor_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "first_name", default: "", null: false
     t.string "last_name", default: "", null: false
@@ -43,4 +57,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_094716) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
+
+  add_foreign_key "debts", "users", column: "creditor_id"
+  add_foreign_key "debts", "users", column: "debtor_id"
 end
