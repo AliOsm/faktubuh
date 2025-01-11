@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Debt } from "@/types/debt"
+import CurrencyFlag from "react-currency-flags";
 
 export const getColumns = (type: "debtor" | "creditor"): ColumnDef<Debt>[] => [
   {
@@ -25,18 +26,29 @@ export const getColumns = (type: "debtor" | "creditor"): ColumnDef<Debt>[] => [
       )
     },
     cell: ({ row }) => {
-      return parseFloat(row.original.amount).toFixed(2)
+      return (
+        <div className="ps-4">
+          <span className="font-bold">{parseFloat(row.original.amount).toFixed(2)}</span>
+        </div>
+      )
     }
   },
   {
     accessorKey: "currency",
-    header: "العملة"
+    header: "العملة",
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center">
+          <CurrencyFlag currency={row.original.currency} size="md" />
+        </div>
+      )
+    }
   },
   {
     accessorKey: "description",
     header: "الوصف",
     cell: ({ row }) => {
-      return row.original.description || <span className="text-muted-foreground">لا يوجد</span>
+      return row.original.description || <span className="text-muted-foreground whitespace-nowrap">لا يوجد</span>
     }
   },
   {
@@ -44,15 +56,15 @@ export const getColumns = (type: "debtor" | "creditor"): ColumnDef<Debt>[] => [
     header: type === "debtor" ? "الدائن" : "المدين",
     cell: ({ row }) => {
       const person = row.original[type === "debtor" ? "creditor" : "debtor"]
-      return person ? `${person.first_name} ${person.last_name}` : ""
+      return person ? <span className="whitespace-nowrap">{person.first_name} {person.last_name}</span> : <span className="text-muted-foreground whitespace-nowrap">لا يوجد</span>
     }
   },
   {
     accessorKey: "settle_date",
-    header: "تاريخ الاستحقاق",
+    header: () => <span className="whitespace-nowrap">تاريخ الاستحقاق</span>,
     cell: ({ row }) => {
       if (!row.original.settle_date) {
-        return <span className="text-muted-foreground">لا يوجد</span>
+        return <span className="text-muted-foreground whitespace-nowrap">لا يوجد</span>
       }
 
       return (new Date(row.original.settle_date)).toLocaleDateString()
@@ -68,7 +80,7 @@ export const getColumns = (type: "debtor" | "creditor"): ColumnDef<Debt>[] => [
   },
   {
     accessorKey: "created_at",
-    header: "تاريخ الإنشاء",
+    header: () => <span className="whitespace-nowrap">تاريخ الإنشاء</span>,
     cell: ({ row }) => {
       return (new Date(row.original.created_at)).toLocaleDateString()
     }
