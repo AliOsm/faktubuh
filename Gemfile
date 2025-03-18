@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "devise", "~> 4.9", ">= 4.9.4"
 gem "devise-i18n", "~> 1.12", ">= 1.12.1"
-gem "inertia_rails", "~> 3.6"
+gem "inertia_rails", "~> 3.7"
 gem "js_from_routes", "~> 4.0", ">= 4.0.1"
 gem "omniauth", "~> 2.1", ">= 2.1.2"
 gem "omniauth-google-oauth2", "~> 1.2"
