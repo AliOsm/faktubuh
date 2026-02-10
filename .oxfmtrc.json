@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 120,
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "singleAttributePerLine": true,
+  "experimentalSortPackageJson": true,
+  "plugins": {
+    "tailwindcss": {
+      "classAttributes": ["class", "className"],
+      "functions": ["cn", "clsx", "tw"]
+    }
+  }
+}
