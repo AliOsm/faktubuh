@@ -757,7 +757,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 34,
-      "passes": false,
+      "passes": true,
       "notes": "Use different portions of Surah Al-Baqarah 2:282 for each context. Keep the display subtle and non-intrusive."
     }
   ]

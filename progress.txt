@@ -102,6 +102,7 @@
 - `can_upgrade?` helper: personal + active + no pending upgrade + current user is creator
 - Self-reported payment badge: detected by `submitter_id == lender_id && status == approved && mode == mutual` (payments made before upgrade to mutual)
 - `authorize_debt_access!` also allows `upgrade_recipient_id == current_user.id` so recipients can view the debt before accepting
+- Reusable `AyatAlDayn` component at app/frontend/components/ayat-al-dayn.tsx — accepts `context` prop ('welcome' | 'creation' | 'detail' | 'witness' | 'settlement') for different verse excerpts with per-context styling. Translation keys under `ayat.{context}.verse/translation/reference` in i18n files
 ---
 
 ## 2026-02-11 - US-014
@@ -473,4 +474,16 @@
   - WitnessReminder should be hidden on settled debts — no point recommending witnesses on an archived debt
   - Used Quran 2:283 for settlement verse (about fulfilling trusts) instead of 2:282 (about writing debts) to differentiate the context
   - SimpleCov coverage failure is pre-existing (below 95% threshold) — does not block stories
+---
+
+## 2026-02-11 - US-034
+- What was implemented: Integrated Ayat al-Dayn verse throughout the UI via a reusable component. Created app/frontend/components/ayat-al-dayn.tsx accepting a `context` prop ('welcome' | 'creation' | 'detail' | 'witness' | 'settlement') that renders different verse excerpts from Surah Al-Baqarah with context-appropriate styling. Added `ayat` section to both en.json and ar.json with 5 different verse excerpts: welcome (2:282 opening), creation (2:282 with scribe), detail (2:282 on writing small and large debts), witness (2:282 on witnesses), settlement (2:283 on fulfilling trusts). Replaced inline AyatBanner functions in pages/debts/new.tsx and pages/debts/Show.tsx with the reusable component. Replaced inline verse display in dashboard EmptyState with the component. Updated SettlementBanner to use `<AyatAlDayn context="settlement" />`. Enhanced WitnessReminder to include the witness-specific verse excerpt (2:282 on calling witnesses) alongside the reminder text. All verse text stored in i18n translation files, never hardcoded in components. Arabic script always displayed regardless of UI language; translation changes via i18n.
+- Files changed: app/frontend/components/ayat-al-dayn.tsx (new), app/frontend/i18n/locales/en.json (modified — added ayat section with 5 contexts), app/frontend/i18n/locales/ar.json (modified — added ayat section with 5 contexts), app/frontend/pages/debts/new.tsx (modified — removed inline AyatBanner, imported reusable component), app/frontend/pages/debts/Show.tsx (modified — removed inline AyatBanner, updated SettlementBanner and WitnessReminder to use reusable component), app/frontend/pages/dashboard/Index.tsx (modified — replaced inline verse display in EmptyState with reusable component)
+- **Learnings for future iterations:**
+  - AyatAlDayn component uses a `context` prop mapped to CONTEXT_STYLES const for per-context styling (welcome uses larger text, settlement uses green theme, etc.)
+  - The `font-arabic` CSS class is used for verse text but has no CSS definition — it acts as a semantic marker and could be defined later with a custom Arabic font
+  - Verse text is always in Arabic script (`dir="rtl"`) regardless of UI language; only the `translation` key changes between en.json and ar.json (Arabic translation repeats the verse text)
+  - Different portions of Surah Al-Baqarah 2:282 are used for each context to keep the verse contextually relevant
+  - The reusable component accepts a `className` prop for override styling (e.g., `className="border-0 bg-transparent p-0"` to blend into the WitnessReminder container)
+  - Old per-page translation keys (debt_creation.ayat_*, debt_detail.ayat_*, dashboard.empty_ayat_*) still exist in the i18n files but are no longer referenced — they can be cleaned up in a future iteration
 ---
