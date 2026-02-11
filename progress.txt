@@ -237,3 +237,14 @@
   - Witness unique index `[debt_id, user_id]` enforces one witness entry per user per debt at the database level
   - Notification `scope :unread` filters by `read: false` — complemented by the `read` boolean column defaulting to false
 ---
+
+## 2026-02-11 - US-017
+- What was implemented: Created InstallmentScheduleGenerator service at app/services/installment_schedule_generator.rb. Plain Ruby class that accepts a debt object and generates installment records based on installment_type. Supports all 6 types: lump_sum (1 installment at deadline for full amount), monthly/bi_weekly/quarterly/yearly (periodic installments from creation date to deadline with last installment absorbing rounding remainder), and custom_split (returns empty array). All generated installments have status 'upcoming'. Wrote 12 unit tests covering all 6 installment types, exact division, remainder handling, close deadline (1 month), persistence verification, and total amount correctness.
+- Files changed: app/services/installment_schedule_generator.rb (new), test/services/installment_schedule_generator_test.rb (new)
+- **Learnings for future iterations:**
+  - Service classes live in app/services/ — directory auto-loaded by Rails conventions
+  - InstallmentScheduleGenerator.new(debt).generate! creates and persists Installment records via debt.installments.create!
+  - Rounding strategy: base_amount = floor(total / count, 2), last installment = total - (base * (count-1)) — ensures exact total match
+  - For periodic schedules, if no interval date falls before deadline, the deadline itself becomes the single installment due date
+  - SimpleCov coverage failure is pre-existing (below 95% threshold) — does not block stories
+---
