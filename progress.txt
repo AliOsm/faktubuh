@@ -76,6 +76,8 @@
 - Debt authorization: `before_action` checks lender_id, borrower_id, or confirmed witness. Redirect to debts_path with alert flash on unauthorized
 - Third test user fixture: `users(:three)` with personal_id GHJ789 — used for unauthorized access and witness tests
 - Confirmed witness fixture: `witnesses(:confirmed_witness)` on personal_debt with user: three
+- Payment approve/reject: nested member routes `approve_debt_payment_url(debt, payment)` → POST /debts/:debt_id/payments/:id/approve
+- Auto-settlement: check `remaining_balance <= 0` after every payment approval. Settlement notifies both parties.
 ---
 
 ## 2026-02-11 - US-014
@@ -326,4 +328,16 @@
   - Payment model validation `on: :create` ensures balance check only applies to new payments, not status updates
   - shadcn Select with "none" value: must explicitly check `installmentId !== 'none'` before sending to server, as `"none"` is truthy
   - Vite test manifest becomes stale after TypeScript changes — force rebuild with `RAILS_ENV=test bin/vite build --force`
+---
+
+## 2026-02-11 - US-024
+- What was implemented: Implemented payment approval and auto-settlement. Added approve and reject member routes on payments. Extended PaymentsController with approve action (sets status to approved, marks linked installment as approved if fully covered, notifies borrower) and reject action (sets status to rejected with optional rejection_reason, notifies borrower). Added auto-settlement logic: after any payment approval (or auto-approved personal mode payment), checks if total approved payments >= debt amount and transitions debt to 'settled' status with settlement notifications for both parties. Added is_lender prop to DebtsController#show. Updated Show.tsx with PaymentActions component showing Approve (green) and Reject (red) buttons on pending payments visible only to the lender on mutual debts. Reject opens a dialog for optional rejection reason. PaymentStatusBadge now uses translated labels. Added i18n translations for payment approval/rejection UI (en/ar) and Rails backend messages including payment_approved, payment_rejected, debt_settled notifications. Wrote 4 controller tests: lender approves payment, lender rejects with reason, approval triggers auto-settlement, borrower cannot approve.
+- Files changed: app/controllers/payments_controller.rb (modified), app/controllers/debts_controller.rb (modified — added is_lender prop), app/frontend/pages/debts/Show.tsx (modified — added PaymentActions component, is_lender prop, translated PaymentStatusBadge), config/routes.rb (modified — added approve/reject member routes on payments), app/frontend/i18n/locales/en.json (modified), app/frontend/i18n/locales/ar.json (modified), config/locales/en.yml (modified), config/locales/ar.yml (modified), test/controllers/payments_controller_test.rb (modified — added 4 tests)
+- **Learnings for future iterations:**
+  - Payment approve/reject routes are nested member routes: `approve_debt_payment_url(debt, payment)` → POST /debts/:debt_id/payments/:id/approve
+  - Auto-settlement check: `remaining_balance <= 0` after every approval — uses same `remaining_balance` helper as payment creation
+  - Installment marking: when a payment linked to an installment is approved, check if total approved payments for that installment >= installment amount, then mark installment as 'approved'
+  - Settlement notifications go to both lender and borrower via `[@debt.lender, @debt.borrower].compact.each`
+  - Personal mode auto-settlement: also checked after create (since personal mode payments are auto-approved)
+  - PaymentStatusBadge should use translated labels via `t('debt_detail.payments.status_${status}')` for i18n consistency
 ---
