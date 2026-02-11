@@ -374,3 +374,14 @@
   - Nav dashboard link changed from `/` to `/dashboard` — isActive check must handle both paths for correct highlighting
   - Authenticated root in devise_scope now points to `dashboard#index` — the old `home#index` fallback root at bottom of routes still exists but is shadowed
 ---
+
+## 2026-02-11 - US-027
+- What was implemented: Built debts list page with filtering and sorting. Enhanced DebtsController#index to query all debts where current_user is lender or borrower, with support for URL query params: status (all/pending/active/settled/rejected), mode (all/mutual/personal), role (all/lender/borrower), and sort (created_at_desc/deadline_asc/amount_desc). Each debt row includes a progress bar showing approved payments as percentage of total amount. Created pages/debts/Index.tsx with filter dropdowns (using shadcn Select), sort selector, debt rows with counterparty name, amount+currency, status badge, mode badge, deadline, progress bar, and empty state message. Clicking a debt navigates to /debts/:id. Added all i18n translations for debts list (en/ar). Wrote 4 controller tests: index returns user's debts, filter by status, filter by mode, sort by deadline. 148 tests pass, 0 failures.
+- Files changed: app/controllers/debts_controller.rb (modified — added index query logic, filtering, sorting, JSON serialization), app/frontend/pages/debts/Index.tsx (new), app/frontend/i18n/locales/en.json (modified — added debts_list section), app/frontend/i18n/locales/ar.json (modified — added debts_list section), test/controllers/debts_controller_test.rb (modified — added 4 index tests)
+- **Learnings for future iterations:**
+  - DebtsController#index uses explicit `render inertia: "debts/Index"` with `props:` hash — not `default_render` since it needs custom filtering/sorting
+  - Filter URL params: `router.get()` with `preserveState: true, replace: true` updates URL params and triggers Inertia page refresh without full navigation
+  - Progress bar calculation: `(approved_payments_sum / debt.amount * 100).round(1)` — computed server-side and passed as `progress` prop
+  - RuboCop doesn't like `case` assigned to a variable with `when` indented differently from the `case` keyword — extract to a separate method for cleaner code
+  - `user_debts` query pattern: `Debt.where(lender_id:).or(Debt.where(borrower_id:))` — same pattern used in DashboardController
+---
