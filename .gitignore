@@ -29,6 +29,8 @@
 !/tmp/storage/.keep
 
 /public/assets
+/public/vite-dev
+/public/vite-test
 
 # Ignore key files for decrypting credentials and more.
 /config/*.key

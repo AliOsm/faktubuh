@@ -1,1 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: user_one@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+  full_name: Test User One
+  personal_id: ABC234
+  locale: en
+
+two:
+  email: user_two@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+  full_name: Test User Two
+  personal_id: DEF567
+  locale: ar
