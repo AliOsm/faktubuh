@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_11_091834) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_11_092226) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -20,6 +20,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_091834) do
   create_enum "debt_installment_type", ["lump_sum", "monthly", "bi_weekly", "quarterly", "yearly", "custom_split"]
   create_enum "debt_mode", ["mutual", "personal"]
   create_enum "debt_status", ["pending", "active", "settled", "rejected"]
+  create_enum "installment_status", ["upcoming", "submitted", "approved", "rejected", "overdue"]
+  create_enum "payment_status", ["pending", "approved", "rejected"]
+  create_enum "witness_status", ["invited", "confirmed", "declined"]
 
   create_table "debts", force: :cascade do |t|
     t.decimal "amount", precision: 15, scale: 2, null: false
@@ -42,6 +45,48 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_091834) do
     t.index ["status"], name: "index_debts_on_status"
   end
 
+  create_table "installments", force: :cascade do |t|
+    t.decimal "amount", precision: 15, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.bigint "debt_id", null: false
+    t.string "description"
+    t.date "due_date", null: false
+    t.enum "status", default: "upcoming", null: false, enum_type: "installment_status"
+    t.datetime "updated_at", null: false
+    t.index ["debt_id", "due_date"], name: "index_installments_on_debt_id_and_due_date"
+    t.index ["debt_id"], name: "index_installments_on_debt_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "debt_id"
+    t.text "message", null: false
+    t.string "notification_type", null: false
+    t.boolean "read", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["debt_id"], name: "index_notifications_on_debt_id"
+    t.index ["user_id", "read"], name: "index_notifications_on_user_id_and_read"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.decimal "amount", precision: 15, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.bigint "debt_id", null: false
+    t.string "description"
+    t.bigint "installment_id"
+    t.text "rejection_reason"
+    t.enum "status", default: "pending", null: false, enum_type: "payment_status"
+    t.datetime "submitted_at", null: false
+    t.bigint "submitter_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["debt_id", "status"], name: "index_payments_on_debt_id_and_status"
+    t.index ["debt_id"], name: "index_payments_on_debt_id"
+    t.index ["installment_id"], name: "index_payments_on_installment_id"
+    t.index ["submitter_id"], name: "index_payments_on_submitter_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -61,6 +106,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_091834) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "witnesses", force: :cascade do |t|
+    t.datetime "confirmed_at"
+    t.datetime "created_at", null: false
+    t.bigint "debt_id", null: false
+    t.enum "status", default: "invited", null: false, enum_type: "witness_status"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["debt_id", "user_id"], name: "index_witnesses_on_debt_id_and_user_id", unique: true
+    t.index ["debt_id"], name: "index_witnesses_on_debt_id"
+    t.index ["user_id"], name: "index_witnesses_on_user_id"
+  end
+
   add_foreign_key "debts", "users", column: "borrower_id"
   add_foreign_key "debts", "users", column: "lender_id"
+  add_foreign_key "installments", "debts"
+  add_foreign_key "notifications", "debts"
+  add_foreign_key "notifications", "users"
+  add_foreign_key "payments", "debts"
+  add_foreign_key "payments", "installments"
+  add_foreign_key "payments", "users", column: "submitter_id"
+  add_foreign_key "witnesses", "debts"
+  add_foreign_key "witnesses", "users"
 end

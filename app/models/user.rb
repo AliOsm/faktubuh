@@ -8,6 +8,9 @@ class User < ApplicationRecord
 
   has_many :lent_debts, class_name: "Debt", foreign_key: :lender_id, dependent: :destroy, inverse_of: :lender
   has_many :borrowed_debts, class_name: "Debt", foreign_key: :borrower_id, dependent: :nullify, inverse_of: :borrower
+  has_many :payments, foreign_key: :submitter_id, dependent: :destroy, inverse_of: :submitter
+  has_many :witnesses, dependent: :destroy
+  has_many :notifications, dependent: :destroy
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,

@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+pending_payment:
+  debt: mutual_debt
+  submitter: two
+  amount: 200.00
+  submitted_at: <%= Time.current %>
+  status: pending
+
+approved_payment:
+  debt: personal_debt
+  submitter: one
+  amount: 100.00
+  submitted_at: <%= 5.days.ago %>
+  status: approved

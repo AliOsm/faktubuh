@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+unread_notification:
+  user: one
+  notification_type: debt_created
+  message: A new debt has been created
+  read: false
+  debt: mutual_debt
+
+read_notification:
+  user: one
+  notification_type: payment_submitted
+  message: A payment has been submitted
+  read: true
+  debt: mutual_debt
