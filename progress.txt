@@ -399,3 +399,14 @@
   - Refactoring notifications from controllers to service: some notification methods (like debt_created) derive the creator from the debt model itself (via creator_role), while the controller previously used `current_user` — the service approach is more self-contained but the trade-off is it reads from the model rather than the request context
   - witness_declined notification was being sent by the original code but wasn't listed in the PRD acceptance criteria — added it to NotificationService to maintain existing behavior and pass existing tests
 ---
+
+## 2026-02-11 - US-029
+- What was implemented: Built notifications page UI and header bell icon with unread count badge. Created pages/notifications/Index.tsx with a list of all notifications ordered newest first. Each notification shows an icon by type (different lucide-react icons for debt/payment/witness/settlement events), message text, relative time using Intl.RelativeTimeFormat, and read/unread visual indicator (bold for unread, small blue dot badge). Clicking a notification marks it as read (POST /notifications/:id/mark_read) and navigates to the related debt page. "Mark all as read" button at the top of the list (visible when there are unread notifications). Empty state with BellOff icon and message. Updated app-layout.tsx header: added Bell icon link to /notifications with unread count badge (red destructive Badge with number, hidden when count is 0). Badge supports RTL positioning. Read `unread_notifications_count` from shared Inertia props (already shared by InertiaController from US-028). Added i18n translations for notifications page UI in en.json and ar.json (notifications_page section: title, mark_all_read, empty).
+- Files changed: app/frontend/pages/notifications/Index.tsx (new), app/frontend/layouts/app-layout.tsx (modified — added Bell icon link with unread badge, Badge import, unread count from shared props), app/frontend/i18n/locales/en.json (modified — added notifications_page section), app/frontend/i18n/locales/ar.json (modified — added notifications_page section)
+- **Learnings for future iterations:**
+  - `unread_notifications_count` from InertiaController shared props is accessed via `(props as unknown as { unread_notifications_count?: number }).unread_notifications_count` — cast through unknown to avoid TS incompatibility with SharedData generic
+  - Notification type icons map: use a const Record mapping notification_type strings to JSX elements with different lucide-react icons and colors per event type
+  - `Intl.RelativeTimeFormat` with `numeric: 'auto'` gives natural relative times (e.g., "yesterday" instead of "1 day ago") — locale-aware for Arabic/English
+  - Notification click flow: POST mark_read first, then on success navigate to debt page — ensures read state is updated before navigation
+  - Badge positioning for RTL: use `ltr:-right-0.5 rtl:-left-0.5` Tailwind utilities for the notification count badge on the Bell icon
+---
