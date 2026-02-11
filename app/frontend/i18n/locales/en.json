@@ -51,6 +51,17 @@
       "signing_up": "Signing up...",
       "have_account": "Already have an account?",
       "sign_in_link": "Sign in"
+    },
+    "sign_in": {
+      "title": "Sign In",
+      "subtitle": "Enter your credentials to continue",
+      "email": "Email",
+      "password": "Password",
+      "remember_me": "Remember me",
+      "submit": "Sign In",
+      "signing_in": "Signing in...",
+      "no_account": "Don't have an account?",
+      "sign_up_link": "Sign up"
     }
   }
 }

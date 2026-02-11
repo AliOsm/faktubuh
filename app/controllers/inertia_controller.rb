@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InertiaController < ApplicationController
+  before_action :authenticate_user!
+
   inertia_config default_render: true
 
   inertia_share do
