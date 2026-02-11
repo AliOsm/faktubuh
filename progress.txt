@@ -78,6 +78,10 @@
 - Confirmed witness fixture: `witnesses(:confirmed_witness)` on personal_debt with user: three
 - Payment approve/reject: nested member routes `approve_debt_payment_url(debt, payment)` → POST /debts/:debt_id/payments/:id/approve
 - Auto-settlement: check `remaining_balance <= 0` after every payment approval. Settlement notifies both parties.
+- WitnessesController: nested under debts with create, confirm, decline actions. Routes: `debt_witnesses_url(debt)` for POST, `confirm_debt_witness_url(debt, witness)` for confirm, `decline_debt_witness_url(debt, witness)` for decline
+- Witness authorization: only debt creator can invite witnesses, only the invited witness user can confirm/decline
+- Max 2 witnesses per debt enforced at controller level (not model validation)
+- Fourth user fixture: `users(:four)` with personal_id KMN345 — available for additional test scenarios
 ---
 
 ## 2026-02-11 - US-014
@@ -340,4 +344,17 @@
   - Settlement notifications go to both lender and borrower via `[@debt.lender, @debt.borrower].compact.each`
   - Personal mode auto-settlement: also checked after create (since personal mode payments are auto-approved)
   - PaymentStatusBadge should use translated labels via `t('debt_detail.payments.status_${status}')` for i18n consistency
+---
+
+## 2026-02-11 - US-025
+- What was implemented: Implemented witness assignment for debt detail page. Created WitnessesController with create, confirm, and decline actions inheriting from InertiaController. Create action: accepts Personal ID, looks up user, creates witness with status 'invited', sends notification to witness. Enforces max 2 witnesses per debt, prevents duplicate invitations, prevents self-invitation. Only the debt creator can invite witnesses on non-settled/rejected debts. Confirm action: only the invited witness user can confirm, sets status to 'confirmed' with confirmed_at timestamp, notifies debt creator. Decline action: only the invited witness user can decline, sets status to 'declined', notifies debt creator. Added nested routes under debts for witnesses (create, confirm, decline member routes). Updated DebtsController#show to pass `can_manage_witnesses` and `is_invited_witness` props. Updated Show.tsx with AddWitnessForm component (Personal ID input with auto-lookup at 6 chars, invite button, max-reached message) and WitnessActions component (Accept/Decline buttons for invited witnesses). Witness list now shows Accept/Decline buttons inline for the invited witness user instead of status badge. Added all i18n translations for witness management in en.json, ar.json, en.yml, ar.yml (flash messages, notification messages, UI labels). Added fourth user fixture for test scenarios. Wrote 10 controller tests covering invite success, max 2 enforcement, duplicate prevention, self-invite prevention, non-creator restriction, witness confirm, witness decline, non-invited user restriction, already-responded restriction. Fixed pre-existing rubocop offense in DebtsController (redundant return).
+- Files changed: app/controllers/witnesses_controller.rb (new), app/controllers/debts_controller.rb (modified — added can_manage_witnesses?, invited_witness_id helpers, fixed rubocop offense), app/frontend/pages/debts/Show.tsx (modified — added AddWitnessForm, WitnessActions components, new props), config/routes.rb (modified — added nested witness routes), app/frontend/i18n/locales/en.json (modified — added witness management translations), app/frontend/i18n/locales/ar.json (modified — added witness management translations), config/locales/en.yml (modified — added witnesses and notification translations), config/locales/ar.yml (modified — added witnesses and notification translations), test/fixtures/users.yml (modified — added fourth user fixture), test/controllers/witnesses_controller_test.rb (new — 10 tests)
+- **Learnings for future iterations:**
+  - WitnessesController nested routes: `debt_witnesses_url(debt)` for create, `confirm_debt_witness_url(debt, witness)` and `decline_debt_witness_url(debt, witness)` for member actions
+  - Max witnesses enforced at controller level with `@debt.witnesses.count >= 2` check, not at model level — allows flexibility
+  - `can_manage_witnesses` prop combines creator check AND debt status check (not settled/rejected) — simplifies frontend logic
+  - `is_invited_witness` prop returns the witness ID (or null) so the frontend can show Accept/Decline buttons for the specific witness row
+  - Witness confirm/decline authorization: check `@witness.user_id == current_user.id` AND `@witness.invited?` to prevent double-respond
+  - Personal ID lookup in witness form reuses the same `/users/lookup` endpoint from debt creation (US-019)
+  - Fourth user fixture `users(:four)` with personal_id KMN345 added for witness tests requiring a user not already involved in existing fixtures
 ---
