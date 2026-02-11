@@ -304,3 +304,13 @@
   - Installment overdue detection on frontend: compare due_date with today's date for `upcoming` status installments that are past their due date
   - StatusBadge component uses a variants map for color-coded badges — reusable pattern for consistent status display across pages
 ---
+
+## 2026-02-11 - US-022
+- What was implemented: Implemented borrower confirmation flow for mutual debts. The backend (controller actions, routes, authorization, notifications) was already scaffolded in US-021 — this story completed the frontend UI. Added ConfirmationBanner component to Show.tsx that displays when debt is pending and current user is the confirming party (non-creator), with Confirm and Reject buttons using Inertia router.post. Added AwaitingConfirmation component showing "Awaiting confirmation from [name]" message when debt is pending and current user is the creator. Both components handle loading states. Added Arabic i18n translations for the confirmation section (already existed in en.json). Wrote 4 controller tests: non-creator confirms (debt becomes active with installments + notification), non-creator rejects (debt becomes rejected + notification), creator cannot confirm own debt, already active debt cannot be confirmed again.
+- Files changed: app/frontend/pages/debts/Show.tsx (modified — added ConfirmationBanner, AwaitingConfirmation components, added is_confirming_party/is_creator props), app/frontend/i18n/locales/ar.json (modified — added debt_detail.confirmation translations), test/controllers/debts_controller_test.rb (modified — added 4 confirm/reject tests)
+- **Learnings for future iterations:**
+  - Backend for confirm/reject was already scaffolded as part of US-021 Show implementation — the controller had `confirm` and `reject` actions, routes had member routes, and `is_confirming_party`/`is_creator` props were already passed to the page
+  - ConfirmationBanner uses `router.post` with empty data `{}` since confirm/reject don't need request body
+  - The confirming party is the non-creator: if creator_role is "lender", the borrower confirms; if "borrower", the lender confirms
+  - Arabic confirmation translations were missing from ar.json even though en.json had them — always check both locale files when translations are expected
+---
