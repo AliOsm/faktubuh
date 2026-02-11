@@ -6,6 +6,9 @@ class User < ApplicationRecord
   PERSONAL_ID_LENGTH = 6
   PERSONAL_ID_MAX_ATTEMPTS = 10
 
+  has_many :lent_debts, class_name: "Debt", foreign_key: :lender_id, dependent: :destroy, inverse_of: :lender
+  has_many :borrowed_debts, class_name: "Debt", foreign_key: :borrower_id, dependent: :nullify, inverse_of: :borrower
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [ :google_oauth2 ]
