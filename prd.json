@@ -382,7 +382,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 18,
-      "passes": false,
+      "passes": true,
       "notes": "Step 3 (counterparty and details form) is built in US-019. This story creates the multi-step form shell."
     },
     {

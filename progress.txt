@@ -248,3 +248,14 @@
   - For periodic schedules, if no interval date falls before deadline, the deadline itself becomes the single installment due date
   - SimpleCov coverage failure is pre-existing (below 95% threshold) — does not block stories
 ---
+
+## 2026-02-11 - US-018
+- What was implemented: Built debt creation UI with multi-step form for role and mode selection. Created DebtsController with `new` action inheriting from InertiaController. Added `resources :debts, only: [:new, :create, :show, :index]` to routes. Created pages/debts/new.tsx with a 3-step form shell: Step 1 shows two selectable cards for role (I'm Lending with HandCoins icon, I'm Borrowing with HandHeart icon), Step 2 shows two selectable cards for mode (Mutual with Users icon, Personal with User icon), Step 3 is a placeholder for the details form (US-019). Cards have distinct visual highlight on selection (border-primary, bg-primary/5, checkmark icon). Ayat al-Dayn verse banner displayed alongside the form with Arabic text and translated reference. Next button advances between steps, Back button returns to previous step. All text translated (en/ar) with RTL support via ltr:/rtl: Tailwind utilities.
+- Files changed: app/controllers/debts_controller.rb (new), app/frontend/pages/debts/new.tsx (new), app/frontend/i18n/locales/en.json (modified), app/frontend/i18n/locales/ar.json (modified), config/routes.rb (modified)
+- **Learnings for future iterations:**
+  - DebtsController inherits from InertiaController — `default_render: true` handles rendering, just need empty action methods
+  - Multi-step forms use React state (useState) for step tracking and selections — no server round-trips needed between steps
+  - SelectableCard pattern: button with border-2, conditional border-primary + bg-primary/5 + checkmark for selected state
+  - Ayat al-Dayn verse text is always displayed in Arabic script regardless of UI language — only the translation changes via i18n
+  - oxfmt auto-formats JSX — run `yarn format` before committing new .tsx files
+---
