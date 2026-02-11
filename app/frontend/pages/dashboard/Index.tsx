@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react'
 import { ArrowRight, Calendar, CreditCard, HandCoins, HandHeart, Plus, TrendingUp } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import AyatAlDayn from '@/components/ayat-al-dayn'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -57,16 +58,7 @@ function EmptyState({ t }: { t: (key: string) => string }) {
           <CardDescription className="text-base">{t('dashboard.empty_description')}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-6">
-          <div className="rounded-lg border bg-muted/50 p-4">
-            <p
-              className="font-amiri text-lg leading-relaxed text-foreground"
-              dir="rtl"
-            >
-              {t('dashboard.empty_ayat_verse')}
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">{t('dashboard.empty_ayat_translation')}</p>
-            <p className="mt-1 text-xs text-muted-foreground">{t('dashboard.empty_ayat_reference')}</p>
-          </div>
+          <AyatAlDayn context="welcome" />
           <Button
             asChild
             size="lg"

@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import AyatAlDayn from '@/components/ayat-al-dayn'
 import AppLayout from '@/layouts/app-layout'
 import { cn } from '@/lib/utils'
 
@@ -98,23 +99,6 @@ function SelectableCard({
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
     </button>
-  )
-}
-
-function AyatBanner() {
-  const { t } = useTranslation()
-
-  return (
-    <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
-      <p
-        className="text-center font-arabic text-sm leading-relaxed text-foreground/80"
-        dir="rtl"
-      >
-        يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا تَدَايَنتُم بِدَيْنٍ إِلَىٰ أَجَلٍ مُّسَمًّى فَاكْتُبُوهُ
-      </p>
-      <p className="mt-2 text-center text-xs text-muted-foreground">{t('debt_creation.ayat_translation')}</p>
-      <p className="mt-1 text-center text-xs text-muted-foreground/70">{t('debt_creation.ayat_reference')}</p>
-    </div>
   )
 }
 
@@ -580,7 +564,7 @@ function NewDebt() {
           />
         )}
 
-        <AyatBanner />
+        <AyatAlDayn context="creation" />
       </div>
     </div>
   )

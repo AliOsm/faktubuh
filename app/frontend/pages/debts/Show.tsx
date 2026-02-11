@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
+import AyatAlDayn from '@/components/ayat-al-dayn'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -193,23 +194,6 @@ function formatDate(dateStr: string): string {
   })
 }
 
-function AyatBanner() {
-  const { t } = useTranslation()
-
-  return (
-    <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
-      <p
-        className="text-center font-arabic text-sm leading-relaxed text-foreground/80"
-        dir="rtl"
-      >
-        {t('debt_detail.ayat_verse')}
-      </p>
-      <p className="mt-2 text-center text-xs text-muted-foreground">{t('debt_detail.ayat_translation')}</p>
-      <p className="mt-1 text-center text-xs text-muted-foreground/70">{t('debt_detail.ayat_reference')}</p>
-    </div>
-  )
-}
-
 function WitnessReminder({ mode, witnesses }: { mode: string; witnesses: WitnessData[] }) {
   const { t } = useTranslation()
   const hasConfirmedWitness = witnesses.some((w) => w.status === 'confirmed')
@@ -222,12 +206,18 @@ function WitnessReminder({ mode, witnesses }: { mode: string; witnesses: Witness
   return (
     <div
       className={cn(
-        'flex items-start gap-3 rounded-lg border p-4',
+        'flex flex-col gap-3 rounded-lg border p-4',
         isStrong ? 'border-amber-200 bg-amber-50 text-amber-900' : 'border-yellow-200 bg-yellow-50 text-yellow-900'
       )}
     >
-      <AlertTriangle className={cn('mt-0.5 size-5 shrink-0', isStrong ? 'text-amber-600' : 'text-yellow-600')} />
-      <p className="text-sm">{message}</p>
+      <div className="flex items-start gap-3">
+        <AlertTriangle className={cn('mt-0.5 size-5 shrink-0', isStrong ? 'text-amber-600' : 'text-yellow-600')} />
+        <p className="text-sm">{message}</p>
+      </div>
+      <AyatAlDayn
+        context="witness"
+        className="border-0 bg-transparent p-0"
+      />
     </div>
   )
 }
@@ -882,20 +872,10 @@ function SettlementBanner() {
           <div className="flex-1">
             <h3 className="font-semibold text-green-900">{t('debt_detail.settlement.title')}</h3>
             <p className="mt-1 text-sm text-green-800">{t('debt_detail.settlement.message')}</p>
-            <div className="mt-3 rounded-md border border-green-200 bg-white/60 p-3">
-              <p
-                className="text-center font-arabic text-sm leading-relaxed text-green-900"
-                dir="rtl"
-              >
-                {t('debt_detail.settlement.ayat_verse')}
-              </p>
-              <p className="mt-1.5 text-center text-xs text-green-700">
-                {t('debt_detail.settlement.ayat_translation')}
-              </p>
-              <p className="mt-0.5 text-center text-xs text-green-600/70">
-                {t('debt_detail.settlement.ayat_reference')}
-              </p>
-            </div>
+            <AyatAlDayn
+              context="settlement"
+              className="mt-3"
+            />
           </div>
         </div>
       </CardContent>
@@ -1239,7 +1219,7 @@ export default function Show({
         </Card>
 
         {/* Ayat al-Dayn Banner */}
-        <AyatBanner />
+        <AyatAlDayn context="detail" />
       </div>
     </>
   )
