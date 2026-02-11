@@ -43,13 +43,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const currentPath = window.location.pathname
 
   const navItems: NavItem[] = [
-    { label: t('nav.dashboard'), href: '/', icon: <LayoutDashboard className="size-4" /> },
+    { label: t('nav.dashboard'), href: '/dashboard', icon: <LayoutDashboard className="size-4" /> },
     { label: t('nav.my_debts'), href: '/debts', icon: <List className="size-4" /> },
     { label: t('nav.notifications'), href: '/notifications', icon: <Bell className="size-4" /> }
   ]
 
   const isActive = (href: string) => {
-    if (href === '/') return currentPath === '/'
+    if (href === '/dashboard') return currentPath === '/' || currentPath === '/dashboard'
     return currentPath.startsWith(href)
   }
 

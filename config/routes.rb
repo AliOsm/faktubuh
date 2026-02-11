@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     authenticated :user do
-      root "home#index", as: :authenticated_root
+      root "dashboard#index", as: :authenticated_root
     end
 
     unauthenticated do
@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     end
   end
 
+  get "dashboard", to: "dashboard#index"
   resource :profile, only: %i[show update]
   resources :debts, only: %i[new create show index] do
     member do

@@ -83,6 +83,31 @@
       "sign_up_link": "إنشاء حساب"
     }
   },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "new_debt": "دين جديد",
+    "recent_debts": "آخر الديون",
+    "view_all": "عرض الكل",
+    "total_lent": "إجمالي الإقراض",
+    "total_borrowed": "إجمالي الاقتراض",
+    "total_paid": "إجمالي المدفوع",
+    "remaining": "المتبقي",
+    "next_installment": "القسط التالي",
+    "active_debts": "نشط",
+    "settled_debts": "مسدد",
+    "no_upcoming": "لا توجد أقساط قادمة",
+    "empty_title": "مرحبًا بك في فاكتبوه",
+    "empty_description": "ابدأ بتتبع ديونك بشفافية وثقة، اتباعًا لتوجيهات آية الدين.",
+    "empty_cta": "أنشئ أول دين",
+    "empty_ayat_verse": "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا تَدَايَنتُم بِدَيْنٍ إِلَىٰ أَجَلٍ مُّسَمًّى فَاكْتُبُوهُ",
+    "empty_ayat_translation": "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا تَدَايَنتُم بِدَيْنٍ إِلَىٰ أَجَلٍ مُّسَمًّى فَاكْتُبُوهُ",
+    "empty_ayat_reference": "سورة البقرة ٢:٢٨٢",
+    "status": {
+      "pending": "قيد الانتظار",
+      "active": "نشط",
+      "settled": "مسدد"
+    }
+  },
   "debt_creation": {
     "title": "إنشاء دين",
     "step_indicator": "الخطوة {{current}} من {{total}}",
