@@ -82,5 +82,32 @@
       "no_account": "ليس لديك حساب؟",
       "sign_up_link": "إنشاء حساب"
     }
+  },
+  "debt_creation": {
+    "title": "إنشاء دين",
+    "step_indicator": "الخطوة {{current}} من {{total}}",
+    "role": {
+      "title": "ما هو دورك؟",
+      "description": "اختر ما إذا كنت مُقرضًا أو مُقترضًا.",
+      "lender": "أنا أُقرض",
+      "lender_description": "أنا أعطي المال لشخص ما",
+      "borrower": "أنا أقترض",
+      "borrower_description": "أنا أتلقى المال من شخص ما"
+    },
+    "mode": {
+      "title": "نوع الدين",
+      "description": "اختر كيف سيتم تتبع هذا الدين.",
+      "mutual": "مشترك",
+      "mutual_description": "كلا الطرفين على المنصة ويجب أن يتفقا",
+      "personal": "شخصي",
+      "personal_description": "تتبع هذا الدين بنفسك"
+    },
+    "details": {
+      "title": "تفاصيل الدين",
+      "description": "أدخل تفاصيل الدين.",
+      "coming_soon": "نموذج التفاصيل سيكون متاحًا في الخطوة التالية."
+    },
+    "ayat_translation": "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا تَدَايَنتُم بِدَيْنٍ إِلَىٰ أَجَلٍ مُّسَمًّى فَاكْتُبُوهُ",
+    "ayat_reference": "سورة البقرة ٢:٢٨٢"
   }
 }

@@ -82,5 +82,32 @@
       "no_account": "Don't have an account?",
       "sign_up_link": "Sign up"
     }
+  },
+  "debt_creation": {
+    "title": "Create a Debt",
+    "step_indicator": "Step {{current}} of {{total}}",
+    "role": {
+      "title": "What is your role?",
+      "description": "Select whether you are lending or borrowing.",
+      "lender": "I'm Lending",
+      "lender_description": "I am giving money to someone",
+      "borrower": "I'm Borrowing",
+      "borrower_description": "I am receiving money from someone"
+    },
+    "mode": {
+      "title": "Debt mode",
+      "description": "Choose how this debt will be tracked.",
+      "mutual": "Mutual",
+      "mutual_description": "Both parties are on the platform and must agree",
+      "personal": "Personal",
+      "personal_description": "Track this debt on your own"
+    },
+    "details": {
+      "title": "Debt Details",
+      "description": "Enter the details of the debt.",
+      "coming_soon": "Details form will be available in the next step."
+    },
+    "ayat_translation": "O you who believe, when you contract a debt for a specified term, write it down.",
+    "ayat_reference": "Surah Al-Baqarah 2:282"
   }
 }
