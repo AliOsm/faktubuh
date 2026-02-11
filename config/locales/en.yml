@@ -28,6 +28,18 @@ en:
     not_borrower: "Only the borrower can submit payments."
     not_lender: "Only the lender can approve or reject payments."
     not_pending: "This payment has already been processed."
+  witnesses:
+    invited: "Witness invitation sent successfully."
+    confirmed: "You have accepted the witness invitation."
+    declined: "You have declined the witness invitation."
+    user_not_found: "User not found with that Personal ID."
+    cannot_invite_self: "You cannot invite yourself as a witness."
+    already_invited: "This user has already been invited as a witness."
+    max_witnesses: "Maximum of 2 witnesses allowed per debt."
+    not_creator: "Only the debt creator can invite witnesses."
+    debt_not_eligible: "Witnesses cannot be added to settled or rejected debts."
+    not_invited_witness: "You are not the invited witness."
+    already_responded: "This witness invitation has already been responded to."
   notifications:
     debt_created: "%{creator} created a debt for %{amount} %{currency} with you."
     debt_confirmed: "%{confirmer} confirmed the debt for %{amount} %{currency}."
@@ -36,6 +48,9 @@ en:
     payment_approved: "Your payment of %{amount} %{currency} has been approved."
     payment_rejected: "Your payment of %{amount} %{currency} has been rejected. Reason: %{reason}"
     debt_settled: "The debt for %{amount} %{currency} has been fully settled. Congratulations!"
+    witness_invited: "%{inviter} invited you as a witness for a debt of %{amount} %{currency}."
+    witness_confirmed: "%{witness} accepted the witness invitation for your debt of %{amount} %{currency}."
+    witness_declined: "%{witness} declined the witness invitation for your debt of %{amount} %{currency}."
   home:
     title: "Faktubuh"
     description: "Peer-to-peer Islamic debt tracking"

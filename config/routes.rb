@@ -24,6 +24,12 @@ Rails.application.routes.draw do
         post :reject
       end
     end
+    resources :witnesses, only: %i[create] do
+      member do
+        post :confirm
+        post :decline
+      end
+    end
   end
 
   get "users/lookup", to: "users#lookup"

@@ -20,3 +20,10 @@ three:
   full_name: Test User Three
   personal_id: GHJ789
   locale: en
+
+four:
+  email: user_four@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+  full_name: Test User Four
+  personal_id: KMN345
+  locale: en

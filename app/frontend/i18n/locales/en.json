@@ -223,7 +223,19 @@
       "no_witnesses": "No witnesses assigned",
       "invited": "Invited",
       "confirmed": "Confirmed",
-      "declined": "Declined"
+      "declined": "Declined",
+      "add_witness": "Add Witness",
+      "personal_id": "Witness Personal ID",
+      "personal_id_placeholder": "e.g. ABC234",
+      "user_not_found": "User not found",
+      "found_user": "Found: {{name}}",
+      "invite": "Invite",
+      "inviting": "Inviting...",
+      "max_reached": "Maximum of 2 witnesses allowed per debt.",
+      "accept": "Accept",
+      "accepting": "Accepting...",
+      "decline": "Decline",
+      "declining": "Declining..."
     },
     "confirmation": {
       "banner_title": "Debt Confirmation Required",

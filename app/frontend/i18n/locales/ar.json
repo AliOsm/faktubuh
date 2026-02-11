@@ -223,7 +223,19 @@
       "no_witnesses": "لا يوجد شهود معينون",
       "invited": "مدعو",
       "confirmed": "مؤكد",
-      "declined": "رفض"
+      "declined": "رفض",
+      "add_witness": "إضافة شاهد",
+      "personal_id": "المعرف الشخصي للشاهد",
+      "personal_id_placeholder": "مثال: ABC234",
+      "user_not_found": "المستخدم غير موجود",
+      "found_user": "تم العثور على: {{name}}",
+      "invite": "دعوة",
+      "inviting": "جارٍ الدعوة...",
+      "max_reached": "الحد الأقصى شاهدان لكل دين.",
+      "accept": "قبول",
+      "accepting": "جارٍ القبول...",
+      "decline": "رفض",
+      "declining": "جارٍ الرفض..."
     },
     "confirmation": {
       "banner_title": "مطلوب تأكيد الدين",

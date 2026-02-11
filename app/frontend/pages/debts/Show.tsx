@@ -6,8 +6,11 @@ import {
   Clock,
   CreditCard,
   FileText,
+  Loader2,
   Plus,
+  Search,
   Shield,
+  UserPlus,
   Users,
   XCircle
 } from 'lucide-react'
@@ -94,6 +97,8 @@ interface ShowProps {
   is_borrower: boolean
   is_lender: boolean
   remaining_balance: number
+  can_manage_witnesses: boolean
+  is_invited_witness: number | null
   [key: string]: unknown
 }
 
@@ -548,6 +553,163 @@ function SubmitPaymentDialog({
   )
 }
 
+function AddWitnessForm({ debt, witnessCount }: { debt: DebtData; witnessCount: number }) {
+  const { t } = useTranslation()
+  const [personalId, setPersonalId] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [lookupResult, setLookupResult] = useState<{ id: number; full_name: string } | null>(null)
+  const [lookupError, setLookupError] = useState('')
+  const [lookingUp, setLookingUp] = useState(false)
+
+  const maxReached = witnessCount >= 2
+
+  function resetForm() {
+    setPersonalId('')
+    setLookupResult(null)
+    setLookupError('')
+  }
+
+  useEffect(() => {
+    if (personalId.length !== 6) {
+      setLookupResult(null)
+      setLookupError('')
+      return
+    }
+
+    setLookingUp(true)
+    setLookupResult(null)
+    setLookupError('')
+
+    fetch(`/users/lookup?personal_id=${encodeURIComponent(personalId)}`)
+      .then((res) => {
+        if (res.ok) return res.json()
+        throw new Error('not_found')
+      })
+      .then((data) => {
+        setLookupResult(data as { id: number; full_name: string })
+        setLookupError('')
+      })
+      .catch(() => {
+        setLookupResult(null)
+        setLookupError(t('debt_detail.witnesses.user_not_found'))
+      })
+      .finally(() => setLookingUp(false))
+  }, [personalId, t])
+
+  function handleInvite() {
+    if (!lookupResult) return
+
+    setSubmitting(true)
+    router.post(
+      `/debts/${debt.id}/witnesses`,
+      { witness: { personal_id: personalId } },
+      {
+        onSuccess: () => resetForm(),
+        onFinish: () => setSubmitting(false)
+      }
+    )
+  }
+
+  if (maxReached) {
+    return <p className="text-sm text-muted-foreground">{t('debt_detail.witnesses.max_reached')}</p>
+  }
+
+  return (
+    <div className="space-y-3 rounded-lg border border-dashed p-4">
+      <h4 className="flex items-center gap-2 text-sm font-medium">
+        <UserPlus className="size-4" />
+        {t('debt_detail.witnesses.add_witness')}
+      </h4>
+      <div className="flex items-end gap-2">
+        <div className="flex-1 space-y-1.5">
+          <Label htmlFor="witness-personal-id">{t('debt_detail.witnesses.personal_id')}</Label>
+          <div className="relative">
+            <Input
+              id="witness-personal-id"
+              value={personalId}
+              onChange={(e) => setPersonalId(e.target.value.toUpperCase())}
+              placeholder={t('debt_detail.witnesses.personal_id_placeholder')}
+              maxLength={6}
+              className="font-mono uppercase ltr:pr-8 rtl:pl-8"
+            />
+            <div className="pointer-events-none absolute inset-y-0 flex items-center ltr:right-2.5 rtl:left-2.5">
+              {lookingUp && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
+              {!lookingUp && lookupResult && <CheckCircle className="size-4 text-green-600" />}
+              {!lookingUp && lookupError && <XCircle className="size-4 text-red-600" />}
+              {!lookingUp && !lookupResult && !lookupError && personalId.length < 6 && (
+                <Search className="size-4 text-muted-foreground" />
+              )}
+            </div>
+          </div>
+          {lookupResult && (
+            <p className="text-sm text-green-700">
+              {t('debt_detail.witnesses.found_user', { name: lookupResult.full_name })}
+            </p>
+          )}
+          {lookupError && <p className="text-sm text-red-600">{lookupError}</p>}
+        </div>
+        <Button
+          onClick={handleInvite}
+          disabled={!lookupResult || submitting}
+          size="sm"
+        >
+          {submitting ? t('debt_detail.witnesses.inviting') : t('debt_detail.witnesses.invite')}
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function WitnessActions({ debt, witnessId }: { debt: DebtData; witnessId: number }) {
+  const { t } = useTranslation()
+  const [processing, setProcessing] = useState<'confirm' | 'decline' | null>(null)
+
+  function handleConfirm() {
+    setProcessing('confirm')
+    router.post(
+      `/debts/${debt.id}/witnesses/${witnessId}/confirm`,
+      {},
+      {
+        onFinish: () => setProcessing(null)
+      }
+    )
+  }
+
+  function handleDecline() {
+    setProcessing('decline')
+    router.post(
+      `/debts/${debt.id}/witnesses/${witnessId}/decline`,
+      {},
+      {
+        onFinish: () => setProcessing(null)
+      }
+    )
+  }
+
+  return (
+    <div className="flex gap-2">
+      <Button
+        size="sm"
+        onClick={handleConfirm}
+        disabled={processing !== null}
+        className="bg-green-600 text-white hover:bg-green-700"
+      >
+        <CheckCircle className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+        {processing === 'confirm' ? t('debt_detail.witnesses.accepting') : t('debt_detail.witnesses.accept')}
+      </Button>
+      <Button
+        size="sm"
+        variant="destructive"
+        onClick={handleDecline}
+        disabled={processing !== null}
+      >
+        <XCircle className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+        {processing === 'decline' ? t('debt_detail.witnesses.declining') : t('debt_detail.witnesses.decline')}
+      </Button>
+    </div>
+  )
+}
+
 export default function Show({
   debt,
   installments,
@@ -557,7 +719,9 @@ export default function Show({
   is_creator,
   is_borrower,
   is_lender,
-  remaining_balance
+  remaining_balance,
+  can_manage_witnesses,
+  is_invited_witness
 }: ShowProps) {
   const { t } = useTranslation()
   const { flash } = usePage<SharedData>().props
@@ -765,10 +929,25 @@ export default function Show({
                       <Shield className="size-4 text-muted-foreground" />
                       <span className="text-sm font-medium">{witness.user_name}</span>
                     </div>
-                    <StatusBadge status={witness.status} />
+                    <div className="flex items-center gap-2">
+                      {witness.status === 'invited' && is_invited_witness === witness.id ? (
+                        <WitnessActions
+                          debt={debt}
+                          witnessId={witness.id}
+                        />
+                      ) : (
+                        <StatusBadge status={witness.status} />
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
+            )}
+            {can_manage_witnesses && (
+              <AddWitnessForm
+                debt={debt}
+                witnessCount={witnesses.length}
+              />
             )}
             <WitnessReminder
               mode={debt.mode}

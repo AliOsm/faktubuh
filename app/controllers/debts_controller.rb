@@ -30,7 +30,9 @@ class DebtsController < InertiaController
       is_creator: creator_user(@debt)&.id == current_user.id,
       is_borrower: borrower_for_debt?,
       is_lender: @debt.lender_id == current_user.id,
-      remaining_balance: remaining_balance.to_f
+      remaining_balance: remaining_balance.to_f,
+      can_manage_witnesses: can_manage_witnesses?,
+      is_invited_witness: invited_witness_id
     }
   end
 
@@ -69,10 +71,9 @@ class DebtsController < InertiaController
   end
 
   def authorize_confirmation!
-    unless confirming_party?
-      redirect_to debt_path(@debt), alert: I18n.t("debts.not_confirming_party")
-      return
-    end
+    return if confirming_party?
+
+    redirect_to debt_path(@debt), alert: I18n.t("debts.not_confirming_party")
   end
 
   def confirming_party?
@@ -206,6 +207,17 @@ class DebtsController < InertiaController
 
   def remaining_balance
     @debt.amount - @debt.payments.approved.sum(:amount)
+  end
+
+  def can_manage_witnesses?
+    return false if @debt.settled? || @debt.rejected?
+
+    creator_user(@debt)&.id == current_user.id
+  end
+
+  def invited_witness_id
+    witness = @debt.witnesses.invited.find_by(user_id: current_user.id)
+    witness&.id
   end
 
   def creator_user(debt)

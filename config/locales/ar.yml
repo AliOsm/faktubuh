@@ -32,6 +32,18 @@ ar:
     not_borrower: "فقط المقترض يمكنه تقديم مدفوعات."
     not_lender: "فقط المُقرض يمكنه الموافقة على المدفوعات أو رفضها."
     not_pending: "تمت معالجة هذه الدفعة بالفعل."
+  witnesses:
+    invited: "تم إرسال دعوة الشاهد بنجاح."
+    confirmed: "لقد قبلت دعوة الشهادة."
+    declined: "لقد رفضت دعوة الشهادة."
+    user_not_found: "لم يتم العثور على مستخدم بهذا المعرف الشخصي."
+    cannot_invite_self: "لا يمكنك دعوة نفسك كشاهد."
+    already_invited: "تمت دعوة هذا المستخدم بالفعل كشاهد."
+    max_witnesses: "الحد الأقصى شاهدان لكل دين."
+    not_creator: "فقط منشئ الدين يمكنه دعوة الشهود."
+    debt_not_eligible: "لا يمكن إضافة شهود للديون المسددة أو المرفوضة."
+    not_invited_witness: "أنت لست الشاهد المدعو."
+    already_responded: "تم الرد على دعوة الشهادة هذه بالفعل."
   notifications:
     debt_created: "قام %{creator} بإنشاء دين بقيمة %{amount} %{currency} معك."
     debt_confirmed: "قام %{confirmer} بتأكيد الدين بقيمة %{amount} %{currency}."
@@ -40,6 +52,9 @@ ar:
     payment_approved: "تمت الموافقة على دفعتك بقيمة %{amount} %{currency}."
     payment_rejected: "تم رفض دفعتك بقيمة %{amount} %{currency}. السبب: %{reason}"
     debt_settled: "تم تسديد الدين بقيمة %{amount} %{currency} بالكامل. تهانينا!"
+    witness_invited: "قام %{inviter} بدعوتك كشاهد على دين بقيمة %{amount} %{currency}."
+    witness_confirmed: "قبل %{witness} دعوة الشهادة على دينك بقيمة %{amount} %{currency}."
+    witness_declined: "رفض %{witness} دعوة الشهادة على دينك بقيمة %{amount} %{currency}."
   home:
     title: "فاكتبوه"
     description: "تتبع الديون الإسلامية بين الأفراد"
