@@ -13,6 +13,7 @@ class NotificationService
         message: I18n.t("notifications.debt_created", creator: creator.full_name, amount: debt.amount, currency: debt.currency),
         debt: debt
       )
+      DebtMailer.debt_created(debt, other_user).deliver_later
     end
 
     def debt_confirmed(debt, confirmer:)
@@ -25,6 +26,7 @@ class NotificationService
         message: I18n.t("notifications.debt_confirmed", confirmer: confirmer.full_name, amount: debt.amount, currency: debt.currency),
         debt: debt
       )
+      DebtMailer.debt_confirmed(debt, creator).deliver_later
     end
 
     def debt_rejected(debt, rejecter:)
@@ -47,6 +49,7 @@ class NotificationService
         message: I18n.t("notifications.payment_submitted", submitter: payment.submitter.full_name, amount: payment.amount, currency: debt.currency),
         debt: debt
       )
+      DebtMailer.payment_submitted(payment, debt.lender).deliver_later
     end
 
     def payment_approved(payment)
@@ -57,6 +60,7 @@ class NotificationService
         message: I18n.t("notifications.payment_approved", amount: payment.amount, currency: debt.currency),
         debt: debt
       )
+      DebtMailer.payment_approved(payment, payment.submitter).deliver_later
     end
 
     def payment_rejected(payment)
@@ -67,6 +71,7 @@ class NotificationService
         message: I18n.t("notifications.payment_rejected", amount: payment.amount, currency: debt.currency, reason: payment.rejection_reason),
         debt: debt
       )
+      DebtMailer.payment_rejected(payment, payment.submitter).deliver_later
     end
 
     def witness_invited(witness)
@@ -78,6 +83,7 @@ class NotificationService
         message: I18n.t("notifications.witness_invited", inviter: creator.full_name, amount: debt.amount, currency: debt.currency),
         debt: debt
       )
+      DebtMailer.witness_invitation(witness).deliver_later
     end
 
     def witness_confirmed(witness)
@@ -114,6 +120,7 @@ class NotificationService
           message: I18n.t("notifications.debt_settled", amount: debt.amount, currency: debt.currency),
           debt: debt
         )
+        DebtMailer.debt_settled(debt, user).deliver_later
       end
     end
 

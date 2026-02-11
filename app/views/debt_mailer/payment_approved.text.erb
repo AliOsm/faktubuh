@@ -1,0 +1,10 @@
+<%= t("debt_mailer.greeting", name: @recipient.full_name) %>
+
+<%= t("debt_mailer.payment_approved.body", amount: @payment.amount, currency: @debt.currency) %>
+
+<%= t("debt_mailer.amount_label") %>: <%= @payment.amount %> <%= @debt.currency %>
+<%= t("debt_mailer.debt_amount_label") %>: <%= @debt.amount %> <%= @debt.currency %>
+
+<%= t("debt_mailer.view_debt") %>: <%= debt_url(@debt) %>
+
+<%= t("debt_mailer.sign_off") %>

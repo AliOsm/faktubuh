@@ -54,6 +54,39 @@ en:
   notifications_page:
     marked_read: "Notification marked as read."
     all_marked_read: "All notifications marked as read."
+  debt_mailer:
+    greeting: "Hello %{name},"
+    sign_off: "— The Faktubuh Team"
+    view_debt: "View Debt Details"
+    amount_label: "Amount"
+    debt_amount_label: "Total Debt"
+    deadline_label: "Deadline"
+    counterparty_label: "Counterparty"
+    debt_created:
+      subject: "New debt created — %{amount} %{currency}"
+      body: "A new debt has been created with %{counterparty}."
+    debt_confirmed:
+      subject: "Debt confirmed — %{amount} %{currency}"
+      body: "The debt with %{counterparty} has been confirmed and is now active."
+    payment_submitted:
+      subject: "Payment submitted — %{amount} %{currency}"
+      body: "%{submitter} submitted a payment of %{amount} %{currency} for your debt."
+    payment_approved:
+      subject: "Payment approved — %{amount} %{currency}"
+      body: "Your payment of %{amount} %{currency} has been approved."
+    payment_rejected:
+      subject: "Payment rejected — %{amount} %{currency}"
+      body: "Your payment of %{amount} %{currency} has been rejected."
+      reason_label: "Reason:"
+    witness_invitation:
+      subject: "Witness invitation — debt of %{amount} %{currency}"
+      body: "%{inviter} has invited you to be a witness for a debt."
+    debt_settled:
+      subject: "Debt settled — %{amount} %{currency}"
+      body: "The debt with %{counterparty} has been fully settled. Congratulations!"
+  date:
+    formats:
+      long: "%B %d, %Y"
   home:
     title: "Faktubuh"
     description: "Peer-to-peer Islamic debt tracking"

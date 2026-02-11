@@ -1,0 +1,20 @@
+<h2><%= t("debt_mailer.greeting", name: @recipient.full_name) %></h2>
+
+<p><%= t("debt_mailer.witness_invitation.body", inviter: @inviter.full_name) %></p>
+
+<table>
+  <tr>
+    <td><strong><%= t("debt_mailer.amount_label") %></strong></td>
+    <td><%= @debt.amount %> <%= @debt.currency %></td>
+  </tr>
+  <tr>
+    <td><strong><%= t("debt_mailer.deadline_label") %></strong></td>
+    <td><%= l(@debt.deadline, format: :long) %></td>
+  </tr>
+</table>
+
+<p>
+  <%= link_to t("debt_mailer.view_debt"), debt_url(@debt) %>
+</p>
+
+<p><%= t("debt_mailer.sign_off") %></p>

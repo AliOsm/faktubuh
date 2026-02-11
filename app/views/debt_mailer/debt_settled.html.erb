@@ -1,0 +1,20 @@
+<h2><%= t("debt_mailer.greeting", name: @recipient.full_name) %></h2>
+
+<p><%= t("debt_mailer.debt_settled.body", counterparty: @counterparty.full_name) %></p>
+
+<table>
+  <tr>
+    <td><strong><%= t("debt_mailer.amount_label") %></strong></td>
+    <td><%= @debt.amount %> <%= @debt.currency %></td>
+  </tr>
+  <tr>
+    <td><strong><%= t("debt_mailer.counterparty_label") %></strong></td>
+    <td><%= @counterparty.full_name %></td>
+  </tr>
+</table>
+
+<p>
+  <%= link_to t("debt_mailer.view_debt"), debt_url(@debt) %>
+</p>
+
+<p><%= t("debt_mailer.sign_off") %></p>

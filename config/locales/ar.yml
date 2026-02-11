@@ -58,6 +58,39 @@ ar:
   notifications_page:
     marked_read: "تم تعليم الإشعار كمقروء."
     all_marked_read: "تم تعليم جميع الإشعارات كمقروءة."
+  debt_mailer:
+    greeting: "مرحبًا %{name}،"
+    sign_off: "— فريق فاكتبوه"
+    view_debt: "عرض تفاصيل الدين"
+    amount_label: "المبلغ"
+    debt_amount_label: "إجمالي الدين"
+    deadline_label: "الموعد النهائي"
+    counterparty_label: "الطرف الآخر"
+    debt_created:
+      subject: "تم إنشاء دين جديد — %{amount} %{currency}"
+      body: "تم إنشاء دين جديد مع %{counterparty}."
+    debt_confirmed:
+      subject: "تم تأكيد الدين — %{amount} %{currency}"
+      body: "تم تأكيد الدين مع %{counterparty} وهو الآن نشط."
+    payment_submitted:
+      subject: "تم تقديم دفعة — %{amount} %{currency}"
+      body: "قام %{submitter} بتقديم دفعة بقيمة %{amount} %{currency} لدينك."
+    payment_approved:
+      subject: "تمت الموافقة على الدفعة — %{amount} %{currency}"
+      body: "تمت الموافقة على دفعتك بقيمة %{amount} %{currency}."
+    payment_rejected:
+      subject: "تم رفض الدفعة — %{amount} %{currency}"
+      body: "تم رفض دفعتك بقيمة %{amount} %{currency}."
+      reason_label: "السبب:"
+    witness_invitation:
+      subject: "دعوة شهادة — دين بقيمة %{amount} %{currency}"
+      body: "قام %{inviter} بدعوتك لتكون شاهدًا على دين."
+    debt_settled:
+      subject: "تم تسديد الدين — %{amount} %{currency}"
+      body: "تم تسديد الدين مع %{counterparty} بالكامل. تهانينا!"
+  date:
+    formats:
+      long: "%d %B %Y"
   home:
     title: "فاكتبوه"
     description: "تتبع الديون الإسلامية بين الأفراد"

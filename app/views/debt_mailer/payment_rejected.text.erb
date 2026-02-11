@@ -1,0 +1,14 @@
+<%= t("debt_mailer.greeting", name: @recipient.full_name) %>
+
+<%= t("debt_mailer.payment_rejected.body", amount: @payment.amount, currency: @debt.currency) %>
+
+<% if @payment.rejection_reason.present? %>
+<%= t("debt_mailer.payment_rejected.reason_label") %> <%= @payment.rejection_reason %>
+<% end %>
+
+<%= t("debt_mailer.amount_label") %>: <%= @payment.amount %> <%= @debt.currency %>
+<%= t("debt_mailer.debt_amount_label") %>: <%= @debt.amount %> <%= @debt.currency %>
+
+<%= t("debt_mailer.view_debt") %>: <%= debt_url(@debt) %>
+
+<%= t("debt_mailer.sign_off") %>
