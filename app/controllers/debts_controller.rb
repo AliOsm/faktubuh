@@ -27,7 +27,9 @@ class DebtsController < InertiaController
       witnesses: @debt.witnesses.includes(:user).map { |w| witness_json(w) },
       current_user_id: current_user.id,
       is_confirming_party: confirming_party?,
-      is_creator: creator_user(@debt)&.id == current_user.id
+      is_creator: creator_user(@debt)&.id == current_user.id,
+      is_borrower: borrower_for_debt?,
+      remaining_balance: remaining_balance.to_f
     }
   end
 
@@ -190,6 +192,19 @@ class DebtsController < InertiaController
     elsif debt.mutual?
       notify_other_party(debt)
     end
+  end
+
+  def borrower_for_debt?
+    if @debt.mutual?
+      @debt.borrower_id == current_user.id
+    else
+      # Personal mode: the creator (lender_id) can submit payments
+      @debt.lender_id == current_user.id
+    end
+  end
+
+  def remaining_balance
+    @debt.amount - @debt.payments.approved.sum(:amount)
   end
 
   def creator_user(debt)

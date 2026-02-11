@@ -187,7 +187,21 @@
       "description": "Description",
       "submitted_by": "Submitted by",
       "rejection_reason": "Rejection reason",
-      "no_payments": "No payments recorded"
+      "no_payments": "No payments recorded",
+      "submit_payment": "Submit Payment",
+      "submit_dialog_title": "Submit a Payment",
+      "submit_dialog_description": "Record a payment for this debt.",
+      "payment_amount": "Payment Amount",
+      "payment_amount_placeholder": "0.00",
+      "payment_date": "Payment Date",
+      "payment_description": "Description (optional)",
+      "payment_description_placeholder": "Add a note about this payment...",
+      "link_installment": "Link to Installment (optional)",
+      "no_installment": "None",
+      "submitting": "Submitting...",
+      "amount_positive": "Amount must be greater than zero",
+      "amount_exceeds_balance": "Amount exceeds remaining balance of {{remaining}}",
+      "remaining_balance": "Remaining: {{amount}} {{currency}}"
     },
     "witnesses": {
       "title": "Witnesses",

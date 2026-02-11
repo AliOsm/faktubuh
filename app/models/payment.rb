@@ -11,4 +11,14 @@ class Payment < ApplicationRecord
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :submitted_at, presence: true
+  validate :amount_within_remaining_balance, on: :create
+
+  private
+
+  def amount_within_remaining_balance
+    return unless debt && amount.present? && amount.positive?
+
+    remaining = debt.amount - debt.payments.approved.sum(:amount)
+    errors.add(:amount, "exceeds remaining balance of #{remaining}") if amount > remaining
+  end
 end

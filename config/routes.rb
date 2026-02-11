@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       post :confirm
       post :reject
     end
+    resources :payments, only: %i[create]
   end
 
   get "users/lookup", to: "users#lookup"

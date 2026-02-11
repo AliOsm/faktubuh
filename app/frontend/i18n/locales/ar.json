@@ -187,7 +187,21 @@
       "description": "الوصف",
       "submitted_by": "مقدم من",
       "rejection_reason": "سبب الرفض",
-      "no_payments": "لا توجد مدفوعات مسجلة"
+      "no_payments": "لا توجد مدفوعات مسجلة",
+      "submit_payment": "تقديم دفعة",
+      "submit_dialog_title": "تقديم دفعة",
+      "submit_dialog_description": "سجل دفعة لهذا الدين.",
+      "payment_amount": "مبلغ الدفعة",
+      "payment_amount_placeholder": "0.00",
+      "payment_date": "تاريخ الدفعة",
+      "payment_description": "الوصف (اختياري)",
+      "payment_description_placeholder": "أضف ملاحظة حول هذه الدفعة...",
+      "link_installment": "ربط بقسط (اختياري)",
+      "no_installment": "بدون",
+      "submitting": "جارٍ التقديم...",
+      "amount_positive": "يجب أن يكون المبلغ أكبر من صفر",
+      "amount_exceeds_balance": "المبلغ يتجاوز الرصيد المتبقي {{remaining}}",
+      "remaining_balance": "المتبقي: {{amount}} {{currency}}"
     },
     "witnesses": {
       "title": "الشهود",

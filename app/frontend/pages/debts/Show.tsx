@@ -1,5 +1,16 @@
 import { Head, router, usePage } from '@inertiajs/react'
-import { AlertTriangle, Calendar, CheckCircle, Clock, CreditCard, FileText, Shield, Users, XCircle } from 'lucide-react'
+import {
+  AlertTriangle,
+  Calendar,
+  CheckCircle,
+  Clock,
+  CreditCard,
+  FileText,
+  Plus,
+  Shield,
+  Users,
+  XCircle
+} from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -7,6 +18,19 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 import AppLayout from '@/layouts/app-layout'
 import { cn } from '@/lib/utils'
 import type { SharedData } from '@/types'
@@ -67,6 +91,8 @@ interface ShowProps {
   current_user_id: number
   is_confirming_party: boolean
   is_creator: boolean
+  is_borrower: boolean
+  remaining_balance: number
   [key: string]: unknown
 }
 
@@ -276,7 +302,169 @@ function AwaitingConfirmation({ debt }: { debt: DebtData }) {
   )
 }
 
-export default function Show({ debt, installments, payments, witnesses, is_confirming_party, is_creator }: ShowProps) {
+function SubmitPaymentDialog({
+  debt,
+  installments,
+  remainingBalance
+}: {
+  debt: DebtData
+  installments: InstallmentData[]
+  remainingBalance: number
+}) {
+  const { t } = useTranslation()
+  const [open, setOpen] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [amount, setAmount] = useState('')
+  const [description, setDescription] = useState('')
+  const [installmentId, setInstallmentId] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  function resetForm() {
+    setAmount('')
+    setDescription('')
+    setInstallmentId('')
+    setErrors({})
+  }
+
+  function validate(): boolean {
+    const newErrors: Record<string, string> = {}
+    const numAmount = parseFloat(amount)
+
+    if (!amount || numAmount <= 0) {
+      newErrors.amount = t('debt_detail.payments.amount_positive')
+    } else if (numAmount > remainingBalance) {
+      newErrors.amount = t('debt_detail.payments.amount_exceeds_balance', {
+        remaining: remainingBalance.toLocaleString()
+      })
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  function handleSubmit() {
+    if (!validate()) return
+
+    setSubmitting(true)
+    router.post(
+      `/debts/${debt.id}/payments`,
+      {
+        payment: {
+          amount: parseFloat(amount),
+          description: description || null,
+          installment_id: installmentId && installmentId !== 'none' ? installmentId : null
+        }
+      },
+      {
+        onSuccess: () => {
+          setOpen(false)
+          resetForm()
+        },
+        onFinish: () => setSubmitting(false)
+      }
+    )
+  }
+
+  const upcomingInstallments = installments.filter((i) => i.status === 'upcoming' || i.status === 'overdue')
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen)
+        if (!isOpen) resetForm()
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button>
+          <Plus className="size-4 ltr:mr-2 rtl:ml-2" />
+          {t('debt_detail.payments.submit_payment')}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t('debt_detail.payments.submit_dialog_title')}</DialogTitle>
+          <DialogDescription>{t('debt_detail.payments.submit_dialog_description')}</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            {t('debt_detail.payments.remaining_balance', {
+              amount: remainingBalance.toLocaleString(),
+              currency: debt.currency
+            })}
+          </p>
+          <div className="space-y-2">
+            <Label htmlFor="payment-amount">{t('debt_detail.payments.payment_amount')}</Label>
+            <Input
+              id="payment-amount"
+              type="number"
+              step="0.01"
+              min="0.01"
+              max={remainingBalance}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder={t('debt_detail.payments.payment_amount_placeholder')}
+            />
+            {errors.amount && <p className="text-sm text-red-600">{errors.amount}</p>}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="payment-description">{t('debt_detail.payments.payment_description')}</Label>
+            <Textarea
+              id="payment-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={t('debt_detail.payments.payment_description_placeholder')}
+              rows={2}
+            />
+          </div>
+          {upcomingInstallments.length > 0 && (
+            <div className="space-y-2">
+              <Label htmlFor="payment-installment">{t('debt_detail.payments.link_installment')}</Label>
+              <Select
+                value={installmentId}
+                onValueChange={setInstallmentId}
+              >
+                <SelectTrigger id="payment-installment">
+                  <SelectValue placeholder={t('debt_detail.payments.no_installment')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">{t('debt_detail.payments.no_installment')}</SelectItem>
+                  {upcomingInstallments.map((inst) => (
+                    <SelectItem
+                      key={inst.id}
+                      value={String(inst.id)}
+                    >
+                      {inst.amount.toLocaleString()} {debt.currency} — {formatDate(inst.due_date)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          <Button
+            onClick={handleSubmit}
+            disabled={submitting}
+          >
+            {submitting ? t('debt_detail.payments.submitting') : t('debt_detail.payments.submit_payment')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export default function Show({
+  debt,
+  installments,
+  payments,
+  witnesses,
+  is_confirming_party,
+  is_creator,
+  is_borrower,
+  remaining_balance
+}: ShowProps) {
   const { t } = useTranslation()
   const { flash } = usePage<SharedData>().props
 
@@ -404,10 +592,19 @@ export default function Show({ debt, installments, payments, witnesses, is_confi
         {/* Payment History */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CreditCard className="size-5" />
-              {t('debt_detail.payments.title')}
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="size-5" />
+                {t('debt_detail.payments.title')}
+              </CardTitle>
+              {debt.status === 'active' && is_borrower && remaining_balance > 0 && (
+                <SubmitPaymentDialog
+                  debt={debt}
+                  installments={installments}
+                  remainingBalance={remaining_balance}
+                />
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {payments.length === 0 ? (

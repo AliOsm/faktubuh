@@ -24,10 +24,15 @@ ar:
     unauthorized: "ليس لديك صلاحية لعرض هذا الدين."
     already_processed: "تم معالجة هذا الدين بالفعل."
     not_confirming_party: "ليس لديك صلاحية لتأكيد أو رفض هذا الدين."
+  payments:
+    submitted: "تم تقديم الدفعة بنجاح."
+    debt_not_active: "لا يمكن تقديم مدفوعات إلا على الديون النشطة."
+    not_borrower: "فقط المقترض يمكنه تقديم مدفوعات."
   notifications:
     debt_created: "قام %{creator} بإنشاء دين بقيمة %{amount} %{currency} معك."
     debt_confirmed: "قام %{confirmer} بتأكيد الدين بقيمة %{amount} %{currency}."
     debt_rejected: "قام %{rejecter} برفض الدين بقيمة %{amount} %{currency}."
+    payment_submitted: "قام %{submitter} بتقديم دفعة بقيمة %{amount} %{currency}."
   home:
     title: "فاكتبوه"
     description: "تتبع الديون الإسلامية بين الأفراد"

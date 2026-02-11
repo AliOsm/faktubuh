@@ -20,10 +20,15 @@ en:
     unauthorized: "You are not authorized to view this debt."
     already_processed: "This debt has already been processed."
     not_confirming_party: "You are not authorized to confirm or reject this debt."
+  payments:
+    submitted: "Payment submitted successfully."
+    debt_not_active: "Payments can only be submitted on active debts."
+    not_borrower: "Only the borrower can submit payments."
   notifications:
     debt_created: "%{creator} created a debt for %{amount} %{currency} with you."
     debt_confirmed: "%{confirmer} confirmed the debt for %{amount} %{currency}."
     debt_rejected: "%{rejecter} rejected the debt for %{amount} %{currency}."
+    payment_submitted: "%{submitter} submitted a payment of %{amount} %{currency}."
   home:
     title: "Faktubuh"
     description: "Peer-to-peer Islamic debt tracking"
