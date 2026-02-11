@@ -66,6 +66,9 @@
 - User also has_many: :payments (foreign_key: :submitter_id), :witnesses, :notifications (all dependent: :destroy)
 - Models with PostgreSQL enums: Installment (:status), Payment (:status), Witness (:status) — each with their own enum type
 - Notification uses plain string for notification_type (not PG enum) — types may grow dynamically
+- UsersController at app/controllers/users_controller.rb — GET /users/lookup?personal_id=... returns JSON {id, full_name} or 404
+- oxlint jsx-a11y/label-has-associated-control requires `<label htmlFor>` with matching `id` on form controls (e.g., RadioGroupItem)
+- Force Vite test rebuild with `RAILS_ENV=test bin/vite build --force` when manifest becomes stale
 ---
 
 ## 2026-02-11 - US-014
@@ -258,4 +261,16 @@
   - SelectableCard pattern: button with border-2, conditional border-primary + bg-primary/5 + checkmark for selected state
   - Ayat al-Dayn verse text is always displayed in Arabic script regardless of UI language — only the translation changes via i18n
   - oxfmt auto-formats JSX — run `yarn format` before committing new .tsx files
+---
+
+## 2026-02-11 - US-019
+- What was implemented: Built Step 3 of the debt creation multi-step form with counterparty, amount, currency, deadline, description, and installment type fields. Created UsersController with GET /users/lookup?personal_id=... endpoint that returns {id, full_name} or 404. Added the route. Mutual mode shows a Personal ID input that auto-looks up the user when 6 characters are entered (shows name on success, error on failure, with loading/success/error icons). Personal mode shows a free-text counterparty name input. Amount field is a numeric input (step 0.01). Currency selector uses shadcn Select with 31 currencies (International + Arab/Islamic) in "CODE — Name" format. Deadline is a date input with min set to tomorrow. Description is an optional textarea. Installment type uses a radio group with 6 options (lump_sum, monthly, bi_weekly, quarterly, yearly, custom_split), each with a description. Client-side validation: amount > 0, deadline in future, counterparty fields required per mode. Installed shadcn textarea and radio-group components. All text translated (en/ar). Back button returns to Step 2.
+- Files changed: app/controllers/users_controller.rb (new), app/frontend/pages/debts/new.tsx (modified), app/frontend/components/ui/textarea.tsx (new), app/frontend/components/ui/radio-group.tsx (new), app/frontend/i18n/locales/en.json (modified), app/frontend/i18n/locales/ar.json (modified), config/routes.rb (modified)
+- **Learnings for future iterations:**
+  - UsersController lookup endpoint returns JSON (not Inertia) — uses `render json:` for API-like responses and `head :not_found` for 404
+  - Personal ID lookup auto-triggers on 6 characters via onChange handler — no submit button needed
+  - shadcn RadioGroup uses `RadioGroupItem` with `id` prop and `<label htmlFor>` to satisfy jsx-a11y/label-has-associated-control rule
+  - The `onBack` from Step 3 goes back to Step 2 (mode selection) — mode state is preserved, no reset needed
+  - Currency list is hardcoded as a const array — 31 currencies covering international and Arab/Islamic markets
+  - Form submission stub (handleSubmit) only validates — actual POST /debts is wired in US-020
 ---

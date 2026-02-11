@@ -404,7 +404,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 19,
-      "passes": false,
+      "passes": true,
       "notes": "Form submission (POST /debts) is implemented in US-020. This story builds the UI and lookup endpoint."
     },
     {
