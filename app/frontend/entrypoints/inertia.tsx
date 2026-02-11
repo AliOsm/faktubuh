@@ -3,6 +3,7 @@ import { createInertiaApp } from "@inertiajs/react"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 
+import i18n from "@/i18n/config"
 import PersistentLayout from "@/layouts/persistent-layout"
 
 const appName = import.meta.env.VITE_APP_NAME ?? "Faktubuh"
@@ -28,6 +29,12 @@ void createInertiaApp({
   },
 
   setup({ el, App, props }) {
+    const locale =
+      (props.initialPage.props.locale as string | undefined) ?? "en"
+    i18n.changeLanguage(locale)
+    document.documentElement.lang = locale
+    document.documentElement.dir = locale === "ar" ? "rtl" : "ltr"
+
     createRoot(el).render(
       <StrictMode>
         <App {...props} />

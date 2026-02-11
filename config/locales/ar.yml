@@ -1,0 +1,16 @@
+ar:
+  app_name: "فاكتبوه"
+  common:
+    save: "حفظ"
+    cancel: "إلغاء"
+    loading: "جارٍ التحميل..."
+    submit: "إرسال"
+    confirm: "تأكيد"
+    reject: "رفض"
+    delete: "حذف"
+    edit: "تعديل"
+    back: "رجوع"
+    next: "التالي"
+  home:
+    title: "فاكتبوه"
+    description: "تتبع الديون الإسلامية بين الأفراد"

@@ -1,0 +1,42 @@
+{
+  "app": {
+    "name": "Faktubuh",
+    "description": "Peer-to-peer Islamic debt tracking"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "reject": "Reject",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "search": "Search",
+    "yes": "Yes",
+    "no": "No",
+    "error": "Error",
+    "success": "Success"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "my_debts": "My Debts",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "Faktubuh",
+    "subtitle": "Peer-to-peer Islamic debt tracking",
+    "description": "Track and manage debts with transparency and trust.",
+    "get_started": "Get Started"
+  },
+  "language": {
+    "toggle": "العربية",
+    "english": "English",
+    "arabic": "العربية"
+  }
+}

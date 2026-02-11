@@ -1,0 +1,42 @@
+{
+  "app": {
+    "name": "فاكتبوه",
+    "description": "تتبع الديون الإسلامية بين الأفراد"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "loading": "جارٍ التحميل...",
+    "submit": "إرسال",
+    "confirm": "تأكيد",
+    "reject": "رفض",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "back": "رجوع",
+    "next": "التالي",
+    "close": "إغلاق",
+    "search": "بحث",
+    "yes": "نعم",
+    "no": "لا",
+    "error": "خطأ",
+    "success": "نجاح"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "my_debts": "ديوني",
+    "notifications": "الإشعارات",
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل الخروج"
+  },
+  "home": {
+    "title": "فاكتبوه",
+    "subtitle": "تتبع الديون الإسلامية بين الأفراد",
+    "description": "تتبع وإدارة الديون بشفافية وثقة.",
+    "get_started": "ابدأ الآن"
+  },
+  "language": {
+    "toggle": "English",
+    "english": "English",
+    "arabic": "العربية"
+  }
+}
