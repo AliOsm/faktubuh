@@ -72,6 +72,10 @@
 - Personal mode debts: `lender_id` is always set to current_user (NOT NULL DB constraint). `creator_role` tracks the user's actual role. `counterparty_name` is the other party.
 - DebtsController#create redirect with errors: `redirect_to new_debt_path, inertia: { errors: @debt.errors.to_hash(true) }` — errors keyed by attribute name with array of messages
 - Inertia server errors in React: use `usePage().props` cast through `unknown` to avoid TS error with `Errors & ErrorBag` type
+- DebtsController#show uses `render inertia: "debts/Show"` with explicit `props:` hash — does NOT use `default_render` since it needs to serialize associations
+- Debt authorization: `before_action` checks lender_id, borrower_id, or confirmed witness. Redirect to debts_path with alert flash on unauthorized
+- Third test user fixture: `users(:three)` with personal_id GHJ789 — used for unauthorized access and witness tests
+- Confirmed witness fixture: `witnesses(:confirmed_witness)` on personal_debt with user: three
 ---
 
 ## 2026-02-11 - US-014
@@ -287,4 +291,16 @@
   - Inertia server errors in React: cast `usePage().props` through `unknown` first to avoid TS error with `Errors & ErrorBag` type: `(props as unknown as { errors?: Record<string, string[]> }).errors`
   - `router.post` in Inertia sends form data — nest under `debt: { ... }` key to match Rails strong parameters
   - For mutual debts, `counterparty_personal_id` is sent as a non-permitted param (not in strong params) and accessed directly via `params[:debt][:counterparty_personal_id]` in the controller
+---
+
+## 2026-02-11 - US-021
+- What was implemented: Built debt detail page with full status display, installment schedule, payment history, and witness section. Enhanced DebtsController#show with authorization (before_action) checking lender, borrower, or confirmed witness access — unauthorized users redirected to debts_path with alert flash. Show action explicitly renders `debts/Show` Inertia component with serialized props: debt overview (mode, status, amount, currency, deadline, installment type, lender/borrower names), installments (ordered by due_date), payments (with submitter name, rejection reason), and witnesses (with status). Created pages/debts/Show.tsx with status badges (color-coded per status), debt overview card (lender, borrower, amount, deadline, installment type, description, created date), installment table (with overdue highlighting in red), payment history list (with rejection reason display), witness list (with status badges), Quranic witness reminder (strong for personal mode, standard for mutual, hidden when confirmed witnesses exist), and Ayat al-Dayn verse banner. Added i18n translations for entire debt detail page in en.json and ar.json. Added `debts.unauthorized` translations in en.yml and ar.yml. Added third user fixture (`users(:three)`) and confirmed witness fixture for test coverage. Wrote 4 controller tests: lender can view, borrower can view, unauthorized user redirected, confirmed witness can view.
+- Files changed: app/controllers/debts_controller.rb (modified), app/frontend/pages/debts/Show.tsx (new), app/frontend/i18n/locales/en.json (modified), app/frontend/i18n/locales/ar.json (modified), config/locales/en.yml (modified), config/locales/ar.yml (modified), test/controllers/debts_controller_test.rb (modified), test/fixtures/users.yml (modified), test/fixtures/witnesses.yml (modified)
+- **Learnings for future iterations:**
+  - DebtsController#show cannot rely on `default_render: true` when it needs to serialize associations — must use explicit `render inertia:` with `props:` hash
+  - Authorization check uses `before_action` pattern with redirect instead of raising exceptions — consistent with InertiaController redirect-based error handling
+  - Confirmed witnesses are checked via `@debt.witnesses.confirmed.exists?(user_id: current_user.id)` — uses the enum scope from the Witness model
+  - Show.tsx page component naming: `render inertia: "debts/Show"` maps to `pages/debts/Show.tsx` — capital S matters
+  - Installment overdue detection on frontend: compare due_date with today's date for `upcoming` status installments that are past their due date
+  - StatusBadge component uses a variants map for color-coded badges — reusable pattern for consistent status display across pages
 ---
