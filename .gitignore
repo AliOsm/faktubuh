@@ -495,3 +495,9 @@ $RECYCLE.BIN/
 # .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/ruby,linux,macos,rails,dotenv,windows,rubymine,rubymine+all,rubymine+iml,yarn
+
+prompts/
+ralph/
+tasks/
+prd.json
+progress.txt
