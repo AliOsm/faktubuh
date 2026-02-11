@@ -1,18 +1,15 @@
 import { useTranslation } from 'react-i18next'
 
-import LanguageToggle from '@/components/language-toggle'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import AppLayout from '@/layouts/app-layout'
 
-export default function Home() {
+function Home() {
   const { t } = useTranslation()
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <div className="self-end p-4">
-        <LanguageToggle />
-      </div>
-      <Card className="w-[380px]">
+    <div className="flex flex-col items-center justify-center gap-4 py-12">
+      <Card className="w-full max-w-[380px]">
         <CardHeader>
           <CardTitle className="text-2xl">{t('home.title')}</CardTitle>
           <CardDescription>{t('home.subtitle')}</CardDescription>
@@ -25,3 +22,7 @@ export default function Home() {
     </div>
   )
 }
+
+Home.layout = (page: React.ReactNode) => <AppLayout>{page}</AppLayout>
+
+export default Home

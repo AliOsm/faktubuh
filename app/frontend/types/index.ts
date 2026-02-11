@@ -13,10 +13,11 @@ export interface Auth {
 }
 
 export interface SharedData {
-  auth: Auth
+  auth?: Auth
   locale: string
   flash?: {
     notice?: string
     alert?: string
   }
+  [key: string]: unknown
 }

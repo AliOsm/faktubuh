@@ -26,7 +26,8 @@
     "my_debts": "ديوني",
     "notifications": "الإشعارات",
     "profile": "الملف الشخصي",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "open_menu": "فتح القائمة"
   },
   "home": {
     "title": "فاكتبوه",

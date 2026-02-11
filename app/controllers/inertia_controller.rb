@@ -7,6 +7,9 @@ class InertiaController < ApplicationController
 
   inertia_share do
     {
+      auth: if current_user
+              { user: current_user.as_json(only: %i[id full_name email personal_id]) }
+            end,
       locale: I18n.locale.to_s,
       flash: {
         notice: flash[:notice],
