@@ -113,6 +113,7 @@
     "new_debt": "New Debt",
     "empty": "No debts match your filters. Try adjusting your search or create a new debt.",
     "showing": "{{count}} debts",
+    "archive": "Archive",
     "status": {
       "pending": "Pending",
       "active": "Active",
@@ -326,6 +327,14 @@
       "confirming": "Confirming...",
       "rejecting": "Rejecting...",
       "awaiting": "Awaiting confirmation from {{name}}"
+    },
+    "settlement": {
+      "title": "Debt Settled",
+      "message": "This debt has been fully settled. All records are preserved for reference.",
+      "ayat_verse": "فَإِنْ أَمِنَ بَعْضُكُم بَعْضًا فَلْيُؤَدِّ الَّذِي اؤْتُمِنَ أَمَانَتَهُ وَلْيَتَّقِ اللَّهَ رَبَّهُ",
+      "ayat_translation": "But if one of you entrusts another, then let him who is entrusted fulfill his trust, and let him fear Allah, his Lord.",
+      "ayat_reference": "Surah Al-Baqarah 2:283",
+      "read_only": "This debt is settled and read-only."
     },
     "witness_reminder": {
       "strong": "According to Ayat al-Dayn (2:282), it is strongly recommended to have witnesses for this debt. Consider inviting witnesses for proper documentation.",

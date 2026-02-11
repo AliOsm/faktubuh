@@ -314,4 +314,24 @@ class DebtsControllerTest < ActionDispatch::IntegrationTest
     assert_nil debt.upgrade_recipient_id
     assert_redirected_to debt_path(debt)
   end
+
+  # --- US-033: settlement and archive tests ---
+
+  test "settled debt show page renders successfully — read-only" do
+    debt = debts(:mutual_debt)
+    debt.update!(status: "settled")
+
+    get debt_url(debt)
+    assert_response :success
+  end
+
+  test "witness can view settled debt" do
+    debt = debts(:personal_debt)
+    debt.update!(status: "settled")
+
+    witness_user = users(:three)
+    sign_in witness_user
+    get debt_url(debt)
+    assert_response :success
+  end
 end

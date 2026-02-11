@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react'
-import { ArrowRight, Filter, Plus } from 'lucide-react'
+import { Archive, ArrowRight, Filter, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Badge } from '@/components/ui/badge'
@@ -127,6 +127,15 @@ export default function Index({ debts, filters }: IndexProps) {
               </SelectContent>
             </Select>
 
+            <Button
+              variant={filters.status === 'settled' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => updateFilters('status', filters.status === 'settled' ? 'all' : 'settled')}
+            >
+              <Archive className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+              {t('debts_list.archive')}
+            </Button>
+
             <Select
               value={filters.mode}
               onValueChange={(v) => updateFilters('mode', v)}
@@ -197,11 +206,19 @@ export default function Index({ debts, filters }: IndexProps) {
                 <Link
                   key={debt.id}
                   href={`/debts/${debt.id}`}
-                  className="flex items-center justify-between rounded-md border p-4 transition-colors hover:bg-accent"
+                  className={cn(
+                    'flex items-center justify-between rounded-md border p-4 transition-colors hover:bg-accent',
+                    debt.status === 'settled' && 'border-muted bg-muted/30 opacity-75'
+                  )}
                 >
                   <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-medium">{debt.counterparty_name}</p>
+                      <p className={cn('truncate font-medium', debt.status === 'settled' && 'text-muted-foreground')}>
+                        {debt.status === 'settled' && (
+                          <Archive className="mb-0.5 inline-block size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+                        )}
+                        {debt.counterparty_name}
+                      </p>
                       <p className="text-sm text-muted-foreground">
                         {debt.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}{' '}
                         {debt.currency}

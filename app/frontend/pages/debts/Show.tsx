@@ -1,6 +1,7 @@
 import { Head, router, usePage } from '@inertiajs/react'
 import {
   AlertTriangle,
+  Archive,
   ArrowUpCircle,
   Calendar,
   CheckCircle,
@@ -870,6 +871,38 @@ function AwaitingUpgrade({ name }: { name: string }) {
   )
 }
 
+function SettlementBanner() {
+  const { t } = useTranslation()
+
+  return (
+    <Card className="border-green-200 bg-green-50">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex items-start gap-3">
+          <CheckCircle className="mt-0.5 size-5 shrink-0 text-green-600" />
+          <div className="flex-1">
+            <h3 className="font-semibold text-green-900">{t('debt_detail.settlement.title')}</h3>
+            <p className="mt-1 text-sm text-green-800">{t('debt_detail.settlement.message')}</p>
+            <div className="mt-3 rounded-md border border-green-200 bg-white/60 p-3">
+              <p
+                className="text-center font-arabic text-sm leading-relaxed text-green-900"
+                dir="rtl"
+              >
+                {t('debt_detail.settlement.ayat_verse')}
+              </p>
+              <p className="mt-1.5 text-center text-xs text-green-700">
+                {t('debt_detail.settlement.ayat_translation')}
+              </p>
+              <p className="mt-0.5 text-center text-xs text-green-600/70">
+                {t('debt_detail.settlement.ayat_reference')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 function WitnessActions({ debt, witnessId }: { debt: DebtData; witnessId: number }) {
   const { t } = useTranslation()
   const [processing, setProcessing] = useState<'confirm' | 'decline' | null>(null)
@@ -956,7 +989,19 @@ export default function Show({
           <h1 className="text-2xl font-bold">{t('debt_detail.title')}</h1>
           <StatusBadge status={debt.status} />
           <Badge variant="secondary">{t(`debt_detail.mode.${debt.mode}`)}</Badge>
+          {debt.status === 'settled' && (
+            <Badge
+              variant="outline"
+              className="border-muted-foreground/30 text-muted-foreground"
+            >
+              <Archive className="size-3 ltr:mr-1 rtl:ml-1" />
+              {t('debt_detail.settlement.read_only')}
+            </Badge>
+          )}
         </div>
+
+        {/* Settlement Banner */}
+        {debt.status === 'settled' && <SettlementBanner />}
 
         {/* Confirmation Banner / Awaiting Message */}
         {debt.status === 'pending' && is_confirming_party && <ConfirmationBanner debt={debt} />}
@@ -1126,12 +1171,15 @@ export default function Show({
                         {t('debt_detail.payments.rejection_reason')}: {payment.rejection_reason}
                       </p>
                     )}
-                    {payment.status === 'pending' && is_lender && debt.mode === 'mutual' && (
-                      <PaymentActions
-                        debt={debt}
-                        payment={payment}
-                      />
-                    )}
+                    {payment.status === 'pending' &&
+                      is_lender &&
+                      debt.mode === 'mutual' &&
+                      debt.status !== 'settled' && (
+                        <PaymentActions
+                          debt={debt}
+                          payment={payment}
+                        />
+                      )}
                   </div>
                 ))}
               </div>
@@ -1181,10 +1229,12 @@ export default function Show({
                 witnessCount={witnesses.length}
               />
             )}
-            <WitnessReminder
-              mode={debt.mode}
-              witnesses={witnesses}
-            />
+            {debt.status !== 'settled' && (
+              <WitnessReminder
+                mode={debt.mode}
+                witnesses={witnesses}
+              />
+            )}
           </CardContent>
         </Card>
 

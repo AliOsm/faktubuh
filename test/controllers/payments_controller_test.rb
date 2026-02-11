@@ -195,4 +195,19 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
     pending_payment.reload
     assert_equal "pending", pending_payment.status
   end
+
+  # --- US-033: cannot submit payment on settled debt ---
+
+  test "cannot submit payment on settled debt" do
+    sign_in @borrower
+    @mutual_debt.update!(status: "settled")
+
+    assert_no_difference "Payment.count" do
+      post debt_payments_url(@mutual_debt), params: {
+        payment: { amount: 100.00 }
+      }
+    end
+
+    assert_redirected_to debt_path(@mutual_debt)
+  end
 end

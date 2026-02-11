@@ -147,4 +147,19 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to debt_path(@personal_debt)
   end
+
+  # --- US-033: cannot add witness to settled debt ---
+
+  test "cannot add witness to settled debt" do
+    sign_in @lender
+    @mutual_debt.update!(status: "settled")
+
+    assert_no_difference "Witness.count" do
+      post debt_witnesses_url(@mutual_debt), params: {
+        witness: { personal_id: @witness_user.personal_id }
+      }
+    end
+
+    assert_redirected_to debt_path(@mutual_debt)
+  end
 end
