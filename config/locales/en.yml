@@ -51,6 +51,9 @@ en:
     witness_invited: "%{inviter} invited you as a witness for a debt of %{amount} %{currency}."
     witness_confirmed: "%{witness} accepted the witness invitation for your debt of %{amount} %{currency}."
     witness_declined: "%{witness} declined the witness invitation for your debt of %{amount} %{currency}."
+  notifications_page:
+    marked_read: "Notification marked as read."
+    all_marked_read: "All notifications marked as read."
   home:
     title: "Faktubuh"
     description: "Peer-to-peer Islamic debt tracking"

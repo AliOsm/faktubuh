@@ -33,6 +33,15 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :notifications, only: %i[index] do
+    member do
+      post :mark_read
+    end
+    collection do
+      post :mark_all_read
+    end
+  end
+
   get "users/lookup", to: "users#lookup"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

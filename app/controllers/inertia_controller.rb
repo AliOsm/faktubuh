@@ -14,7 +14,8 @@ class InertiaController < ApplicationController
       flash: {
         notice: flash[:notice],
         alert: flash[:alert]
-      }
+      },
+      unread_notifications_count: current_user&.notifications&.unread&.count || 0
     }
   end
 end

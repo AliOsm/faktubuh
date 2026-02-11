@@ -44,7 +44,7 @@ class DebtsController < InertiaController
 
     @debt.update!(status: "active")
     InstallmentScheduleGenerator.new(@debt).generate!
-    notify_confirmation(@debt)
+    NotificationService.debt_confirmed(@debt, confirmer: current_user)
 
     redirect_to debt_path(@debt), notice: I18n.t("debts.confirmed")
   end
@@ -56,7 +56,7 @@ class DebtsController < InertiaController
     end
 
     @debt.update!(status: "rejected")
-    notify_rejection(@debt)
+    NotificationService.debt_rejected(@debt, rejecter: current_user)
 
     redirect_to debt_path(@debt), notice: I18n.t("debts.rejected")
   end
@@ -204,7 +204,7 @@ class DebtsController < InertiaController
     if debt.personal?
       InstallmentScheduleGenerator.new(debt).generate!
     elsif debt.mutual?
-      notify_other_party(debt)
+      NotificationService.debt_created(debt)
     end
   end
 
@@ -234,36 +234,6 @@ class DebtsController < InertiaController
 
   def creator_user(debt)
     debt.creator_role_lender? ? debt.lender : debt.borrower
-  end
-
-  def notify_confirmation(debt)
-    Notification.create!(
-      user: creator_user(debt),
-      notification_type: "debt_confirmed",
-      message: I18n.t("notifications.debt_confirmed", confirmer: current_user.full_name, amount: debt.amount, currency: debt.currency),
-      debt: debt
-    )
-  end
-
-  def notify_rejection(debt)
-    Notification.create!(
-      user: creator_user(debt),
-      notification_type: "debt_rejected",
-      message: I18n.t("notifications.debt_rejected", rejecter: current_user.full_name, amount: debt.amount, currency: debt.currency),
-      debt: debt
-    )
-  end
-
-  def notify_other_party(debt)
-    other_user = debt.creator_role_lender? ? debt.borrower : debt.lender
-    return unless other_user
-
-    Notification.create!(
-      user: other_user,
-      notification_type: "debt_created",
-      message: I18n.t("notifications.debt_created", creator: current_user.full_name, amount: debt.amount, currency: debt.currency),
-      debt: debt
-    )
   end
 
   # --- index helpers ---

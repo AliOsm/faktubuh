@@ -31,21 +31,21 @@ class WitnessesController < InertiaController
     end
 
     witness = @debt.witnesses.create!(user: user, status: "invited")
-    notify_witness_invited(witness)
+    NotificationService.witness_invited(witness)
 
     redirect_to debt_path(@debt), notice: I18n.t("witnesses.invited")
   end
 
   def confirm
     @witness.update!(status: "confirmed", confirmed_at: Time.current)
-    notify_witness_confirmed(@witness)
+    NotificationService.witness_confirmed(@witness)
 
     redirect_to debt_path(@debt), notice: I18n.t("witnesses.confirmed")
   end
 
   def decline
     @witness.update!(status: "declined")
-    notify_witness_declined(@witness)
+    NotificationService.witness_declined(@witness)
 
     redirect_to debt_path(@debt), notice: I18n.t("witnesses.declined")
   end
@@ -86,53 +86,5 @@ class WitnessesController < InertiaController
 
   def creator_user(debt)
     debt.creator_role_lender? ? debt.lender : debt.borrower
-  end
-
-  def notify_witness_invited(witness)
-    Notification.create!(
-      user: witness.user,
-      notification_type: "witness_invited",
-      message: I18n.t(
-        "notifications.witness_invited",
-        inviter: current_user.full_name,
-        amount: @debt.amount,
-        currency: @debt.currency
-      ),
-      debt: @debt
-    )
-  end
-
-  def notify_witness_confirmed(witness)
-    creator = creator_user(@debt)
-    return unless creator
-
-    Notification.create!(
-      user: creator,
-      notification_type: "witness_confirmed",
-      message: I18n.t(
-        "notifications.witness_confirmed",
-        witness: witness.user.full_name,
-        amount: @debt.amount,
-        currency: @debt.currency
-      ),
-      debt: @debt
-    )
-  end
-
-  def notify_witness_declined(witness)
-    creator = creator_user(@debt)
-    return unless creator
-
-    Notification.create!(
-      user: creator,
-      notification_type: "witness_declined",
-      message: I18n.t(
-        "notifications.witness_declined",
-        witness: witness.user.full_name,
-        amount: @debt.amount,
-        currency: @debt.currency
-      ),
-      debt: @debt
-    )
   end
 end

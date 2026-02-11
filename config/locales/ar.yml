@@ -55,6 +55,9 @@ ar:
     witness_invited: "قام %{inviter} بدعوتك كشاهد على دين بقيمة %{amount} %{currency}."
     witness_confirmed: "قبل %{witness} دعوة الشهادة على دينك بقيمة %{amount} %{currency}."
     witness_declined: "رفض %{witness} دعوة الشهادة على دينك بقيمة %{amount} %{currency}."
+  notifications_page:
+    marked_read: "تم تعليم الإشعار كمقروء."
+    all_marked_read: "تم تعليم جميع الإشعارات كمقروءة."
   home:
     title: "فاكتبوه"
     description: "تتبع الديون الإسلامية بين الأفراد"

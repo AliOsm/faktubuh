@@ -14,7 +14,7 @@ class PaymentsController < InertiaController
     @payment.status = @debt.personal? ? "approved" : "pending"
 
     if @payment.save
-      notify_payment_submitted(@payment) if @debt.mutual?
+      NotificationService.payment_submitted(@payment) if @debt.mutual?
       check_auto_settlement if @debt.personal?
       redirect_to debt_path(@debt), notice: I18n.t("payments.submitted")
     else
@@ -25,7 +25,7 @@ class PaymentsController < InertiaController
   def approve
     @payment.update!(status: "approved")
     mark_installment_if_covered(@payment)
-    notify_payment_approved(@payment)
+    NotificationService.payment_approved(@payment)
     check_auto_settlement
 
     redirect_to debt_path(@debt), notice: I18n.t("payments.approved")
@@ -33,7 +33,7 @@ class PaymentsController < InertiaController
 
   def reject
     @payment.update!(status: "rejected", rejection_reason: params[:rejection_reason])
-    notify_payment_rejected(@payment)
+    NotificationService.payment_rejected(@payment)
 
     redirect_to debt_path(@debt), notice: I18n.t("payments.rejected")
   end
@@ -93,7 +93,7 @@ class PaymentsController < InertiaController
     return unless remaining_balance <= 0
 
     @debt.update!(status: "settled")
-    notify_debt_settled
+    NotificationService.debt_settled(@debt)
   end
 
   def mark_installment_if_covered(payment)
@@ -102,61 +102,5 @@ class PaymentsController < InertiaController
     installment = payment.installment
     total_approved = installment.payments.approved.sum(:amount)
     installment.update!(status: "approved") if total_approved >= installment.amount
-  end
-
-  def notify_payment_submitted(payment)
-    Notification.create!(
-      user: @debt.lender,
-      notification_type: "payment_submitted",
-      message: I18n.t(
-        "notifications.payment_submitted",
-        submitter: current_user.full_name,
-        amount: payment.amount,
-        currency: @debt.currency
-      ),
-      debt: @debt
-    )
-  end
-
-  def notify_payment_approved(payment)
-    Notification.create!(
-      user: payment.submitter,
-      notification_type: "payment_approved",
-      message: I18n.t(
-        "notifications.payment_approved",
-        amount: payment.amount,
-        currency: @debt.currency
-      ),
-      debt: @debt
-    )
-  end
-
-  def notify_payment_rejected(payment)
-    Notification.create!(
-      user: payment.submitter,
-      notification_type: "payment_rejected",
-      message: I18n.t(
-        "notifications.payment_rejected",
-        amount: payment.amount,
-        currency: @debt.currency,
-        reason: payment.rejection_reason
-      ),
-      debt: @debt
-    )
-  end
-
-  def notify_debt_settled
-    [ @debt.lender, @debt.borrower ].compact.each do |user|
-      Notification.create!(
-        user: user,
-        notification_type: "debt_settled",
-        message: I18n.t(
-          "notifications.debt_settled",
-          amount: @debt.amount,
-          currency: @debt.currency
-        ),
-        debt: @debt
-      )
-    end
   end
 end
