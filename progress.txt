@@ -52,6 +52,19 @@
 - OmniAuth callbacks controller at app/controllers/users/omniauth_callbacks_controller.rb — skips CSRF for OAuth callback
 - OmniAuth test mode: `OmniAuth.config.test_mode = true` + `OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(...)` for integration tests
 - Google sign-in button: native HTML form POST to `/users/auth/google_oauth2` with CSRF token from meta tag (not Inertia form)
+- SharedData type needs `[key: string]: unknown` index signature for compatibility with Inertia's `usePage<T>()` generic constraint (PageProps requires index signature)
+- AppLayout at app/frontend/layouts/app-layout.tsx — wraps authenticated pages with header, nav, user dropdown. Pages opt in via `PageComponent.layout = (page) => <AppLayout>{page}</AppLayout>`
+- InertiaController shares `auth: { user: current_user.as_json(only: %i[id full_name email personal_id]) }` guarded with `if current_user` for unauthenticated pages
+---
+
+## 2026-02-11 - US-013
+- What was implemented: Built the main app layout with navigation, language toggle, and user menu. Created app-layout.tsx with sticky header containing app name, desktop nav links (Dashboard, My Debts, Notifications), LanguageToggle, and user avatar/dropdown menu (Profile, Logout). Mobile responsive: hamburger menu opens a Sheet sidebar overlay. RTL layout handled via Tailwind ltr:/rtl: utilities and dynamic Sheet side. Updated InertiaController to share current_user data via inertia_share (guarded with `if current_user`). Added `[key: string]: unknown` index signature to SharedData type for `usePage<T>()` compatibility. Updated home/index.tsx to use AppLayout via page-level layout override. Added `nav.open_menu` translation key to en/ar locale files.
+- Files changed: app/frontend/layouts/app-layout.tsx (new), app/controllers/inertia_controller.rb (modified), app/frontend/types/index.ts (modified), app/frontend/pages/home/index.tsx (modified), app/frontend/i18n/locales/en.json (modified), app/frontend/i18n/locales/ar.json (modified)
+- **Learnings for future iterations:**
+  - SharedData type needs `[key: string]: unknown` index signature for Inertia's `usePage<T>()` generic — without it, TypeScript errors with "does not satisfy the constraint 'PageProps'"
+  - Page-level layout override: set `PageComponent.layout = (page) => <AppLayout>{page}</AppLayout>` — the `??=` in inertia.tsx respects existing layout
+  - InertiaController auth sharing must guard with `if current_user` since unauthenticated pages (sign-in, sign-up) also pass through InertiaController indirectly via Devise controllers
+  - Sheet side should be dynamic for RTL: `side={isRtl ? 'right' : 'left'}` so mobile menu slides from the correct edge
 ---
 
 ## 2026-02-11 - US-012

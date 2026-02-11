@@ -266,7 +266,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 13,
-      "passes": false,
+      "passes": true,
       "notes": "Use shadcn/ui Sheet for mobile menu, DropdownMenu for user menu. This layout wraps all authenticated pages."
     },
     {
