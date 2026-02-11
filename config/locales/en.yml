@@ -13,6 +13,10 @@ en:
     next: "Next"
   profile:
     update_success: "Profile updated successfully."
+  debts:
+    created: "Debt created successfully."
+  notifications:
+    debt_created: "%{creator} created a debt for %{amount} %{currency} with you."
   home:
     title: "Faktubuh"
     description: "Peer-to-peer Islamic debt tracking"

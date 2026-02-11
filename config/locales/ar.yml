@@ -17,6 +17,10 @@ ar:
     next: "التالي"
   profile:
     update_success: "تم تحديث الملف الشخصي بنجاح."
+  debts:
+    created: "تم إنشاء الدين بنجاح."
+  notifications:
+    debt_created: "قام %{creator} بإنشاء دين بقيمة %{amount} %{currency} معك."
   home:
     title: "فاكتبوه"
     description: "تتبع الديون الإسلامية بين الأفراد"

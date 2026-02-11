@@ -1,5 +1,6 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { router, usePage } from '@inertiajs/react'
 import { HandCoins, HandHeart, Users, User, Check, ArrowLeft, Loader2, CheckCircle2, XCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -207,8 +208,10 @@ function PersonalIdLookup({
   )
 }
 
-function DetailsForm({ mode, onBack }: { mode: Mode; onBack: () => void }) {
+function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: () => void }) {
   const { t } = useTranslation()
+  const { props } = usePage()
+  const serverErrors = (props as unknown as { errors?: Record<string, string[]> }).errors
 
   const [personalId, setPersonalId] = useState('')
   const [lookedUpUser, setLookedUpUser] = useState<LookedUpUser | null>(null)
@@ -222,6 +225,19 @@ function DetailsForm({ mode, onBack }: { mode: Mode; onBack: () => void }) {
   const [description, setDescription] = useState('')
   const [installmentType, setInstallmentType] = useState<InstallmentType>('lump_sum')
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    if (serverErrors) {
+      const mapped: Record<string, string> = {}
+      for (const [key, messages] of Object.entries(serverErrors)) {
+        if (Array.isArray(messages)) {
+          mapped[key] = messages[0]
+        }
+      }
+      setErrors(mapped)
+    }
+  }, [serverErrors])
 
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
@@ -266,8 +282,26 @@ function DetailsForm({ mode, onBack }: { mode: Mode; onBack: () => void }) {
     e.preventDefault()
     if (!validate()) return
 
-    // Form submission (POST /debts) is implemented in US-020.
-    // For now, validation is the scope of this story.
+    setSubmitting(true)
+    router.post(
+      '/debts',
+      {
+        debt: {
+          creator_role: role,
+          mode,
+          amount: parseFloat(amount),
+          currency,
+          deadline,
+          description,
+          installment_type: installmentType,
+          counterparty_name: mode === 'personal' ? counterpartyName : undefined,
+          counterparty_personal_id: mode === 'mutual' ? personalId : undefined
+        }
+      },
+      {
+        onFinish: () => setSubmitting(false)
+      }
+    )
   }
 
   return (
@@ -408,8 +442,9 @@ function DetailsForm({ mode, onBack }: { mode: Mode; onBack: () => void }) {
             <Button
               type="submit"
               className="flex-1"
+              disabled={submitting}
             >
-              {t('debt_creation.details.create_debt')}
+              {submitting ? t('debt_creation.details.creating') : t('debt_creation.details.create_debt')}
             </Button>
           </div>
         </form>
@@ -537,8 +572,9 @@ function NewDebt() {
           </Card>
         )}
 
-        {step === 3 && mode && (
+        {step === 3 && mode && role && (
           <DetailsForm
+            role={role}
             mode={mode}
             onBack={handleBack}
           />

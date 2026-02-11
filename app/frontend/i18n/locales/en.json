@@ -139,7 +139,9 @@
         "custom_split": "Custom Split",
         "custom_split_description": "Define your own installment schedule later"
       },
-      "create_debt": "Create Debt"
+      "create_debt": "Create Debt",
+      "creating": "Creating...",
+      "invalid_personal_id": "Invalid Personal ID. User not found."
     },
     "ayat_translation": "O you who believe, when you contract a debt for a specified term, write it down.",
     "ayat_reference": "Surah Al-Baqarah 2:282"
