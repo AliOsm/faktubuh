@@ -69,6 +69,9 @@
 - UsersController at app/controllers/users_controller.rb — GET /users/lookup?personal_id=... returns JSON {id, full_name} or 404
 - oxlint jsx-a11y/label-has-associated-control requires `<label htmlFor>` with matching `id` on form controls (e.g., RadioGroupItem)
 - Force Vite test rebuild with `RAILS_ENV=test bin/vite build --force` when manifest becomes stale
+- Personal mode debts: `lender_id` is always set to current_user (NOT NULL DB constraint). `creator_role` tracks the user's actual role. `counterparty_name` is the other party.
+- DebtsController#create redirect with errors: `redirect_to new_debt_path, inertia: { errors: @debt.errors.to_hash(true) }` — errors keyed by attribute name with array of messages
+- Inertia server errors in React: use `usePage().props` cast through `unknown` to avoid TS error with `Errors & ErrorBag` type
 ---
 
 ## 2026-02-11 - US-014
@@ -273,4 +276,15 @@
   - The `onBack` from Step 3 goes back to Step 2 (mode selection) — mode state is preserved, no reset needed
   - Currency list is hardcoded as a const array — 31 currencies covering international and Arab/Islamic markets
   - Form submission stub (handleSubmit) only validates — actual POST /debts is wired in US-020
+---
+
+## 2026-02-11 - US-020
+- What was implemented: Implemented debt creation backend. Created DebtsController#create action with strong parameters, role-based party assignment, and mode-specific post-creation behavior. Mutual mode: creates debt with status 'pending', assigns lender/borrower based on creator_role and looked-up counterparty Personal ID, creates notification for other party. Personal mode: creates debt with status 'active', always sets lender_id to current_user (due to NOT NULL constraint), calls InstallmentScheduleGenerator to create installments immediately. On validation failure, redirects back to new_debt_path with errors via Inertia. Wired up form submission in pages/debts/new.tsx using Inertia router.post, passing role, mode, and all form fields. Added server error handling with useEffect to map server-side validation errors to form fields. Added "creating" loading state on submit button. Added i18n translations for debt creation success message, notification messages, and creating state (en/ar). Wrote 5 integration tests covering mutual debt creation with notification, personal debt creation with installments, invalid params, invalid Personal ID, and authentication requirement.
+- Files changed: app/controllers/debts_controller.rb (modified), app/frontend/pages/debts/new.tsx (modified), app/frontend/i18n/locales/en.json (modified), app/frontend/i18n/locales/ar.json (modified), config/locales/en.yml (modified), config/locales/ar.yml (modified), test/controllers/debts_controller_test.rb (new)
+- **Learnings for future iterations:**
+  - Personal mode debts: `lender_id` is always set to current_user because the DB has a NOT NULL constraint on lender_id. The `creator_role` enum tracks the user's actual role in the debt, and `counterparty_name` is the other party.
+  - DebtsController error redirect: `redirect_to new_debt_path, inertia: { errors: @debt.errors.to_hash(true) }` — errors keyed by attribute name (e.g., `amount`, `currency`) with array of message strings
+  - Inertia server errors in React: cast `usePage().props` through `unknown` first to avoid TS error with `Errors & ErrorBag` type: `(props as unknown as { errors?: Record<string, string[]> }).errors`
+  - `router.post` in Inertia sends form data — nest under `debt: { ... }` key to match Rails strong parameters
+  - For mutual debts, `counterparty_personal_id` is sent as a non-permitted param (not in strong params) and accessed directly via `params[:debt][:counterparty_personal_id]` in the controller
 ---
