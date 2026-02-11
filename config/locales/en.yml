@@ -15,9 +15,15 @@ en:
     update_success: "Profile updated successfully."
   debts:
     created: "Debt created successfully."
+    confirmed: "Debt confirmed successfully."
+    rejected: "Debt rejected."
     unauthorized: "You are not authorized to view this debt."
+    already_processed: "This debt has already been processed."
+    not_confirming_party: "You are not authorized to confirm or reject this debt."
   notifications:
     debt_created: "%{creator} created a debt for %{amount} %{currency} with you."
+    debt_confirmed: "%{confirmer} confirmed the debt for %{amount} %{currency}."
+    debt_rejected: "%{rejecter} rejected the debt for %{amount} %{currency}."
   home:
     title: "Faktubuh"
     description: "Peer-to-peer Islamic debt tracking"

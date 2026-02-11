@@ -21,3 +21,14 @@ personal_debt:
   deadline: <%= 60.days.from_now.to_date %>
   installment_type: monthly
   status: active
+
+pending_mutual_debt:
+  lender: one
+  borrower: two
+  mode: mutual
+  creator_role: lender
+  amount: 750.00
+  currency: USD
+  deadline: <%= 45.days.from_now.to_date %>
+  installment_type: monthly
+  status: pending

@@ -1,10 +1,11 @@
-import { Head, usePage } from '@inertiajs/react'
-import { AlertTriangle, Calendar, Clock, CreditCard, FileText, Shield, Users } from 'lucide-react'
-import { useEffect } from 'react'
+import { Head, router, usePage } from '@inertiajs/react'
+import { AlertTriangle, Calendar, CheckCircle, Clock, CreditCard, FileText, Shield, Users, XCircle } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import AppLayout from '@/layouts/app-layout'
 import { cn } from '@/lib/utils'
@@ -63,6 +64,9 @@ interface ShowProps {
   installments: InstallmentData[]
   payments: PaymentData[]
   witnesses: WitnessData[]
+  current_user_id: number
+  is_confirming_party: boolean
+  is_creator: boolean
   [key: string]: unknown
 }
 
@@ -186,7 +190,93 @@ function WitnessReminder({ mode, witnesses }: { mode: string; witnesses: Witness
   )
 }
 
-export default function Show({ debt, installments, payments, witnesses }: ShowProps) {
+function ConfirmationBanner({ debt }: { debt: DebtData }) {
+  const { t } = useTranslation()
+  const [processing, setProcessing] = useState<'confirm' | 'reject' | null>(null)
+
+  const creatorName = debt.creator_role === 'lender' ? debt.lender.full_name : (debt.borrower?.full_name ?? '')
+
+  function handleConfirm() {
+    setProcessing('confirm')
+    router.post(
+      `/debts/${debt.id}/confirm`,
+      {},
+      {
+        onFinish: () => setProcessing(null)
+      }
+    )
+  }
+
+  function handleReject() {
+    setProcessing('reject')
+    router.post(
+      `/debts/${debt.id}/reject`,
+      {},
+      {
+        onFinish: () => setProcessing(null)
+      }
+    )
+  }
+
+  return (
+    <Card className="border-amber-200 bg-amber-50">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-600" />
+            <div>
+              <h3 className="font-semibold text-amber-900">{t('debt_detail.confirmation.banner_title')}</h3>
+              <p className="mt-1 text-sm text-amber-800">
+                {t('debt_detail.confirmation.banner_description', { creator: creatorName })}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Button
+              onClick={handleConfirm}
+              disabled={processing !== null}
+              className="bg-green-600 text-white hover:bg-green-700"
+            >
+              <CheckCircle className="size-4 ltr:mr-2 rtl:ml-2" />
+              {processing === 'confirm'
+                ? t('debt_detail.confirmation.confirming')
+                : t('debt_detail.confirmation.confirm_button')}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleReject}
+              disabled={processing !== null}
+            >
+              <XCircle className="size-4 ltr:mr-2 rtl:ml-2" />
+              {processing === 'reject'
+                ? t('debt_detail.confirmation.rejecting')
+                : t('debt_detail.confirmation.reject_button')}
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function AwaitingConfirmation({ debt }: { debt: DebtData }) {
+  const { t } = useTranslation()
+
+  const confirmingPartyName = debt.creator_role === 'lender' ? (debt.borrower?.full_name ?? '') : debt.lender.full_name
+
+  return (
+    <Card className="border-blue-200 bg-blue-50">
+      <CardContent className="flex items-center gap-3 p-4 sm:p-6">
+        <Clock className="size-5 shrink-0 text-blue-600" />
+        <p className="text-sm font-medium text-blue-800">
+          {t('debt_detail.confirmation.awaiting', { name: confirmingPartyName })}
+        </p>
+      </CardContent>
+    </Card>
+  )
+}
+
+export default function Show({ debt, installments, payments, witnesses, is_confirming_party, is_creator }: ShowProps) {
   const { t } = useTranslation()
   const { flash } = usePage<SharedData>().props
 
@@ -208,6 +298,10 @@ export default function Show({ debt, installments, payments, witnesses }: ShowPr
           <StatusBadge status={debt.status} />
           <Badge variant="secondary">{t(`debt_detail.mode.${debt.mode}`)}</Badge>
         </div>
+
+        {/* Confirmation Banner / Awaiting Message */}
+        {debt.status === 'pending' && is_confirming_party && <ConfirmationBanner debt={debt} />}
+        {debt.status === 'pending' && is_creator && !is_confirming_party && <AwaitingConfirmation debt={debt} />}
 
         {/* Debt Overview */}
         <Card>

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class DebtsController < InertiaController
-  before_action :set_debt, only: :show
+  before_action :set_debt, only: %i[show confirm reject]
   before_action :authorize_debt_access!, only: :show
+  before_action :authorize_confirmation!, only: %i[confirm reject]
 
   def new
   end
@@ -23,8 +24,36 @@ class DebtsController < InertiaController
       debt: debt_json(@debt),
       installments: @debt.installments.order(:due_date).map { |i| installment_json(i) },
       payments: @debt.payments.includes(:submitter, :installment).order(submitted_at: :desc).map { |p| payment_json(p) },
-      witnesses: @debt.witnesses.includes(:user).map { |w| witness_json(w) }
+      witnesses: @debt.witnesses.includes(:user).map { |w| witness_json(w) },
+      current_user_id: current_user.id,
+      is_confirming_party: confirming_party?,
+      is_creator: creator_user(@debt)&.id == current_user.id
     }
+  end
+
+  def confirm
+    unless @debt.pending?
+      redirect_to debt_path(@debt), alert: I18n.t("debts.already_processed")
+      return
+    end
+
+    @debt.update!(status: "active")
+    InstallmentScheduleGenerator.new(@debt).generate!
+    notify_confirmation(@debt)
+
+    redirect_to debt_path(@debt), notice: I18n.t("debts.confirmed")
+  end
+
+  def reject
+    unless @debt.pending?
+      redirect_to debt_path(@debt), alert: I18n.t("debts.already_processed")
+      return
+    end
+
+    @debt.update!(status: "rejected")
+    notify_rejection(@debt)
+
+    redirect_to debt_path(@debt), notice: I18n.t("debts.rejected")
   end
 
   def index
@@ -34,6 +63,22 @@ class DebtsController < InertiaController
 
   def set_debt
     @debt = Debt.find(params[:id])
+  end
+
+  def authorize_confirmation!
+    unless confirming_party?
+      redirect_to debt_path(@debt), alert: I18n.t("debts.not_confirming_party")
+      return
+    end
+  end
+
+  def confirming_party?
+    # The non-creator party is the confirming party
+    if @debt.creator_role_lender?
+      @debt.borrower_id == current_user.id
+    else
+      @debt.lender_id == current_user.id
+    end
   end
 
   def authorize_debt_access!
@@ -145,6 +190,28 @@ class DebtsController < InertiaController
     elsif debt.mutual?
       notify_other_party(debt)
     end
+  end
+
+  def creator_user(debt)
+    debt.creator_role_lender? ? debt.lender : debt.borrower
+  end
+
+  def notify_confirmation(debt)
+    Notification.create!(
+      user: creator_user(debt),
+      notification_type: "debt_confirmed",
+      message: I18n.t("notifications.debt_confirmed", confirmer: current_user.full_name, amount: debt.amount, currency: debt.currency),
+      debt: debt
+    )
+  end
+
+  def notify_rejection(debt)
+    Notification.create!(
+      user: creator_user(debt),
+      notification_type: "debt_rejected",
+      message: I18n.t("notifications.debt_rejected", rejecter: current_user.full_name, amount: debt.amount, currency: debt.currency),
+      debt: debt
+    )
   end
 
   def notify_other_party(debt)

@@ -13,7 +13,12 @@ Rails.application.routes.draw do
   end
 
   resource :profile, only: %i[show update]
-  resources :debts, only: %i[new create show index]
+  resources :debts, only: %i[new create show index] do
+    member do
+      post :confirm
+      post :reject
+    end
+  end
 
   get "users/lookup", to: "users#lookup"
 

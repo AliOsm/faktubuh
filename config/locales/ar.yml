@@ -19,9 +19,15 @@ ar:
     update_success: "تم تحديث الملف الشخصي بنجاح."
   debts:
     created: "تم إنشاء الدين بنجاح."
+    confirmed: "تم تأكيد الدين بنجاح."
+    rejected: "تم رفض الدين."
     unauthorized: "ليس لديك صلاحية لعرض هذا الدين."
+    already_processed: "تم معالجة هذا الدين بالفعل."
+    not_confirming_party: "ليس لديك صلاحية لتأكيد أو رفض هذا الدين."
   notifications:
     debt_created: "قام %{creator} بإنشاء دين بقيمة %{amount} %{currency} معك."
+    debt_confirmed: "قام %{confirmer} بتأكيد الدين بقيمة %{amount} %{currency}."
+    debt_rejected: "قام %{rejecter} برفض الدين بقيمة %{amount} %{currency}."
   home:
     title: "فاكتبوه"
     description: "تتبع الديون الإسلامية بين الأفراد"

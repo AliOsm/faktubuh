@@ -199,6 +199,15 @@
       "confirmed": "Confirmed",
       "declined": "Declined"
     },
+    "confirmation": {
+      "banner_title": "Debt Confirmation Required",
+      "banner_description": "{{creator}} has recorded a debt with you. Please review the details and confirm or reject.",
+      "confirm_button": "Confirm Debt",
+      "reject_button": "Reject Debt",
+      "confirming": "Confirming...",
+      "rejecting": "Rejecting...",
+      "awaiting": "Awaiting confirmation from {{name}}"
+    },
     "witness_reminder": {
       "strong": "According to Ayat al-Dayn (2:282), it is strongly recommended to have witnesses for this debt. Consider inviting witnesses for proper documentation.",
       "standard": "Consider adding witnesses to this debt as recommended in Ayat al-Dayn (2:282)."
