@@ -82,6 +82,9 @@
 - Witness authorization: only debt creator can invite witnesses, only the invited witness user can confirm/decline
 - Max 2 witnesses per debt enforced at controller level (not model validation)
 - Fourth user fixture: `users(:four)` with personal_id KMN345 — available for additional test scenarios
+- DashboardController at app/controllers/dashboard_controller.rb — renders `dashboard/Index` Inertia component with per-currency summaries and recent debts
+- Authenticated root route now points to `dashboard#index` (updated from `home#index` in US-026)
+- Dashboard nav link uses `/dashboard` path (not `/`) — isActive check handles both `/` and `/dashboard`
 ---
 
 ## 2026-02-11 - US-014
@@ -357,4 +360,17 @@
   - Witness confirm/decline authorization: check `@witness.user_id == current_user.id` AND `@witness.invited?` to prevent double-respond
   - Personal ID lookup in witness form reuses the same `/users/lookup` endpoint from debt creation (US-019)
   - Fourth user fixture `users(:four)` with personal_id KMN345 added for witness tests requiring a user not already involved in existing fixtures
+---
+
+## 2026-02-11 - US-026
+- What was implemented: Built debt dashboard with per-currency summaries. Created DashboardController with index action inheriting from InertiaController. Query logic: for each currency the user has active/settled debts in, calculates total lent, total borrowed, total approved payments, remaining balance, next upcoming installment, active/settled counts. Includes both Mutual and Personal debts with proper role detection (personal mode borrower via creator_role). GET /dashboard renders dashboard/Index Inertia component. Updated authenticated root route from home#index to dashboard#index. Added dedicated /dashboard route. Dashboard shows summary Card per currency with lent/borrowed/paid/remaining amounts, next installment info, and active/settled counts. Recent debts section shows 5 most recent non-rejected debts with counterparty name, amount, status badge, linked to debt detail. New Debt CTA button linking to /debts/new. Empty state for users with no debts: Ayat al-Dayn welcome message with verse excerpt and Create Your First Debt button. Updated app-layout nav dashboard link to /dashboard with isActive handling for both / and /dashboard. All text translated (en/ar). Wrote 5 controller tests: empty state, single currency, multiple currencies, authenticated root, authentication requirement. 144 tests pass, 0 failures.
+- Files changed: app/controllers/dashboard_controller.rb (new), app/frontend/pages/dashboard/Index.tsx (new), test/controllers/dashboard_controller_test.rb (new), app/frontend/i18n/locales/en.json (modified), app/frontend/i18n/locales/ar.json (modified), app/frontend/layouts/app-layout.tsx (modified), config/routes.rb (modified)
+- **Learnings for future iterations:**
+  - DashboardController uses explicit `render inertia: "dashboard/Index", props: { ... }` since it needs custom data aggregation (not default_render)
+  - Per-currency summaries query active+settled debts, then group by currency — pending/rejected excluded from financial summaries
+  - Personal mode borrowed total: query `lender_id == current_user.id AND mode == personal AND creator_role == borrower` since personal debts always set lender_id to current_user
+  - Remaining balance calculation: `max(lent + borrowed - paid, 0)` — uses max to avoid negative values from rounding
+  - Recent debts exclude rejected debts (`where.not(status: "rejected")`) ordered by created_at desc, limit 5
+  - Nav dashboard link changed from `/` to `/dashboard` — isActive check must handle both paths for correct highlighting
+  - Authenticated root in devise_scope now points to `dashboard#index` — the old `home#index` fallback root at bottom of routes still exists but is shadowed
 ---
