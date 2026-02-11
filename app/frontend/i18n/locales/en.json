@@ -203,6 +203,11 @@
     "ayat_translation": "O you who believe, when you contract a debt for a specified term, write it down.",
     "ayat_reference": "Surah Al-Baqarah 2:282"
   },
+  "notifications_page": {
+    "title": "Notifications",
+    "mark_all_read": "Mark all as read",
+    "empty": "No notifications yet."
+  },
   "debt_detail": {
     "title": "Debt Details",
     "status": {

@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import LanguageToggle from '@/components/language-toggle'
+import { Badge } from '@/components/ui/badge'
 import { Toaster } from '@/components/ui/sonner'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -36,7 +37,9 @@ function getInitials(name: string): string {
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { t, i18n } = useTranslation()
-  const { auth } = usePage<SharedData>().props
+  const props = usePage<SharedData>().props
+  const { auth } = props
+  const unreadCount = (props as unknown as { unread_notifications_count?: number }).unread_notifications_count ?? 0
   const user = auth?.user
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -98,6 +101,24 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
           <div className="flex flex-1 items-center justify-end gap-2">
             <LanguageToggle />
+
+            {user && (
+              <Link
+                href="/notifications"
+                className="relative inline-flex items-center justify-center rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              >
+                <Bell className="size-5" />
+                {unreadCount > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-0.5 rounded-full px-1.5 py-0.5 text-[10px] leading-none ltr:-right-0.5 rtl:-left-0.5"
+                  >
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </Badge>
+                )}
+                <span className="sr-only">{t('nav.notifications')}</span>
+              </Link>
+            )}
 
             {user && (
               <DropdownMenu>
