@@ -1,5 +1,9 @@
 ar:
   app_name: "فاكتبوه"
+  devise:
+    omniauth_callbacks:
+      failure: "تعذرت المصادقة من حساب %{kind} بسبب \"%{reason}\"."
+      success: "تمت المصادقة بنجاح من حساب %{kind}."
   common:
     save: "حفظ"
     cancel: "إلغاء"

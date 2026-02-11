@@ -40,6 +40,10 @@
     "arabic": "العربية"
   },
   "auth": {
+    "or": "أو",
+    "google_sign_in": "تسجيل الدخول بحساب Google",
+    "google_sign_up": "إنشاء حساب بحساب Google",
+    "oauth_failure": "تعذر تسجيل الدخول عبر {{provider}}. يرجى المحاولة مرة أخرى.",
     "sign_up": {
       "title": "إنشاء حساب",
       "subtitle": "أدخل بياناتك للبدء",

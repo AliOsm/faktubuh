@@ -40,6 +40,10 @@
     "arabic": "العربية"
   },
   "auth": {
+    "or": "Or",
+    "google_sign_in": "Sign in with Google",
+    "google_sign_up": "Sign up with Google",
+    "oauth_failure": "Could not sign in with {{provider}}. Please try again.",
     "sign_up": {
       "title": "Create Account",
       "subtitle": "Enter your details to get started",
