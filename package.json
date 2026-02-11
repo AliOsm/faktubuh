@@ -9,7 +9,10 @@
     "vite-plugin-ruby": "^5.1.1"
   },
   "scripts": {
-    "check": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json"
+    "check": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
+    "lint": "oxlint app/frontend/",
+    "format": "oxfmt app/frontend/ '!app/frontend/routes/**'",
+    "format:check": "oxfmt --check app/frontend/ '!app/frontend/routes/**'"
   },
   "dependencies": {
     "@inertiajs/react": "^2.1.2",

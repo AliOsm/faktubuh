@@ -1,0 +1,37 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "import", "jsx-a11y"],
+  "env": {
+    "browser": true
+  },
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "pedantic": "off"
+  },
+  "ignorePatterns": ["app/frontend/routes/**"],
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/jsx-no-duplicate-props": "error",
+    "react/no-direct-mutation-state": "error",
+    "react/self-closing-comp": "error",
+    "react/react-in-jsx-scope": "off",
+    "typescript/consistent-type-imports": "warn",
+    "typescript/no-explicit-any": "warn",
+    "import/no-named-as-default-member": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"],
+      "rules": {
+        "typescript/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["app/frontend/components/ui/**"],
+      "rules": {
+        "jsx-a11y/prefer-tag-over-role": "off"
+      }
+    }
+  ]
+}

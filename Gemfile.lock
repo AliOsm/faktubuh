@@ -106,6 +106,7 @@ GEM
     debug (1.11.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
+    docile (1.4.1)
     dotenv (3.2.0)
     drb (2.2.3)
     dry-cli (1.4.1)
@@ -324,6 +325,12 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.13.2)
+    simplecov_json_formatter (0.1.4)
     solid_cable (3.0.12)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -414,6 +421,7 @@ DEPENDENCIES
   rails (~> 8.1.2)
   rubocop-rails-omakase
   selenium-webdriver
+  simplecov
   solid_cable
   solid_cache
   solid_queue
