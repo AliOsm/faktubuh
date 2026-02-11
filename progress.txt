@@ -85,6 +85,9 @@
 - DashboardController at app/controllers/dashboard_controller.rb — renders `dashboard/Index` Inertia component with per-currency summaries and recent debts
 - Authenticated root route now points to `dashboard#index` (updated from `home#index` in US-026)
 - Dashboard nav link uses `/dashboard` path (not `/`) — isActive check handles both `/` and `/dashboard`
+- NotificationService at app/services/notification_service.rb — centralized class methods for all notification types. Call via `NotificationService.debt_created(debt)` etc.
+- NotificationsController at app/controllers/notifications_controller.rb — index, mark_read, mark_all_read. Routes: `notifications_url`, `mark_read_notification_url(notification)`, `mark_all_read_notifications_url`
+- InertiaController shares `unread_notifications_count` via inertia_share — available to all pages for the header bell icon
 ---
 
 ## 2026-02-11 - US-014
@@ -384,4 +387,15 @@
   - Progress bar calculation: `(approved_payments_sum / debt.amount * 100).round(1)` — computed server-side and passed as `progress` prop
   - RuboCop doesn't like `case` assigned to a variable with `when` indented differently from the `case` keyword — extract to a separate method for cleaner code
   - `user_debts` query pattern: `Debt.where(lender_id:).or(Debt.where(borrower_id:))` — same pattern used in DashboardController
+---
+
+## 2026-02-11 - US-028
+- What was implemented: Created centralized NotificationService and notifications backend. Created app/services/notification_service.rb as a service class with class methods for all notification types: debt_created, debt_confirmed, debt_rejected, payment_submitted, payment_approved, payment_rejected, witness_invited, witness_confirmed, witness_declined, debt_settled. Each method creates a Notification record with the appropriate user_id, notification_type, translatable message, and debt_id. Created NotificationsController with index (renders notifications/Index Inertia page), mark_read (POST /notifications/:id/mark_read sets read: true), and mark_all_read (POST /notifications/mark_all_read sets all unread to read). Added notification routes with member mark_read and collection mark_all_read actions. Shared unread notification count via inertia_share in InertiaController (available to all pages for header bell). Refactored all existing controllers (DebtsController, PaymentsController, WitnessesController) to use NotificationService instead of inline Notification.create! calls — removed ~145 lines of duplicated notification code. Added Rails locale translations for notifications_page (marked_read, all_marked_read) in en.yml and ar.yml. Wrote 4 controller tests for NotificationsController (index, mark_read, mark_all_read, authentication) and 11 service tests for NotificationService covering all notification types. 162 tests pass, 0 failures.
+- Files changed: app/services/notification_service.rb (new), app/controllers/notifications_controller.rb (new), app/controllers/debts_controller.rb (modified — replaced inline notifications with NotificationService calls, removed notify_* private methods), app/controllers/payments_controller.rb (modified — replaced inline notifications with NotificationService calls, removed notify_* private methods), app/controllers/witnesses_controller.rb (modified — replaced inline notifications with NotificationService calls, removed notify_* private methods), app/controllers/inertia_controller.rb (modified — added unread_notifications_count to inertia_share), config/routes.rb (modified — added notifications routes), config/locales/en.yml (modified — added notifications_page section), config/locales/ar.yml (modified — added notifications_page section), test/controllers/notifications_controller_test.rb (new), test/services/notification_service_test.rb (new)
+- **Learnings for future iterations:**
+  - NotificationService uses class methods (not instance) — call via `NotificationService.debt_created(debt)`, no need to instantiate
+  - NotificationsController uses `update_all` for mark_all_read — requires `rubocop:disable Rails/SkipsModelValidations` comment since it bypasses Active Record callbacks
+  - `unread_notifications_count` shared via `current_user&.notifications&.unread&.count || 0` — safe navigation handles nil current_user on unauthenticated pages
+  - Refactoring notifications from controllers to service: some notification methods (like debt_created) derive the creator from the debt model itself (via creator_role), while the controller previously used `current_user` — the service approach is more self-contained but the trade-off is it reads from the model rather than the request context
+  - witness_declined notification was being sent by the original code but wasn't listed in the PRD acceptance criteria — added it to NotificationService to maintain existing behavior and pass existing tests
 ---
