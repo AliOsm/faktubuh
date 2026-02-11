@@ -1,6 +1,7 @@
 class Debt < ApplicationRecord
   belongs_to :lender, class_name: "User"
   belongs_to :borrower, class_name: "User", optional: true
+  belongs_to :upgrade_recipient, class_name: "User", optional: true
   has_many :installments, dependent: :destroy
   has_many :payments, dependent: :destroy
   has_many :witnesses, dependent: :destroy

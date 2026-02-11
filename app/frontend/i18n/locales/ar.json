@@ -275,7 +275,26 @@
       "confirm_reject": "رفض الدفعة",
       "status_pending": "قيد الانتظار",
       "status_approved": "موافق عليها",
-      "status_rejected": "مرفوضة"
+      "status_rejected": "مرفوضة",
+      "self_reported": "مُبلَّغ ذاتياً"
+    },
+    "upgrade": {
+      "link_button": "ربط بمستخدم مسجل",
+      "dialog_title": "ترقية إلى دين مشترك",
+      "dialog_description": "أدخل المعرف الشخصي للطرف الآخر لربط هذا الدين. سيحتاج الطرف الآخر لقبول طلب الترقية.",
+      "personal_id": "المعرف الشخصي",
+      "personal_id_placeholder": "مثال: ABC234",
+      "user_not_found": "المستخدم غير موجود",
+      "found_user": "تم العثور على: {{name}}",
+      "send_request": "إرسال طلب الترقية",
+      "sending": "جارٍ الإرسال...",
+      "request_title": "طلب ترقية الدين",
+      "request_description": "يرغب {{creator}} في ربط دين شخصي بقيمة {{amount}} {{currency}} معك. إذا قبلت، سيصبح هذا الدين مشتركاً ويتطلب موافقة الطرفين على المدفوعات.",
+      "accept_button": "قبول الترقية",
+      "decline_button": "رفض الترقية",
+      "accepting": "جارٍ القبول...",
+      "declining": "جارٍ الرفض...",
+      "awaiting": "تم إرسال طلب الترقية إلى {{name}}. في انتظار الرد."
     },
     "witnesses": {
       "title": "الشهود",

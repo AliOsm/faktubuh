@@ -24,6 +24,12 @@ ar:
     unauthorized: "ليس لديك صلاحية لعرض هذا الدين."
     already_processed: "تم معالجة هذا الدين بالفعل."
     not_confirming_party: "ليس لديك صلاحية لتأكيد أو رفض هذا الدين."
+    upgrade_not_allowed: "لا يمكن ترقية هذا الدين."
+    upgrade_user_not_found: "لم يتم العثور على مستخدم بهذا المعرف الشخصي."
+    upgrade_requested: "تم إرسال طلب الترقية بنجاح."
+    upgrade_not_recipient: "أنت لست مستلم طلب الترقية."
+    upgrade_accepted: "تم قبول الترقية. أصبح هذا الدين مشتركاً."
+    upgrade_declined: "تم رفض الترقية. يبقى الدين شخصياً."
   payments:
     submitted: "تم تقديم الدفعة بنجاح."
     approved: "تمت الموافقة على الدفعة بنجاح."
@@ -55,6 +61,9 @@ ar:
     witness_invited: "قام %{inviter} بدعوتك كشاهد على دين بقيمة %{amount} %{currency}."
     witness_confirmed: "قبل %{witness} دعوة الشهادة على دينك بقيمة %{amount} %{currency}."
     witness_declined: "رفض %{witness} دعوة الشهادة على دينك بقيمة %{amount} %{currency}."
+    upgrade_requested: "يرغب %{creator} في ربط دين شخصي بقيمة %{amount} %{currency} معك."
+    upgrade_accepted: "قبل %{accepter} طلب ترقية الدين بقيمة %{amount} %{currency}."
+    upgrade_declined: "رفض %{decliner} طلب ترقية الدين بقيمة %{amount} %{currency}."
     installment_reminder: "تذكير: قسط بقيمة %{amount} %{currency} مستحق خلال %{days} أيام."
     installment_overdue: "قسط بقيمة %{amount} %{currency} متأخر عن موعد الاستحقاق."
   notifications_page:

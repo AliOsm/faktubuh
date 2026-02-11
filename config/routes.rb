@@ -20,6 +20,9 @@ Rails.application.routes.draw do
     member do
       post :confirm
       post :reject
+      post :upgrade
+      post :accept_upgrade
+      post :decline_upgrade
     end
     resources :payments, only: %i[create] do
       member do

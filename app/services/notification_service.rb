@@ -112,6 +112,40 @@ class NotificationService
       )
     end
 
+    def upgrade_requested(debt, recipient:)
+      creator = debt.creator_role_lender? ? debt.lender : (debt.borrower || debt.lender)
+      create_notification(
+        user: recipient,
+        notification_type: "upgrade_requested",
+        message: I18n.t("notifications.upgrade_requested", creator: creator.full_name, amount: debt.amount, currency: debt.currency),
+        debt: debt
+      )
+    end
+
+    def upgrade_accepted(debt, accepter:)
+      creator = debt.creator_role_lender? ? debt.lender : debt.borrower
+      return unless creator
+
+      create_notification(
+        user: creator,
+        notification_type: "upgrade_accepted",
+        message: I18n.t("notifications.upgrade_accepted", accepter: accepter.full_name, amount: debt.amount, currency: debt.currency),
+        debt: debt
+      )
+    end
+
+    def upgrade_declined(debt, decliner:)
+      creator = debt.creator_role_lender? ? debt.lender : debt.borrower
+      return unless creator
+
+      create_notification(
+        user: creator,
+        notification_type: "upgrade_declined",
+        message: I18n.t("notifications.upgrade_declined", decliner: decliner.full_name, amount: debt.amount, currency: debt.currency),
+        debt: debt
+      )
+    end
+
     def debt_settled(debt)
       [ debt.lender, debt.borrower ].compact.each do |user|
         create_notification(

@@ -275,7 +275,26 @@
       "confirm_reject": "Reject Payment",
       "status_pending": "Pending",
       "status_approved": "Approved",
-      "status_rejected": "Rejected"
+      "status_rejected": "Rejected",
+      "self_reported": "Self-reported"
+    },
+    "upgrade": {
+      "link_button": "Link to Registered User",
+      "dialog_title": "Upgrade to Mutual Debt",
+      "dialog_description": "Enter the Personal ID of the other party to link this debt. They will need to accept the upgrade request.",
+      "personal_id": "Personal ID",
+      "personal_id_placeholder": "e.g. ABC234",
+      "user_not_found": "User not found",
+      "found_user": "Found: {{name}}",
+      "send_request": "Send Upgrade Request",
+      "sending": "Sending...",
+      "request_title": "Debt Upgrade Request",
+      "request_description": "{{creator}} wants to link a personal debt of {{amount}} {{currency}} with you. If you accept, this debt will become a mutual debt requiring two-sided approval for payments.",
+      "accept_button": "Accept Upgrade",
+      "decline_button": "Decline Upgrade",
+      "accepting": "Accepting...",
+      "declining": "Declining...",
+      "awaiting": "Upgrade request sent to {{name}}. Awaiting their response."
     },
     "witnesses": {
       "title": "Witnesses",

@@ -1,11 +1,13 @@
 import { Head, router, usePage } from '@inertiajs/react'
 import {
   AlertTriangle,
+  ArrowUpCircle,
   Calendar,
   CheckCircle,
   Clock,
   CreditCard,
   FileText,
+  Link2,
   Loader2,
   Plus,
   Search,
@@ -57,6 +59,7 @@ interface DebtData {
   counterparty_name: string | null
   lender: UserSummary
   borrower: UserSummary | null
+  upgrade_recipient_id: number | null
   created_at: string
 }
 
@@ -77,6 +80,7 @@ interface PaymentData {
   rejection_reason: string | null
   submitter_name: string
   installment_id: number | null
+  self_reported: boolean
 }
 
 interface WitnessData {
@@ -99,6 +103,9 @@ interface ShowProps {
   remaining_balance: number
   can_manage_witnesses: boolean
   is_invited_witness: number | null
+  can_upgrade: boolean
+  is_upgrade_recipient: boolean
+  upgrade_recipient_name: string | null
   [key: string]: unknown
 }
 
@@ -660,6 +667,209 @@ function AddWitnessForm({ debt, witnessCount }: { debt: DebtData; witnessCount: 
   )
 }
 
+function UpgradeDialog({ debt }: { debt: DebtData }) {
+  const { t } = useTranslation()
+  const [open, setOpen] = useState(false)
+  const [personalId, setPersonalId] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [lookupResult, setLookupResult] = useState<{ id: number; full_name: string } | null>(null)
+  const [lookupError, setLookupError] = useState('')
+  const [lookingUp, setLookingUp] = useState(false)
+
+  function resetForm() {
+    setPersonalId('')
+    setLookupResult(null)
+    setLookupError('')
+  }
+
+  useEffect(() => {
+    if (personalId.length !== 6) {
+      setLookupResult(null)
+      setLookupError('')
+      return
+    }
+
+    setLookingUp(true)
+    setLookupResult(null)
+    setLookupError('')
+
+    fetch(`/users/lookup?personal_id=${encodeURIComponent(personalId)}`)
+      .then((res) => {
+        if (res.ok) return res.json()
+        throw new Error('not_found')
+      })
+      .then((data) => {
+        setLookupResult(data as { id: number; full_name: string })
+        setLookupError('')
+      })
+      .catch(() => {
+        setLookupResult(null)
+        setLookupError(t('debt_detail.upgrade.user_not_found'))
+      })
+      .finally(() => setLookingUp(false))
+  }, [personalId, t])
+
+  function handleUpgrade() {
+    if (!lookupResult) return
+
+    setSubmitting(true)
+    router.post(
+      `/debts/${debt.id}/upgrade`,
+      { personal_id: personalId },
+      {
+        onSuccess: () => {
+          setOpen(false)
+          resetForm()
+        },
+        onFinish: () => setSubmitting(false)
+      }
+    )
+  }
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen)
+        if (!isOpen) resetForm()
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <Link2 className="size-4 ltr:mr-2 rtl:ml-2" />
+          {t('debt_detail.upgrade.link_button')}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t('debt_detail.upgrade.dialog_title')}</DialogTitle>
+          <DialogDescription>{t('debt_detail.upgrade.dialog_description')}</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="upgrade-personal-id">{t('debt_detail.upgrade.personal_id')}</Label>
+            <div className="relative">
+              <Input
+                id="upgrade-personal-id"
+                value={personalId}
+                onChange={(e) => setPersonalId(e.target.value.toUpperCase())}
+                placeholder={t('debt_detail.upgrade.personal_id_placeholder')}
+                maxLength={6}
+                className="font-mono uppercase ltr:pr-8 rtl:pl-8"
+              />
+              <div className="pointer-events-none absolute inset-y-0 flex items-center ltr:right-2.5 rtl:left-2.5">
+                {lookingUp && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
+                {!lookingUp && lookupResult && <CheckCircle className="size-4 text-green-600" />}
+                {!lookingUp && lookupError && <XCircle className="size-4 text-red-600" />}
+                {!lookingUp && !lookupResult && !lookupError && personalId.length < 6 && (
+                  <Search className="size-4 text-muted-foreground" />
+                )}
+              </div>
+            </div>
+            {lookupResult && (
+              <p className="text-sm text-green-700">
+                {t('debt_detail.upgrade.found_user', { name: lookupResult.full_name })}
+              </p>
+            )}
+            {lookupError && <p className="text-sm text-red-600">{lookupError}</p>}
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            onClick={handleUpgrade}
+            disabled={!lookupResult || submitting}
+          >
+            {submitting ? t('debt_detail.upgrade.sending') : t('debt_detail.upgrade.send_request')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function UpgradeRequestBanner({ debt }: { debt: DebtData }) {
+  const { t } = useTranslation()
+  const [processing, setProcessing] = useState<'accept' | 'decline' | null>(null)
+
+  const creatorName =
+    debt.creator_role === 'lender' ? debt.lender.full_name : (debt.borrower?.full_name ?? debt.lender.full_name)
+
+  function handleAccept() {
+    setProcessing('accept')
+    router.post(
+      `/debts/${debt.id}/accept_upgrade`,
+      {},
+      {
+        onFinish: () => setProcessing(null)
+      }
+    )
+  }
+
+  function handleDecline() {
+    setProcessing('decline')
+    router.post(
+      `/debts/${debt.id}/decline_upgrade`,
+      {},
+      {
+        onFinish: () => setProcessing(null)
+      }
+    )
+  }
+
+  return (
+    <Card className="border-purple-200 bg-purple-50">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-start gap-3">
+            <ArrowUpCircle className="mt-0.5 size-5 shrink-0 text-purple-600" />
+            <div>
+              <h3 className="font-semibold text-purple-900">{t('debt_detail.upgrade.request_title')}</h3>
+              <p className="mt-1 text-sm text-purple-800">
+                {t('debt_detail.upgrade.request_description', {
+                  creator: creatorName,
+                  amount: debt.amount.toLocaleString(),
+                  currency: debt.currency
+                })}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Button
+              onClick={handleAccept}
+              disabled={processing !== null}
+              className="bg-green-600 text-white hover:bg-green-700"
+            >
+              <CheckCircle className="size-4 ltr:mr-2 rtl:ml-2" />
+              {processing === 'accept' ? t('debt_detail.upgrade.accepting') : t('debt_detail.upgrade.accept_button')}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDecline}
+              disabled={processing !== null}
+            >
+              <XCircle className="size-4 ltr:mr-2 rtl:ml-2" />
+              {processing === 'decline' ? t('debt_detail.upgrade.declining') : t('debt_detail.upgrade.decline_button')}
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function AwaitingUpgrade({ name }: { name: string }) {
+  const { t } = useTranslation()
+
+  return (
+    <Card className="border-purple-200 bg-purple-50">
+      <CardContent className="flex items-center gap-3 p-4 sm:p-6">
+        <Clock className="size-5 shrink-0 text-purple-600" />
+        <p className="text-sm font-medium text-purple-800">{t('debt_detail.upgrade.awaiting', { name })}</p>
+      </CardContent>
+    </Card>
+  )
+}
+
 function WitnessActions({ debt, witnessId }: { debt: DebtData; witnessId: number }) {
   const { t } = useTranslation()
   const [processing, setProcessing] = useState<'confirm' | 'decline' | null>(null)
@@ -721,7 +931,10 @@ export default function Show({
   is_lender,
   remaining_balance,
   can_manage_witnesses,
-  is_invited_witness
+  is_invited_witness,
+  can_upgrade,
+  is_upgrade_recipient,
+  upgrade_recipient_name
 }: ShowProps) {
   const { t } = useTranslation()
   const { flash } = usePage<SharedData>().props
@@ -748,6 +961,12 @@ export default function Show({
         {/* Confirmation Banner / Awaiting Message */}
         {debt.status === 'pending' && is_confirming_party && <ConfirmationBanner debt={debt} />}
         {debt.status === 'pending' && is_creator && !is_confirming_party && <AwaitingConfirmation debt={debt} />}
+
+        {/* Upgrade Request (for recipient) / Awaiting Upgrade (for creator) */}
+        {is_upgrade_recipient && <UpgradeRequestBanner debt={debt} />}
+        {is_creator && debt.upgrade_recipient_id && !is_upgrade_recipient && upgrade_recipient_name && (
+          <AwaitingUpgrade name={upgrade_recipient_name} />
+        )}
 
         {/* Debt Overview */}
         <Card>
@@ -794,6 +1013,9 @@ export default function Show({
             </div>
           </CardContent>
         </Card>
+
+        {/* Upgrade to Mutual */}
+        {can_upgrade && <UpgradeDialog debt={debt} />}
 
         {/* Installment Schedule */}
         <Card>
@@ -878,7 +1100,17 @@ export default function Show({
                       <span className="font-medium">
                         {payment.amount.toLocaleString()} {debt.currency}
                       </span>
-                      <PaymentStatusBadge status={payment.status} />
+                      <div className="flex items-center gap-1.5">
+                        {payment.self_reported && (
+                          <Badge
+                            variant="outline"
+                            className="border-orange-200 bg-orange-50 text-xs text-orange-700"
+                          >
+                            {t('debt_detail.payments.self_reported')}
+                          </Badge>
+                        )}
+                        <PaymentStatusBadge status={payment.status} />
+                      </div>
                     </div>
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
                       <span>

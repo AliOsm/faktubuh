@@ -20,6 +20,12 @@ en:
     unauthorized: "You are not authorized to view this debt."
     already_processed: "This debt has already been processed."
     not_confirming_party: "You are not authorized to confirm or reject this debt."
+    upgrade_not_allowed: "This debt cannot be upgraded."
+    upgrade_user_not_found: "User not found with that Personal ID."
+    upgrade_requested: "Upgrade request sent successfully."
+    upgrade_not_recipient: "You are not the upgrade recipient."
+    upgrade_accepted: "Upgrade accepted. This debt is now mutual."
+    upgrade_declined: "Upgrade declined. The debt remains personal."
   payments:
     submitted: "Payment submitted successfully."
     approved: "Payment approved successfully."
@@ -51,6 +57,9 @@ en:
     witness_invited: "%{inviter} invited you as a witness for a debt of %{amount} %{currency}."
     witness_confirmed: "%{witness} accepted the witness invitation for your debt of %{amount} %{currency}."
     witness_declined: "%{witness} declined the witness invitation for your debt of %{amount} %{currency}."
+    upgrade_requested: "%{creator} wants to link a personal debt of %{amount} %{currency} with you."
+    upgrade_accepted: "%{accepter} accepted the upgrade request for the debt of %{amount} %{currency}."
+    upgrade_declined: "%{decliner} declined the upgrade request for the debt of %{amount} %{currency}."
     installment_reminder: "Reminder: An installment of %{amount} %{currency} is due in %{days} days."
     installment_overdue: "An installment of %{amount} %{currency} is overdue."
   notifications_page:

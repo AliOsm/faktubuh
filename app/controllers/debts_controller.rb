@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DebtsController < InertiaController
-  before_action :set_debt, only: %i[show confirm reject]
+  before_action :set_debt, only: %i[show confirm reject upgrade accept_upgrade decline_upgrade]
   before_action :authorize_debt_access!, only: :show
   before_action :authorize_confirmation!, only: %i[confirm reject]
 
@@ -32,7 +32,10 @@ class DebtsController < InertiaController
       is_lender: @debt.lender_id == current_user.id,
       remaining_balance: remaining_balance.to_f,
       can_manage_witnesses: can_manage_witnesses?,
-      is_invited_witness: invited_witness_id
+      is_invited_witness: invited_witness_id,
+      can_upgrade: can_upgrade?,
+      is_upgrade_recipient: @debt.upgrade_recipient_id == current_user.id,
+      upgrade_recipient_name: @debt.upgrade_recipient&.full_name
     }
   end
 
@@ -59,6 +62,53 @@ class DebtsController < InertiaController
     NotificationService.debt_rejected(@debt, rejecter: current_user)
 
     redirect_to debt_path(@debt), notice: I18n.t("debts.rejected")
+  end
+
+  def upgrade
+    unless @debt.personal? && @debt.active? && creator_user(@debt)&.id == current_user.id
+      redirect_to debt_path(@debt), alert: I18n.t("debts.upgrade_not_allowed")
+      return
+    end
+
+    personal_id = params[:personal_id]&.upcase&.strip
+    recipient = User.find_by(personal_id: personal_id)
+
+    unless recipient
+      redirect_to debt_path(@debt), alert: I18n.t("debts.upgrade_user_not_found")
+      return
+    end
+
+    @debt.update!(upgrade_recipient_id: recipient.id)
+    NotificationService.upgrade_requested(@debt, recipient: recipient)
+
+    redirect_to debt_path(@debt), notice: I18n.t("debts.upgrade_requested")
+  end
+
+  def accept_upgrade
+    unless @debt.upgrade_recipient_id == current_user.id
+      redirect_to debt_path(@debt), alert: I18n.t("debts.upgrade_not_recipient")
+      return
+    end
+
+    if @debt.creator_role_lender?
+      @debt.update!(mode: "mutual", borrower_id: current_user.id, upgrade_recipient_id: nil)
+    else
+      @debt.update!(mode: "mutual", lender_id: current_user.id, upgrade_recipient_id: nil)
+    end
+
+    NotificationService.upgrade_accepted(@debt, accepter: current_user)
+    redirect_to debt_path(@debt), notice: I18n.t("debts.upgrade_accepted")
+  end
+
+  def decline_upgrade
+    unless @debt.upgrade_recipient_id == current_user.id
+      redirect_to debt_path(@debt), alert: I18n.t("debts.upgrade_not_recipient")
+      return
+    end
+
+    @debt.update!(upgrade_recipient_id: nil)
+    NotificationService.upgrade_declined(@debt, decliner: current_user)
+    redirect_to debt_path(@debt), notice: I18n.t("debts.upgrade_declined")
   end
 
   def index
@@ -100,6 +150,7 @@ class DebtsController < InertiaController
   def authorize_debt_access!
     return if @debt.lender_id == current_user.id
     return if @debt.borrower_id == current_user.id
+    return if @debt.upgrade_recipient_id == current_user.id
     return if @debt.witnesses.confirmed.exists?(user_id: current_user.id)
 
     redirect_to debts_path, alert: I18n.t("debts.unauthorized")
@@ -119,6 +170,7 @@ class DebtsController < InertiaController
       counterparty_name: debt.counterparty_name,
       lender: user_summary(debt.lender),
       borrower: debt.borrower ? user_summary(debt.borrower) : nil,
+      upgrade_recipient_id: debt.upgrade_recipient_id,
       created_at: debt.created_at.iso8601
     }
   end
@@ -146,7 +198,8 @@ class DebtsController < InertiaController
       description: payment.description,
       rejection_reason: payment.rejection_reason,
       submitter_name: payment.submitter.full_name,
-      installment_id: payment.installment_id
+      installment_id: payment.installment_id,
+      self_reported: payment.submitter_id == @debt.lender_id && payment.status == "approved" && @debt.mutual?
     }
   end
 
@@ -230,6 +283,10 @@ class DebtsController < InertiaController
   def invited_witness_id
     witness = @debt.witnesses.invited.find_by(user_id: current_user.id)
     witness&.id
+  end
+
+  def can_upgrade?
+    @debt.personal? && @debt.active? && @debt.upgrade_recipient_id.nil? && creator_user(@debt)&.id == current_user.id
   end
 
   def creator_user(debt)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_11_110207) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_11_110928) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -38,6 +38,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_110207) do
     t.enum "mode", null: false, enum_type: "debt_mode"
     t.enum "status", default: "pending", null: false, enum_type: "debt_status"
     t.datetime "updated_at", null: false
+    t.bigint "upgrade_recipient_id"
     t.index ["borrower_id", "status"], name: "index_debts_on_borrower_id_and_status"
     t.index ["borrower_id"], name: "index_debts_on_borrower_id"
     t.index ["lender_id", "status"], name: "index_debts_on_lender_id_and_status"
@@ -211,6 +212,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_110207) do
 
   add_foreign_key "debts", "users", column: "borrower_id"
   add_foreign_key "debts", "users", column: "lender_id"
+  add_foreign_key "debts", "users", column: "upgrade_recipient_id"
   add_foreign_key "installments", "debts"
   add_foreign_key "notifications", "debts"
   add_foreign_key "notifications", "users"
