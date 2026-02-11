@@ -58,6 +58,11 @@
 - Sonner toast component installed at app/frontend/components/ui/sonner.tsx — modified from shadcn default to remove `next-themes` dependency (not available in Inertia/Rails). Toaster component mounted in AppLayout.
 - Profile controller renders Inertia component `profile/Show` — maps to `pages/profile/Show.tsx`
 - `resource :profile` (singular) for current user profile — no :id in URL. Uses `current_user` directly in controller.
+- PostgreSQL enum types use `create_enum` in migrations — enum names prefixed with `debt_` (e.g., `debt_mode`, `debt_status`) to avoid namespace collisions
+- Debt model enums use explicit value mappings: `enum :mode, { mutual: "mutual", personal: "personal" }` to match PostgreSQL enum values
+- `creator_role` enum uses `prefix: true` to avoid method name collisions with association names (e.g., `creator_role_lender?` instead of `lender?`)
+- Debt model `has_many` associations (installments, payments, witnesses) use `dependent: :destroy`
+- User has_many debt associations: `lent_debts` (foreign_key: :lender_id, dependent: :destroy) and `borrowed_debts` (foreign_key: :borrower_id, dependent: :nullify)
 ---
 
 ## 2026-02-11 - US-014
@@ -206,4 +211,15 @@
   - Devise error keys from `resource.errors.to_hash(true)` are top-level attribute names (e.g., `full_name`, `email`), not nested under `user.`
   - oxlint jsx-a11y/no-autofocus rule prevents using autoFocus attribute on form inputs — remove it for accessibility compliance
   - Devise form params are nested under `user` key — `sign_up_params` must use `params.require(:user).permit(...)` pattern
+---
+
+## 2026-02-11 - US-015
+- What was implemented: Created Debt model with PostgreSQL migration including four custom enum types (debt_mode, debt_creator_role, debt_installment_type, debt_status), all required columns (lender_id, borrower_id, counterparty_name, mode, creator_role, amount, currency, description, deadline, installment_type, status), foreign key constraints on lender_id and borrower_id, and indexes on status, [lender_id, status], [borrower_id, status]. Implemented Debt model with belongs_to :lender, belongs_to :borrower (optional), has_many :installments/:payments/:witnesses (dependent: destroy). Added enum declarations for all four enum columns. Added validations: amount > 0, currency presence, deadline presence. Custom validations: mutual mode requires borrower_id, personal mode requires counterparty_name. Added User model associations: has_many :lent_debts and :borrowed_debts. Wrote 20 model tests covering all validations, associations, enums, and mode-specific logic.
+- Files changed: db/migrate/20260211091834_create_debts.rb (new), app/models/debt.rb (new), app/models/user.rb (modified), db/schema.rb (updated), test/fixtures/debts.yml (new), test/models/debt_test.rb (new)
+- **Learnings for future iterations:**
+  - PostgreSQL enum types in Rails migrations use `create_enum` — prefix names to avoid collisions (e.g., `debt_mode` not `mode`)
+  - Rails enum declarations with PostgreSQL enums need explicit value mappings: `enum :mode, { mutual: "mutual", personal: "personal" }`
+  - Use `prefix: true` on enums when method names would collide with associations (e.g., `creator_role` has `lender`/`borrower` values that collide with `belongs_to :lender`)
+  - Debt fixtures reference user fixtures by label name (e.g., `lender: one` references `users(:one)`)
+  - SimpleCov coverage failure is pre-existing and doesn't block stories — all 58 tests pass with 0 failures
 ---
