@@ -108,6 +108,38 @@
       "settled": "Settled"
     }
   },
+  "debts_list": {
+    "title": "My Debts",
+    "new_debt": "New Debt",
+    "empty": "No debts match your filters. Try adjusting your search or create a new debt.",
+    "showing": "{{count}} debts",
+    "status": {
+      "pending": "Pending",
+      "active": "Active",
+      "settled": "Settled",
+      "rejected": "Rejected"
+    },
+    "mode": {
+      "mutual": "Mutual",
+      "personal": "Personal"
+    },
+    "filters": {
+      "status": "Status",
+      "mode": "Mode",
+      "role": "Role",
+      "all_statuses": "All Statuses",
+      "all_modes": "All Modes",
+      "all_roles": "All Roles",
+      "lender": "Lender",
+      "borrower": "Borrower"
+    },
+    "sort": {
+      "label": "Sort by",
+      "newest": "Newest First",
+      "deadline": "Deadline (Earliest)",
+      "amount": "Amount (Highest)"
+    }
+  },
   "debt_creation": {
     "title": "Create a Debt",
     "step_indicator": "Step {{current}} of {{total}}",

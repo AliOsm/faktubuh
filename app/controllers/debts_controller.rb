@@ -62,6 +62,18 @@ class DebtsController < InertiaController
   end
 
   def index
+    debts = filtered_debts
+    debts = sorted_debts(debts)
+
+    render inertia: "debts/Index", props: {
+      debts: debts.includes(:lender, :borrower, :payments).map { |d| index_debt_json(d) },
+      filters: {
+        status: params[:status] || "all",
+        mode: params[:mode] || "all",
+        role: params[:role] || "all",
+        sort: params[:sort] || "created_at_desc"
+      }
+    }
   end
 
   private
@@ -252,5 +264,73 @@ class DebtsController < InertiaController
       message: I18n.t("notifications.debt_created", creator: current_user.full_name, amount: debt.amount, currency: debt.currency),
       debt: debt
     )
+  end
+
+  # --- index helpers ---
+
+  def user_debts
+    Debt.where(lender_id: current_user.id)
+        .or(Debt.where(borrower_id: current_user.id))
+  end
+
+  def filtered_debts
+    debts = user_debts
+
+    debts = debts.where(status: params[:status]) if params[:status].present? && params[:status] != "all"
+    debts = debts.where(mode: params[:mode]) if params[:mode].present? && params[:mode] != "all"
+
+    if params[:role].present? && params[:role] != "all"
+      debts = filter_by_role(debts)
+    end
+
+    debts
+  end
+
+  def filter_by_role(debts)
+    case params[:role]
+    when "lender"
+      debts.where(lender_id: current_user.id)
+    when "borrower"
+      debts.where(borrower_id: current_user.id)
+    else
+      debts
+    end
+  end
+
+  def sorted_debts(debts)
+    case params[:sort]
+    when "deadline_asc"
+      debts.order(deadline: :asc)
+    when "amount_desc"
+      debts.order(amount: :desc)
+    else
+      debts.order(created_at: :desc)
+    end
+  end
+
+  def index_debt_json(debt)
+    approved_total = debt.payments.approved.sum(:amount).to_f
+    progress = debt.amount.to_f > 0 ? ((approved_total / debt.amount.to_f) * 100).round(1) : 0
+
+    {
+      id: debt.id,
+      counterparty_name: index_counterparty_name(debt),
+      amount: debt.amount.to_f,
+      currency: debt.currency,
+      status: debt.status,
+      mode: debt.mode,
+      deadline: debt.deadline.to_s,
+      progress: progress
+    }
+  end
+
+  def index_counterparty_name(debt)
+    if debt.personal?
+      debt.counterparty_name
+    elsif debt.lender_id == current_user.id
+      debt.borrower&.full_name || "Unknown"
+    else
+      debt.lender.full_name
+    end
   end
 end

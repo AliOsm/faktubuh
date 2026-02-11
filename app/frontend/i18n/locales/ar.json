@@ -108,6 +108,38 @@
       "settled": "مسدد"
     }
   },
+  "debts_list": {
+    "title": "ديوني",
+    "new_debt": "دين جديد",
+    "empty": "لا توجد ديون تطابق عوامل التصفية. حاول تعديل البحث أو أنشئ دينًا جديدًا.",
+    "showing": "{{count}} ديون",
+    "status": {
+      "pending": "قيد الانتظار",
+      "active": "نشط",
+      "settled": "مسدد",
+      "rejected": "مرفوض"
+    },
+    "mode": {
+      "mutual": "مشترك",
+      "personal": "شخصي"
+    },
+    "filters": {
+      "status": "الحالة",
+      "mode": "النوع",
+      "role": "الدور",
+      "all_statuses": "جميع الحالات",
+      "all_modes": "جميع الأنواع",
+      "all_roles": "جميع الأدوار",
+      "lender": "مُقرض",
+      "borrower": "مُقترض"
+    },
+    "sort": {
+      "label": "ترتيب حسب",
+      "newest": "الأحدث أولاً",
+      "deadline": "تاريخ الاستحقاق (الأقرب)",
+      "amount": "المبلغ (الأعلى)"
+    }
+  },
   "debt_creation": {
     "title": "إنشاء دين",
     "step_indicator": "الخطوة {{current}} من {{total}}",

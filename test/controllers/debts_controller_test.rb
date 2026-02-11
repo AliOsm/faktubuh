@@ -220,4 +220,26 @@ class DebtsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "active", debt.status
     assert_redirected_to debt_path(debt)
   end
+
+  # --- index action tests ---
+
+  test "index returns only user's debts" do
+    get debts_url
+    assert_response :success
+  end
+
+  test "index filters by status" do
+    get debts_url, params: { status: "active" }
+    assert_response :success
+  end
+
+  test "index filters by mode" do
+    get debts_url, params: { mode: "personal" }
+    assert_response :success
+  end
+
+  test "index sorts by deadline" do
+    get debts_url, params: { sort: "deadline_asc" }
+    assert_response :success
+  end
 end
