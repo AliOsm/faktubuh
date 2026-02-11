@@ -664,7 +664,7 @@
         "Tests pass"
       ],
       "priority": 30,
-      "passes": false,
+      "passes": true,
       "notes": "Emails use standard Rails ERB templates, not Inertia. Use Active Job (deliver_later) for async delivery."
     },
     {

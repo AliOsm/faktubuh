@@ -88,6 +88,10 @@
 - NotificationService at app/services/notification_service.rb — centralized class methods for all notification types. Call via `NotificationService.debt_created(debt)` etc.
 - NotificationsController at app/controllers/notifications_controller.rb — index, mark_read, mark_all_read. Routes: `notifications_url`, `mark_read_notification_url(notification)`, `mark_all_read_notifications_url`
 - InertiaController shares `unread_notifications_count` via inertia_share — available to all pages for the header bell icon
+- DebtMailer at app/mailers/debt_mailer.rb — 7 email methods: debt_created, debt_confirmed, payment_submitted, payment_approved, payment_rejected, witness_invitation, debt_settled
+- NotificationService enqueues DebtMailer.*.deliver_later alongside in-app notifications — not all notification types send emails (debt_rejected, witness_confirmed, witness_declined are in-app only)
+- Mailer tests: use `email.text_part.body.decoded` (not `email.body.encoded`) to avoid base64-encoding issues with non-ASCII locales (e.g., Arabic)
+- Personal debt counterparty in mailer: use `Struct.new(:full_name).new(debt.counterparty_name)` — no OpenStruct (requires explicit require in frozen_string_literal)
 ---
 
 ## 2026-02-11 - US-014
@@ -409,4 +413,16 @@
   - `Intl.RelativeTimeFormat` with `numeric: 'auto'` gives natural relative times (e.g., "yesterday" instead of "1 day ago") — locale-aware for Arabic/English
   - Notification click flow: POST mark_read first, then on success navigate to debt page — ensures read state is updated before navigation
   - Badge positioning for RTL: use `ltr:-right-0.5 rtl:-left-0.5` Tailwind utilities for the notification count badge on the Bell icon
+---
+
+## 2026-02-11 - US-030
+- What was implemented: Created DebtMailer for email notifications with 7 email methods (debt_created, debt_confirmed, payment_submitted, payment_approved, payment_rejected, witness_invitation, debt_settled). Each email includes greeting with recipient's full_name, event description, debt summary (amount, currency, counterparty), and link to debt detail page. Emails rendered in recipient's preferred locale via I18n.with_locale(recipient.locale). Created both HTML and text ERB view templates in app/views/debt_mailer/ for all 7 email types. Integrated with NotificationService: each relevant notification method now enqueues the corresponding mailer via deliver_later. Not all notifications send emails — debt_rejected, witness_confirmed, and witness_declined are in-app only. Added i18n translations for all email subjects and body text in en.yml and ar.yml (debt_mailer section), plus date format translations. Wrote 11 mailer tests covering all email types, correct recipient, locale handling (Arabic and English), and personal debt counterparty_name usage. 173 tests total pass with 0 failures.
+- Files changed: app/mailers/debt_mailer.rb (new), app/views/debt_mailer/*.html.erb (7 new), app/views/debt_mailer/*.text.erb (7 new), app/services/notification_service.rb (modified — added deliver_later calls), config/locales/en.yml (modified — added debt_mailer translations), config/locales/ar.yml (modified — added debt_mailer translations), test/mailers/debt_mailer_test.rb (new)
+- **Learnings for future iterations:**
+  - Mailer tests with non-ASCII locales (Arabic): email body is base64-encoded — use `email.text_part.body.decoded` instead of `email.body.encoded` to match content
+  - `OpenStruct` requires explicit `require "ostruct"` in files with `frozen_string_literal: true` — use `Struct.new(:full_name).new(value)` as a simpler alternative
+  - `I18n.with_locale(locale) { mail(...) }` ensures the entire email (subject + body) renders in the recipient's preferred language
+  - Date localization in emails: `l(@debt.deadline, format: :long)` requires `date.formats.long` to be defined in both en.yml and ar.yml
+  - Not all notification types warrant an email — debt_rejected, witness_confirmed, witness_declined are low-urgency and better as in-app only
+  - `ApplicationMailer` default `from:` is `"from@example.com"` — should be updated before production
 ---
