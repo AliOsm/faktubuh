@@ -92,6 +92,10 @@
 - NotificationService enqueues DebtMailer.*.deliver_later alongside in-app notifications — not all notification types send emails (debt_rejected, witness_confirmed, witness_declined are in-app only)
 - Mailer tests: use `email.text_part.body.decoded` (not `email.body.encoded`) to avoid base64-encoding issues with non-ASCII locales (e.g., Arabic)
 - Personal debt counterparty in mailer: use `Struct.new(:full_name).new(debt.counterparty_name)` — no OpenStruct (requires explicit require in frozen_string_literal)
+- GoodJob is the background job adapter (replaced Solid Queue). Config at config/initializers/good_job.rb with cron schedule
+- Test environment must set `config.active_job.queue_adapter = :test` explicitly (in config/environments/test.rb) since application.rb sets :good_job globally
+- GoodJob dashboard mounted at /good_job in routes.rb
+- GoodJob cron: OverdueDetectionJob at midnight UTC, InstallmentReminderJob at 8 AM UTC
 ---
 
 ## 2026-02-11 - US-014
@@ -425,4 +429,17 @@
   - Date localization in emails: `l(@debt.deadline, format: :long)` requires `date.formats.long` to be defined in both en.yml and ar.yml
   - Not all notification types warrant an email — debt_rejected, witness_confirmed, witness_declined are low-urgency and better as in-app only
   - `ApplicationMailer` default `from:` is `"from@example.com"` — should be updated before production
+---
+
+## 2026-02-11 - US-031
+- What was implemented: Replaced Solid Queue with GoodJob for background jobs. Removed solid_queue gem and added good_job gem. Ran `rails generate good_job:install` to create migration, ran `db:migrate`. Configured GoodJob as Active Job backend in config/application.rb (`config.active_job.queue_adapter = :good_job`). Mounted GoodJob dashboard at /good_job in routes.rb. Removed Solid Queue config files (config/queue.yml, config/recurring.yml, db/queue_schema.rb, bin/jobs). Removed solid_queue Puma plugin reference from config/puma.rb. Removed queue database config from database.yml (GoodJob uses primary PG). Updated production.rb to use :good_job adapter. Set test environment to use :test adapter explicitly. Created InstallmentReminderJob that finds upcoming installments due in 3 days, 1 day, or today — creates in-app notification and sends email to both lender and borrower. Created OverdueDetectionJob that marks past-due upcoming installments as overdue, creates notifications, and sends emails. Added installment_reminder and overdue_notice methods to DebtMailer with HTML/text templates. Configured GoodJob cron schedule in config/initializers/good_job.rb: OverdueDetectionJob daily at midnight UTC, InstallmentReminderJob daily at 8 AM UTC. Added i18n translations for installment_reminder and installment_overdue notification messages and email subjects/bodies (en.yml and ar.yml). Wrote 11 job tests: 6 for InstallmentReminderJob (3-day, 1-day, today reminders, no reminders for far-future, no reminders for overdue, both parties notified) and 5 for OverdueDetectionJob (marks overdue + notifies, no re-processing, future safe, personal debt handling, correct users). 184 tests pass, 0 failures.
+- Files changed: Gemfile (modified), Gemfile.lock (modified), app/jobs/installment_reminder_job.rb (new), app/jobs/overdue_detection_job.rb (new), app/mailers/debt_mailer.rb (modified — added installment_reminder and overdue_notice), app/views/debt_mailer/installment_reminder.{html,text}.erb (new), app/views/debt_mailer/overdue_notice.{html,text}.erb (new), config/application.rb (modified), config/database.yml (modified — removed queue DB), config/environments/production.rb (modified — :good_job), config/environments/test.rb (modified — :test adapter), config/initializers/good_job.rb (new), config/locales/en.yml (modified), config/locales/ar.yml (modified), config/puma.rb (modified), config/routes.rb (modified — mounted GoodJob), db/migrate/20260211110207_create_good_jobs.rb (new), db/schema.rb (updated), test/jobs/installment_reminder_job_test.rb (new), test/jobs/overdue_detection_job_test.rb (new). Deleted: bin/jobs, config/queue.yml, config/recurring.yml, db/queue_schema.rb
+- **Learnings for future iterations:**
+  - GoodJob uses primary PostgreSQL database — no separate queue database needed (unlike Solid Queue which had a dedicated queue DB)
+  - `config.active_job.queue_adapter = :good_job` in application.rb applies to ALL environments — must explicitly set `:test` in test.rb for `assert_enqueued_jobs` etc.
+  - `assert_enqueued_emails` requires `include ActionMailer::TestHelper` in `ActiveJob::TestCase` subclasses
+  - GoodJob cron config uses standard cron syntax: `"0 0 * * *"` for midnight, `"0 8 * * *"` for 8 AM
+  - GoodJob dashboard is mounted as a Rails engine: `mount GoodJob::Engine, at: "good_job"` — should be protected in production
+  - Auto-generated GoodJob migration needs `rubocop -a` to fix Rails omakase bracket spacing
+  - Installment `.upcoming` scope (from enum) filters only status=upcoming — overdue installments are NOT picked up by reminder job
 ---
