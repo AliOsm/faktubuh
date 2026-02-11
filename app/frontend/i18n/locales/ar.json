@@ -38,5 +38,19 @@
     "toggle": "English",
     "english": "English",
     "arabic": "العربية"
+  },
+  "auth": {
+    "sign_up": {
+      "title": "إنشاء حساب",
+      "subtitle": "أدخل بياناتك للبدء",
+      "full_name": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "password_confirmation": "تأكيد كلمة المرور",
+      "submit": "إنشاء حساب",
+      "signing_up": "جارٍ إنشاء الحساب...",
+      "have_account": "لديك حساب بالفعل؟",
+      "sign_in_link": "تسجيل الدخول"
+    }
   }
 }

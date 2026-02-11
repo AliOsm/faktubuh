@@ -38,5 +38,19 @@
     "toggle": "العربية",
     "english": "English",
     "arabic": "العربية"
+  },
+  "auth": {
+    "sign_up": {
+      "title": "Create Account",
+      "subtitle": "Enter your details to get started",
+      "full_name": "Full Name",
+      "email": "Email",
+      "password": "Password",
+      "password_confirmation": "Confirm Password",
+      "submit": "Sign Up",
+      "signing_up": "Signing up...",
+      "have_account": "Already have an account?",
+      "sign_in_link": "Sign in"
+    }
   }
 }
