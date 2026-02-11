@@ -96,6 +96,12 @@
 - Test environment must set `config.active_job.queue_adapter = :test` explicitly (in config/environments/test.rb) since application.rb sets :good_job globally
 - GoodJob dashboard mounted at /good_job in routes.rb
 - GoodJob cron: OverdueDetectionJob at midnight UTC, InstallmentReminderJob at 8 AM UTC
+- Debt upgrade flow: `upgrade_recipient_id` column on debts table tracks pending upgrade invitations (null = no upgrade pending)
+- Upgrade routes: POST /debts/:id/upgrade, POST /debts/:id/accept_upgrade, POST /debts/:id/decline_upgrade (member routes)
+- NotificationService has upgrade_requested, upgrade_accepted, upgrade_declined class methods for upgrade notifications
+- `can_upgrade?` helper: personal + active + no pending upgrade + current user is creator
+- Self-reported payment badge: detected by `submitter_id == lender_id && status == approved && mode == mutual` (payments made before upgrade to mutual)
+- `authorize_debt_access!` also allows `upgrade_recipient_id == current_user.id` so recipients can view the debt before accepting
 ---
 
 ## 2026-02-11 - US-014
@@ -442,4 +448,16 @@
   - GoodJob dashboard is mounted as a Rails engine: `mount GoodJob::Engine, at: "good_job"` — should be protected in production
   - Auto-generated GoodJob migration needs `rubocop -a` to fix Rails omakase bracket spacing
   - Installment `.upcoming` scope (from enum) filters only status=upcoming — overdue installments are NOT picked up by reminder job
+---
+
+## 2026-02-11 - US-032
+- What was implemented: Implemented Personal-to-Mutual debt upgrade flow. Added migration to add `upgrade_recipient_id` (bigint FK to users, nullable) column to debts table. Added `belongs_to :upgrade_recipient` association on Debt model. Added three member routes on debts: `upgrade`, `accept_upgrade`, `decline_upgrade`. DebtsController#upgrade: validates personal + active + creator access, looks up recipient by Personal ID, sets `upgrade_recipient_id`, creates notification. DebtsController#accept_upgrade: validates current user is upgrade_recipient, changes debt mode to mutual, sets borrower_id (or lender_id) based on creator_role, clears upgrade_recipient_id, notifies creator. DebtsController#decline_upgrade: validates current user is upgrade_recipient, clears upgrade_recipient_id, notifies creator. Updated authorize_debt_access! to also allow upgrade_recipient to view the debt. Added `can_upgrade`, `is_upgrade_recipient`, `upgrade_recipient_name` props to show action. Updated Show.tsx with UpgradeDialog component (Personal ID input with auto-lookup, send request button), UpgradeRequestBanner component (Accept/Decline buttons for recipient), AwaitingUpgrade component (waiting message for creator). Added self-reported badge on payments: detected by `submitter_id == lender_id && status == approved && mode == mutual` — appears on payments that were auto-approved in personal mode before upgrade. Added 3 notification methods to NotificationService: upgrade_requested, upgrade_accepted, upgrade_declined. Added all i18n translations for upgrade flow in en.json, ar.json, en.yml, ar.yml. Wrote 4 controller tests: upgrade request sent, accept changes mode to mutual, decline keeps personal, cannot upgrade settled debt. 188 tests pass, 0 failures.
+- Files changed: db/migrate/20260211110928_add_upgrade_recipient_id_to_debts.rb (new), app/models/debt.rb (modified — added upgrade_recipient association), app/controllers/debts_controller.rb (modified — added upgrade/accept/decline actions, can_upgrade?/upgrade props, authorize_debt_access! updated, payment_json self_reported), app/services/notification_service.rb (modified — added upgrade_requested/accepted/declined), config/routes.rb (modified — added upgrade member routes), app/frontend/pages/debts/Show.tsx (modified — added UpgradeDialog, UpgradeRequestBanner, AwaitingUpgrade, self-reported badge), app/frontend/i18n/locales/en.json (modified — added upgrade section, self_reported), app/frontend/i18n/locales/ar.json (modified — added upgrade section, self_reported), config/locales/en.yml (modified — added debts.upgrade_*, notifications.upgrade_*), config/locales/ar.yml (modified — added debts.upgrade_*, notifications.upgrade_*), db/schema.rb (updated), test/controllers/debts_controller_test.rb (modified — added 4 upgrade tests)
+- **Learnings for future iterations:**
+  - `upgrade_recipient_id` is nullable — null means no upgrade pending, non-null means an upgrade invitation is outstanding
+  - Upgrade authorization: `authorize_debt_access!` must include upgrade_recipient_id check so the recipient can view the debt details before accepting
+  - `can_upgrade?` checks personal + active + no existing pending upgrade + current user is creator — all conditions must be true
+  - Self-reported payment detection: `submitter_id == lender_id` works because in personal mode, lender_id is always the creator (NOT NULL constraint). After upgrade to mutual, payments submitted by the now-lender are flagged as self-reported
+  - NotificationService upgrade methods derive creator from `creator_role_lender? ? lender : borrower` — for personal debts before upgrade, borrower may be nil, so fallback to lender
+  - Accept upgrade: `borrower_id` or `lender_id` is set based on `creator_role` — if creator is lender, recipient becomes borrower; if creator is borrower, recipient becomes lender
 ---
