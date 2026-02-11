@@ -63,6 +63,9 @@
 - `creator_role` enum uses `prefix: true` to avoid method name collisions with association names (e.g., `creator_role_lender?` instead of `lender?`)
 - Debt model `has_many` associations (installments, payments, witnesses) use `dependent: :destroy`
 - User has_many debt associations: `lent_debts` (foreign_key: :lender_id, dependent: :destroy) and `borrowed_debts` (foreign_key: :borrower_id, dependent: :nullify)
+- User also has_many: :payments (foreign_key: :submitter_id), :witnesses, :notifications (all dependent: :destroy)
+- Models with PostgreSQL enums: Installment (:status), Payment (:status), Witness (:status) — each with their own enum type
+- Notification uses plain string for notification_type (not PG enum) — types may grow dynamically
 ---
 
 ## 2026-02-11 - US-014
@@ -222,4 +225,15 @@
   - Use `prefix: true` on enums when method names would collide with associations (e.g., `creator_role` has `lender`/`borrower` values that collide with `belongs_to :lender`)
   - Debt fixtures reference user fixtures by label name (e.g., `lender: one` references `users(:one)`)
   - SimpleCov coverage failure is pre-existing and doesn't block stories — all 58 tests pass with 0 failures
+---
+
+## 2026-02-11 - US-016
+- What was implemented: Created Installment, Payment, Witness, and Notification models with migrations, validations, associations, enums, scopes, and fixtures. Created 4 PostgreSQL enum types (installment_status, payment_status, witness_status) and 4 migrations with proper foreign keys, indexes, and constraints. Installment model: belongs_to :debt, has_many :payments, enum :status (upcoming/submitted/approved/rejected/overdue), validates amount > 0 and due_date presence. Payment model: belongs_to :debt, belongs_to :installment (optional), belongs_to :submitter (User), enum :status (pending/approved/rejected), validates amount > 0 and submitted_at presence. Witness model: belongs_to :debt, belongs_to :user, enum :status (invited/confirmed/declined), validates user_id uniqueness scoped to debt_id. Notification model: belongs_to :user, belongs_to :debt (optional), scope :unread, validates notification_type and message presence. Added User associations: has_many :payments, :witnesses, :notifications. Created fixture files for all 4 models. Wrote 37 new model tests (95 total, 0 failures).
+- Files changed: db/migrate/20260211092218_create_installments.rb (new), db/migrate/20260211092224_create_payments.rb (new), db/migrate/20260211092225_create_witnesses.rb (new), db/migrate/20260211092226_create_notifications.rb (new), app/models/installment.rb (new), app/models/payment.rb (new), app/models/witness.rb (new), app/models/notification.rb (new), app/models/user.rb (modified), db/schema.rb (updated), test/fixtures/installments.yml (new), test/fixtures/payments.yml (new), test/fixtures/witnesses.yml (new), test/fixtures/notifications.yml (new), test/models/installment_test.rb (new), test/models/payment_test.rb (new), test/models/witness_test.rb (new), test/models/notification_test.rb (new)
+- **Learnings for future iterations:**
+  - PostgreSQL enum type names for new models: `installment_status`, `payment_status`, `witness_status` (no prefix needed since they're specific enough)
+  - Notification model doesn't use a PostgreSQL enum for notification_type — uses a plain string column since notification types may grow dynamically
+  - `t.references :submitter` creates a `submitter_id` column (not `submitted_by`) — `belongs_to :submitter` auto-resolves to `submitter_id` without needing explicit foreign_key
+  - Witness unique index `[debt_id, user_id]` enforces one witness entry per user per debt at the database level
+  - Notification `scope :unread` filters by `read: false` — complemented by the `read` boolean column defaulting to false
 ---
