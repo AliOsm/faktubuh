@@ -51,6 +51,8 @@ en:
     witness_invited: "%{inviter} invited you as a witness for a debt of %{amount} %{currency}."
     witness_confirmed: "%{witness} accepted the witness invitation for your debt of %{amount} %{currency}."
     witness_declined: "%{witness} declined the witness invitation for your debt of %{amount} %{currency}."
+    installment_reminder: "Reminder: An installment of %{amount} %{currency} is due in %{days} days."
+    installment_overdue: "An installment of %{amount} %{currency} is overdue."
   notifications_page:
     marked_read: "Notification marked as read."
     all_marked_read: "All notifications marked as read."
@@ -81,6 +83,13 @@ en:
     witness_invitation:
       subject: "Witness invitation — debt of %{amount} %{currency}"
       body: "%{inviter} has invited you to be a witness for a debt."
+    installment_reminder:
+      subject: "Installment reminder — %{amount} %{currency} due in %{days} days"
+      body: "You have an installment of %{amount} %{currency} due in %{days} days."
+    overdue_notice:
+      subject: "Installment overdue — %{amount} %{currency}"
+      body: "An installment of %{amount} %{currency} is now overdue."
+    installment_due_date_label: "Due Date"
     debt_settled:
       subject: "Debt settled — %{amount} %{currency}"
       body: "The debt with %{counterparty} has been fully settled. Congratulations!"

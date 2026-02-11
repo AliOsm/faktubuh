@@ -101,10 +101,6 @@ production:
     <<: *primary_production
     database: faktubuh_production_cache
     migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: faktubuh_production_queue
-    migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
     database: faktubuh_production_cable

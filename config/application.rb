@@ -18,5 +18,7 @@ module Faktubuh
 
     config.i18n.available_locales = [ :en, :ar ]
     config.i18n.default_locale = :en
+
+    config.active_job.queue_adapter = :good_job
   end
 end

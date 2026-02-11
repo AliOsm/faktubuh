@@ -55,6 +55,8 @@ ar:
     witness_invited: "قام %{inviter} بدعوتك كشاهد على دين بقيمة %{amount} %{currency}."
     witness_confirmed: "قبل %{witness} دعوة الشهادة على دينك بقيمة %{amount} %{currency}."
     witness_declined: "رفض %{witness} دعوة الشهادة على دينك بقيمة %{amount} %{currency}."
+    installment_reminder: "تذكير: قسط بقيمة %{amount} %{currency} مستحق خلال %{days} أيام."
+    installment_overdue: "قسط بقيمة %{amount} %{currency} متأخر عن موعد الاستحقاق."
   notifications_page:
     marked_read: "تم تعليم الإشعار كمقروء."
     all_marked_read: "تم تعليم جميع الإشعارات كمقروءة."
@@ -85,6 +87,13 @@ ar:
     witness_invitation:
       subject: "دعوة شهادة — دين بقيمة %{amount} %{currency}"
       body: "قام %{inviter} بدعوتك لتكون شاهدًا على دين."
+    installment_reminder:
+      subject: "تذكير بالقسط — %{amount} %{currency} مستحق خلال %{days} أيام"
+      body: "لديك قسط بقيمة %{amount} %{currency} مستحق خلال %{days} أيام."
+    overdue_notice:
+      subject: "قسط متأخر — %{amount} %{currency}"
+      body: "قسط بقيمة %{amount} %{currency} متأخر عن موعد الاستحقاق."
+    installment_due_date_label: "تاريخ الاستحقاق"
     debt_settled:
       subject: "تم تسديد الدين — %{amount} %{currency}"
       body: "تم تسديد الدين مع %{counterparty} بالكامل. تهانينا!"

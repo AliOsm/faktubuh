@@ -1,0 +1,11 @@
+<%= t("debt_mailer.greeting", name: @recipient.full_name) %>
+
+<%= t("debt_mailer.installment_reminder.body", amount: @installment.amount, currency: @debt.currency, days: @days_until) %>
+
+<%= t("debt_mailer.amount_label") %>: <%= @installment.amount %> <%= @debt.currency %>
+<%= t("debt_mailer.installment_due_date_label") %>: <%= l(@installment.due_date, format: :long) %>
+<%= t("debt_mailer.counterparty_label") %>: <%= @counterparty.full_name %>
+
+<%= t("debt_mailer.view_debt") %>: <%= debt_url(@debt) %>
+
+<%= t("debt_mailer.sign_off") %>
