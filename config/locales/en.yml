@@ -22,13 +22,20 @@ en:
     not_confirming_party: "You are not authorized to confirm or reject this debt."
   payments:
     submitted: "Payment submitted successfully."
+    approved: "Payment approved successfully."
+    rejected: "Payment rejected."
     debt_not_active: "Payments can only be submitted on active debts."
     not_borrower: "Only the borrower can submit payments."
+    not_lender: "Only the lender can approve or reject payments."
+    not_pending: "This payment has already been processed."
   notifications:
     debt_created: "%{creator} created a debt for %{amount} %{currency} with you."
     debt_confirmed: "%{confirmer} confirmed the debt for %{amount} %{currency}."
     debt_rejected: "%{rejecter} rejected the debt for %{amount} %{currency}."
     payment_submitted: "%{submitter} submitted a payment of %{amount} %{currency}."
+    payment_approved: "Your payment of %{amount} %{currency} has been approved."
+    payment_rejected: "Your payment of %{amount} %{currency} has been rejected. Reason: %{reason}"
+    debt_settled: "The debt for %{amount} %{currency} has been fully settled. Congratulations!"
   home:
     title: "Faktubuh"
     description: "Peer-to-peer Islamic debt tracking"

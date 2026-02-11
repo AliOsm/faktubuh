@@ -26,13 +26,20 @@ ar:
     not_confirming_party: "ليس لديك صلاحية لتأكيد أو رفض هذا الدين."
   payments:
     submitted: "تم تقديم الدفعة بنجاح."
+    approved: "تمت الموافقة على الدفعة بنجاح."
+    rejected: "تم رفض الدفعة."
     debt_not_active: "لا يمكن تقديم مدفوعات إلا على الديون النشطة."
     not_borrower: "فقط المقترض يمكنه تقديم مدفوعات."
+    not_lender: "فقط المُقرض يمكنه الموافقة على المدفوعات أو رفضها."
+    not_pending: "تمت معالجة هذه الدفعة بالفعل."
   notifications:
     debt_created: "قام %{creator} بإنشاء دين بقيمة %{amount} %{currency} معك."
     debt_confirmed: "قام %{confirmer} بتأكيد الدين بقيمة %{amount} %{currency}."
     debt_rejected: "قام %{rejecter} برفض الدين بقيمة %{amount} %{currency}."
     payment_submitted: "قام %{submitter} بتقديم دفعة بقيمة %{amount} %{currency}."
+    payment_approved: "تمت الموافقة على دفعتك بقيمة %{amount} %{currency}."
+    payment_rejected: "تم رفض دفعتك بقيمة %{amount} %{currency}. السبب: %{reason}"
+    debt_settled: "تم تسديد الدين بقيمة %{amount} %{currency} بالكامل. تهانينا!"
   home:
     title: "فاكتبوه"
     description: "تتبع الديون الإسلامية بين الأفراد"

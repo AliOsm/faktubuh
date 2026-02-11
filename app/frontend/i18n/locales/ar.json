@@ -201,7 +201,19 @@
       "submitting": "جارٍ التقديم...",
       "amount_positive": "يجب أن يكون المبلغ أكبر من صفر",
       "amount_exceeds_balance": "المبلغ يتجاوز الرصيد المتبقي {{remaining}}",
-      "remaining_balance": "المتبقي: {{amount}} {{currency}}"
+      "remaining_balance": "المتبقي: {{amount}} {{currency}}",
+      "approve": "موافقة",
+      "approving": "جارٍ الموافقة...",
+      "reject": "رفض",
+      "rejecting": "جارٍ الرفض...",
+      "reject_dialog_title": "رفض الدفعة",
+      "reject_dialog_description": "يمكنك اختياريًا تقديم سبب لرفض هذه الدفعة.",
+      "rejection_reason_label": "السبب (اختياري)",
+      "rejection_reason_placeholder": "لماذا يتم رفض هذه الدفعة؟",
+      "confirm_reject": "رفض الدفعة",
+      "status_pending": "قيد الانتظار",
+      "status_approved": "موافق عليها",
+      "status_rejected": "مرفوضة"
     },
     "witnesses": {
       "title": "الشهود",

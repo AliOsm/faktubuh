@@ -2,7 +2,10 @@
 
 class PaymentsController < InertiaController
   before_action :set_debt
-  before_action :authorize_payment_creation!
+  before_action :set_payment, only: %i[approve reject]
+  before_action :authorize_payment_creation!, only: :create
+  before_action :authorize_lender!, only: %i[approve reject]
+  before_action :authorize_pending_payment!, only: %i[approve reject]
 
   def create
     @payment = @debt.payments.new(payment_params)
@@ -12,16 +15,37 @@ class PaymentsController < InertiaController
 
     if @payment.save
       notify_payment_submitted(@payment) if @debt.mutual?
+      check_auto_settlement if @debt.personal?
       redirect_to debt_path(@debt), notice: I18n.t("payments.submitted")
     else
       redirect_to debt_path(@debt), inertia: { errors: @payment.errors.to_hash(true) }
     end
   end
 
+  def approve
+    @payment.update!(status: "approved")
+    mark_installment_if_covered(@payment)
+    notify_payment_approved(@payment)
+    check_auto_settlement
+
+    redirect_to debt_path(@debt), notice: I18n.t("payments.approved")
+  end
+
+  def reject
+    @payment.update!(status: "rejected", rejection_reason: params[:rejection_reason])
+    notify_payment_rejected(@payment)
+
+    redirect_to debt_path(@debt), notice: I18n.t("payments.rejected")
+  end
+
   private
 
   def set_debt
     @debt = Debt.find(params[:debt_id])
+  end
+
+  def set_payment
+    @payment = @debt.payments.find(params[:id])
   end
 
   def authorize_payment_creation!
@@ -34,6 +58,18 @@ class PaymentsController < InertiaController
       redirect_to debt_path(@debt), alert: I18n.t("payments.not_borrower")
       nil
     end
+  end
+
+  def authorize_lender!
+    return if @debt.lender_id == current_user.id
+
+    redirect_to debt_path(@debt), alert: I18n.t("payments.not_lender")
+  end
+
+  def authorize_pending_payment!
+    return if @payment.pending?
+
+    redirect_to debt_path(@debt), alert: I18n.t("payments.not_pending")
   end
 
   def borrower_user?
@@ -53,6 +89,21 @@ class PaymentsController < InertiaController
     @debt.amount - @debt.payments.approved.sum(:amount)
   end
 
+  def check_auto_settlement
+    return unless remaining_balance <= 0
+
+    @debt.update!(status: "settled")
+    notify_debt_settled
+  end
+
+  def mark_installment_if_covered(payment)
+    return unless payment.installment
+
+    installment = payment.installment
+    total_approved = installment.payments.approved.sum(:amount)
+    installment.update!(status: "approved") if total_approved >= installment.amount
+  end
+
   def notify_payment_submitted(payment)
     Notification.create!(
       user: @debt.lender,
@@ -65,5 +116,47 @@ class PaymentsController < InertiaController
       ),
       debt: @debt
     )
+  end
+
+  def notify_payment_approved(payment)
+    Notification.create!(
+      user: payment.submitter,
+      notification_type: "payment_approved",
+      message: I18n.t(
+        "notifications.payment_approved",
+        amount: payment.amount,
+        currency: @debt.currency
+      ),
+      debt: @debt
+    )
+  end
+
+  def notify_payment_rejected(payment)
+    Notification.create!(
+      user: payment.submitter,
+      notification_type: "payment_rejected",
+      message: I18n.t(
+        "notifications.payment_rejected",
+        amount: payment.amount,
+        currency: @debt.currency,
+        reason: payment.rejection_reason
+      ),
+      debt: @debt
+    )
+  end
+
+  def notify_debt_settled
+    [ @debt.lender, @debt.borrower ].compact.each do |user|
+      Notification.create!(
+        user: user,
+        notification_type: "debt_settled",
+        message: I18n.t(
+          "notifications.debt_settled",
+          amount: @debt.amount,
+          currency: @debt.currency
+        ),
+        debt: @debt
+      )
+    end
   end
 end

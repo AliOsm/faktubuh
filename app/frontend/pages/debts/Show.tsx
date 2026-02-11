@@ -92,6 +92,7 @@ interface ShowProps {
   is_confirming_party: boolean
   is_creator: boolean
   is_borrower: boolean
+  is_lender: boolean
   remaining_balance: number
   [key: string]: unknown
 }
@@ -147,6 +148,8 @@ function InstallmentStatusBadge({ status }: { status: string }) {
 }
 
 function PaymentStatusBadge({ status }: { status: string }) {
+  const { t } = useTranslation()
+
   const variants: Record<string, string> = {
     pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     approved: 'bg-green-100 text-green-800 border-green-200',
@@ -158,7 +161,7 @@ function PaymentStatusBadge({ status }: { status: string }) {
       variant="outline"
       className={cn('border font-medium', variants[status])}
     >
-      {status}
+      {t(`debt_detail.payments.status_${status}`, status)}
     </Badge>
   )
 }
@@ -299,6 +302,96 @@ function AwaitingConfirmation({ debt }: { debt: DebtData }) {
         </p>
       </CardContent>
     </Card>
+  )
+}
+
+function PaymentActions({ debt, payment }: { debt: DebtData; payment: PaymentData }) {
+  const { t } = useTranslation()
+  const [processing, setProcessing] = useState<'approve' | 'reject' | null>(null)
+  const [rejectOpen, setRejectOpen] = useState(false)
+  const [rejectionReason, setRejectionReason] = useState('')
+
+  function handleApprove() {
+    setProcessing('approve')
+    router.post(
+      `/debts/${debt.id}/payments/${payment.id}/approve`,
+      {},
+      {
+        onFinish: () => setProcessing(null)
+      }
+    )
+  }
+
+  function handleReject() {
+    setProcessing('reject')
+    router.post(
+      `/debts/${debt.id}/payments/${payment.id}/reject`,
+      { rejection_reason: rejectionReason || null },
+      {
+        onSuccess: () => {
+          setRejectOpen(false)
+          setRejectionReason('')
+        },
+        onFinish: () => setProcessing(null)
+      }
+    )
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2 pt-1">
+      <Button
+        size="sm"
+        onClick={handleApprove}
+        disabled={processing !== null}
+        className="bg-green-600 text-white hover:bg-green-700"
+      >
+        <CheckCircle className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+        {processing === 'approve' ? t('debt_detail.payments.approving') : t('debt_detail.payments.approve')}
+      </Button>
+      <Dialog
+        open={rejectOpen}
+        onOpenChange={(isOpen) => {
+          setRejectOpen(isOpen)
+          if (!isOpen) setRejectionReason('')
+        }}
+      >
+        <DialogTrigger asChild>
+          <Button
+            size="sm"
+            variant="destructive"
+            disabled={processing !== null}
+          >
+            <XCircle className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+            {t('debt_detail.payments.reject')}
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('debt_detail.payments.reject_dialog_title')}</DialogTitle>
+            <DialogDescription>{t('debt_detail.payments.reject_dialog_description')}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="rejection-reason">{t('debt_detail.payments.rejection_reason_label')}</Label>
+            <Textarea
+              id="rejection-reason"
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder={t('debt_detail.payments.rejection_reason_placeholder')}
+              rows={3}
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="destructive"
+              onClick={handleReject}
+              disabled={processing !== null}
+            >
+              {processing === 'reject' ? t('debt_detail.payments.rejecting') : t('debt_detail.payments.confirm_reject')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   )
 }
 
@@ -463,6 +556,7 @@ export default function Show({
   is_confirming_party,
   is_creator,
   is_borrower,
+  is_lender,
   remaining_balance
 }: ShowProps) {
   const { t } = useTranslation()
@@ -635,6 +729,12 @@ export default function Show({
                       <p className="text-xs text-red-600">
                         {t('debt_detail.payments.rejection_reason')}: {payment.rejection_reason}
                       </p>
+                    )}
+                    {payment.status === 'pending' && is_lender && debt.mode === 'mutual' && (
+                      <PaymentActions
+                        debt={debt}
+                        payment={payment}
+                      />
                     )}
                   </div>
                 ))}

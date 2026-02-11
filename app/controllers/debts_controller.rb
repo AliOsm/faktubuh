@@ -29,6 +29,7 @@ class DebtsController < InertiaController
       is_confirming_party: confirming_party?,
       is_creator: creator_user(@debt)&.id == current_user.id,
       is_borrower: borrower_for_debt?,
+      is_lender: @debt.lender_id == current_user.id,
       remaining_balance: remaining_balance.to_f
     }
   end

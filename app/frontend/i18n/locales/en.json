@@ -201,7 +201,19 @@
       "submitting": "Submitting...",
       "amount_positive": "Amount must be greater than zero",
       "amount_exceeds_balance": "Amount exceeds remaining balance of {{remaining}}",
-      "remaining_balance": "Remaining: {{amount}} {{currency}}"
+      "remaining_balance": "Remaining: {{amount}} {{currency}}",
+      "approve": "Approve",
+      "approving": "Approving...",
+      "reject": "Reject",
+      "rejecting": "Rejecting...",
+      "reject_dialog_title": "Reject Payment",
+      "reject_dialog_description": "Optionally provide a reason for rejecting this payment.",
+      "rejection_reason_label": "Reason (optional)",
+      "rejection_reason_placeholder": "Why is this payment being rejected?",
+      "confirm_reject": "Reject Payment",
+      "status_pending": "Pending",
+      "status_approved": "Approved",
+      "status_rejected": "Rejected"
     },
     "witnesses": {
       "title": "Witnesses",
