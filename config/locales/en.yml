@@ -11,6 +11,8 @@ en:
     edit: "Edit"
     back: "Back"
     next: "Next"
+  profile:
+    update_success: "Profile updated successfully."
   home:
     title: "Faktubuh"
     description: "Peer-to-peer Islamic debt tracking"

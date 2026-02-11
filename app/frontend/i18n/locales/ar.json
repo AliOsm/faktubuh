@@ -40,6 +40,20 @@
     "english": "English",
     "arabic": "العربية"
   },
+  "profile": {
+    "title": "الملف الشخصي",
+    "personal_id": "المعرف الشخصي",
+    "personal_id_description": "شارك معرفك الشخصي ليتمكن الآخرون من إيجادك على فاكتبوه.",
+    "copy_id": "نسخ المعرف الشخصي",
+    "share_id": "مشاركة المعرف الشخصي",
+    "id_copied": "تم نسخ المعرف الشخصي",
+    "share_title": "معرفي الشخصي على فاكتبوه",
+    "share_text": "جدني على فاكتبوه بمعرفي الشخصي: {{personal_id}}",
+    "personal_info": "المعلومات الشخصية",
+    "personal_info_description": "قم بتحديث اسمك. لا يمكن تغيير بريدك الإلكتروني.",
+    "full_name": "الاسم الكامل",
+    "email": "البريد الإلكتروني"
+  },
   "auth": {
     "or": "أو",
     "google_sign_in": "تسجيل الدخول بحساب Google",

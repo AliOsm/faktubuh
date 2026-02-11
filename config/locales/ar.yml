@@ -15,6 +15,8 @@ ar:
     edit: "تعديل"
     back: "رجوع"
     next: "التالي"
+  profile:
+    update_success: "تم تحديث الملف الشخصي بنجاح."
   home:
     title: "فاكتبوه"
     description: "تتبع الديون الإسلامية بين الأفراد"

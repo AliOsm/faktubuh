@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import LanguageToggle from '@/components/language-toggle'
+import { Toaster } from '@/components/ui/sonner'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -166,6 +167,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       </Sheet>
 
       <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
+      <Toaster />
     </div>
   )
 }
