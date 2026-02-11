@@ -55,6 +55,20 @@
 - SharedData type needs `[key: string]: unknown` index signature for compatibility with Inertia's `usePage<T>()` generic constraint (PageProps requires index signature)
 - AppLayout at app/frontend/layouts/app-layout.tsx — wraps authenticated pages with header, nav, user dropdown. Pages opt in via `PageComponent.layout = (page) => <AppLayout>{page}</AppLayout>`
 - InertiaController shares `auth: { user: current_user.as_json(only: %i[id full_name email personal_id]) }` guarded with `if current_user` for unauthenticated pages
+- Sonner toast component installed at app/frontend/components/ui/sonner.tsx — modified from shadcn default to remove `next-themes` dependency (not available in Inertia/Rails). Toaster component mounted in AppLayout.
+- Profile controller renders Inertia component `profile/Show` — maps to `pages/profile/Show.tsx`
+- `resource :profile` (singular) for current user profile — no :id in URL. Uses `current_user` directly in controller.
+---
+
+## 2026-02-11 - US-014
+- What was implemented: Built user profile page with Personal ID display, copy-to-clipboard, Web Share API, and editable full name. Created ProfilesController with show and update actions inheriting from InertiaController. GET /profile renders profile/Show.tsx with user data (full_name, email, personal_id). PATCH /profile updates full_name with validation (presence required). Profile page displays Personal ID in large monospaced font with copy and share buttons. Copy uses navigator.clipboard, share uses navigator.share with fallback to copy. Name update form uses Inertia useForm hook with PATCH submission. Success toast shown via sonner after update. Installed sonner toast component (modified from shadcn default to remove next-themes dependency). Added Toaster to AppLayout. Added i18n translations for profile page in en.json, ar.json, en.yml, ar.yml. Wrote 5 controller tests.
+- Files changed: app/controllers/profiles_controller.rb (new), app/frontend/pages/profile/Show.tsx (new), app/frontend/components/ui/sonner.tsx (new), app/frontend/layouts/app-layout.tsx (modified), config/routes.rb (modified), app/frontend/i18n/locales/en.json (modified), app/frontend/i18n/locales/ar.json (modified), config/locales/en.yml (modified), config/locales/ar.yml (modified), package.json (modified), yarn.lock (modified), test/controllers/profiles_controller_test.rb (new)
+- **Learnings for future iterations:**
+  - Sonner component from shadcn uses `next-themes` which is Next.js-specific — must be removed for Inertia/Rails projects and theme prop omitted
+  - Toaster component must be mounted in AppLayout for toasts to render on authenticated pages
+  - `resource :profile` (singular) creates `/profile` path without `:id` — uses `current_user` directly in controller
+  - For Inertia error props, use `usePage().props as { errors?: Record<string, string> }` without the SharedData generic to avoid TypeScript incompatibility with Inertia's Errors & ErrorBag type
+  - Flash notice from Rails redirect is available via `usePage<SharedData>().props.flash?.notice` and can trigger a toast in useEffect
 ---
 
 ## 2026-02-11 - US-013
