@@ -314,3 +314,16 @@
   - The confirming party is the non-creator: if creator_role is "lender", the borrower confirms; if "borrower", the lender confirms
   - Arabic confirmation translations were missing from ar.json even though en.json had them — always check both locale files when translations are expected
 ---
+
+## 2026-02-11 - US-023
+- What was implemented: Implemented payment submission for debt detail page. Created PaymentsController with create action inheriting from InertiaController. Mutual mode: creates payment with status 'pending', notifies lender via Notification. Personal mode: creates payment with status 'approved' (auto-approved, self-reported). Added remaining balance validation to Payment model (amount cannot exceed debt.amount minus approved payments sum). Added authorization: only borrower can submit on mutual debts, only creator (lender_id) can submit on personal debts. Only active debts accept payments. Added nested routes: `resources :payments, only: [:create]` under debts. Updated DebtsController#show to pass `is_borrower` and `remaining_balance` props. Updated Show.tsx with SubmitPaymentDialog component using shadcn Dialog with amount, description, and optional installment link fields. Client-side validation for positive amount and remaining balance check. Submit Payment button visible only to borrower on active debts with remaining balance > 0. Added i18n translations for all payment submission UI text (en/ar) and Rails flash messages (en.yml/ar.yml). Wrote 6 controller tests.
+- Files changed: app/controllers/payments_controller.rb (new), app/controllers/debts_controller.rb (modified — added is_borrower/remaining_balance props, borrower_for_debt?/remaining_balance helpers), app/models/payment.rb (modified — added amount_within_remaining_balance validation), app/frontend/pages/debts/Show.tsx (modified — added SubmitPaymentDialog, new props, Dialog/Input/Label/Select/Textarea imports), app/frontend/i18n/locales/en.json (modified), app/frontend/i18n/locales/ar.json (modified), config/locales/en.yml (modified), config/locales/ar.yml (modified), config/routes.rb (modified), test/controllers/payments_controller_test.rb (new)
+- **Learnings for future iterations:**
+  - PaymentsController uses nested routes: `debt_payments_url(debt)` for POST /debts/:debt_id/payments
+  - Payment remaining balance: `debt.amount - debt.payments.approved.sum(:amount)` — no separate balance column needed
+  - Personal mode payments are auto-approved (status 'approved') with no notification; mutual mode payments are 'pending' with lender notification
+  - Personal mode borrower check: `@debt.lender_id == current_user.id` since lender_id is always the creator in personal mode
+  - Payment model validation `on: :create` ensures balance check only applies to new payments, not status updates
+  - shadcn Select with "none" value: must explicitly check `installmentId !== 'none'` before sending to server, as `"none"` is truthy
+  - Vite test manifest becomes stale after TypeScript changes — force rebuild with `RAILS_ENV=test bin/vite build --force`
+---
