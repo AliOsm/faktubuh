@@ -122,4 +122,35 @@ class DebtsControllerTest < ActionDispatch::IntegrationTest
     post debts_url, params: { debt: { mode: "personal" } }
     assert_response :redirect
   end
+
+  # --- show action tests ---
+
+  test "lender can view debt detail" do
+    debt = debts(:mutual_debt)
+    get debt_url(debt)
+    assert_response :success
+  end
+
+  test "borrower can view debt detail" do
+    debt = debts(:mutual_debt)
+    sign_in @borrower
+    get debt_url(debt)
+    assert_response :success
+  end
+
+  test "unauthorized user gets redirected from debt detail" do
+    debt = debts(:mutual_debt)
+    unauthorized_user = users(:three)
+    sign_in unauthorized_user
+    get debt_url(debt)
+    assert_redirected_to debts_path
+  end
+
+  test "confirmed witness can view debt detail" do
+    debt = debts(:personal_debt)
+    witness_user = users(:three)
+    sign_in witness_user
+    get debt_url(debt)
+    assert_response :success
+  end
 end

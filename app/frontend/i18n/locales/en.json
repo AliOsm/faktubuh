@@ -145,5 +145,66 @@
     },
     "ayat_translation": "O you who believe, when you contract a debt for a specified term, write it down.",
     "ayat_reference": "Surah Al-Baqarah 2:282"
+  },
+  "debt_detail": {
+    "title": "Debt Details",
+    "status": {
+      "pending": "Pending",
+      "active": "Active",
+      "settled": "Settled",
+      "rejected": "Rejected"
+    },
+    "mode": {
+      "mutual": "Mutual",
+      "personal": "Personal"
+    },
+    "role": {
+      "lender": "Lender",
+      "borrower": "Borrower"
+    },
+    "lender": "Lender",
+    "borrower": "Borrower",
+    "counterparty": "Counterparty",
+    "amount": "Amount",
+    "deadline": "Deadline",
+    "description": "Description",
+    "installment_type": "Installment Type",
+    "created_at": "Created",
+    "no_description": "No description provided",
+    "installments": {
+      "title": "Installment Schedule",
+      "amount": "Amount",
+      "due_date": "Due Date",
+      "status": "Status",
+      "no_installments": "No installments scheduled",
+      "overdue": "Overdue"
+    },
+    "payments": {
+      "title": "Payment History",
+      "amount": "Amount",
+      "date": "Date",
+      "status": "Status",
+      "description": "Description",
+      "submitted_by": "Submitted by",
+      "rejection_reason": "Rejection reason",
+      "no_payments": "No payments recorded"
+    },
+    "witnesses": {
+      "title": "Witnesses",
+      "name": "Name",
+      "status": "Status",
+      "confirmed_at": "Confirmed",
+      "no_witnesses": "No witnesses assigned",
+      "invited": "Invited",
+      "confirmed": "Confirmed",
+      "declined": "Declined"
+    },
+    "witness_reminder": {
+      "strong": "According to Ayat al-Dayn (2:282), it is strongly recommended to have witnesses for this debt. Consider inviting witnesses for proper documentation.",
+      "standard": "Consider adding witnesses to this debt as recommended in Ayat al-Dayn (2:282)."
+    },
+    "ayat_verse": "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا تَدَايَنتُم بِدَيْنٍ إِلَىٰ أَجَلٍ مُّسَمًّى فَاكْتُبُوهُ",
+    "ayat_translation": "O you who believe, when you contract a debt for a specified term, write it down.",
+    "ayat_reference": "Surah Al-Baqarah 2:282"
   }
 }

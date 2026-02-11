@@ -19,6 +19,7 @@ ar:
     update_success: "تم تحديث الملف الشخصي بنجاح."
   debts:
     created: "تم إنشاء الدين بنجاح."
+    unauthorized: "ليس لديك صلاحية لعرض هذا الدين."
   notifications:
     debt_created: "قام %{creator} بإنشاء دين بقيمة %{amount} %{currency} معك."
   home:

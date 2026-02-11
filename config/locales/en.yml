@@ -15,6 +15,7 @@ en:
     update_success: "Profile updated successfully."
   debts:
     created: "Debt created successfully."
+    unauthorized: "You are not authorized to view this debt."
   notifications:
     debt_created: "%{creator} created a debt for %{amount} %{currency} with you."
   home:
