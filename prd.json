@@ -244,7 +244,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 12,
-      "passes": false,
+      "passes": true,
       "notes": "For test environment, mock the OmniAuth response using OmniAuth.config.test_mode = true."
     },
     {

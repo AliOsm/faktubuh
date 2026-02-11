@@ -48,6 +48,21 @@
 - `devise_scope` with `authenticated`/`unauthenticated` roots: root URL renders different pages based on auth state, no redirect needed
 - `before_action :authenticate_user!` on InertiaController: all pages inheriting InertiaController require authentication. Devise controllers (sessions, registrations) bypass this since they inherit from Devise::*Controller
 - Existing tests may need `include Devise::Test::IntegrationHelpers` and `sign_in users(:fixture_name)` after adding authentication requirements
+- OmniAuth Google strategy configured in config/initializers/devise.rb using Rails.application.credentials.dig(:google, :client_id/client_secret)
+- OmniAuth callbacks controller at app/controllers/users/omniauth_callbacks_controller.rb — skips CSRF for OAuth callback
+- OmniAuth test mode: `OmniAuth.config.test_mode = true` + `OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(...)` for integration tests
+- Google sign-in button: native HTML form POST to `/users/auth/google_oauth2` with CSRF token from meta tag (not Inertia form)
+---
+
+## 2026-02-11 - US-012
+- What was implemented: Implemented Google OAuth 2.0 login. Created Users::OmniauthCallbacksController inheriting from Devise::OmniauthCallbacksController with `google_oauth2` action that calls User.from_omniauth(auth), signs in the user on success, or redirects to registration with errors on failure. Added custom `failure` action for OAuth error handling. Configured OmniAuth Google strategy in devise.rb using Rails credentials. Added `omniauth_callbacks: "users/omniauth_callbacks"` to devise_for controller mappings. Added "Sign in with Google" button to both sign-in and sign-up pages using native HTML form POST to `/users/auth/google_oauth2` with CSRF token. Added i18n translations for OAuth buttons (en/ar) and Devise omniauth_callbacks locale for Arabic.
+- Files changed: app/controllers/users/omniauth_callbacks_controller.rb (new), test/controllers/users/omniauth_callbacks_controller_test.rb (new), app/frontend/pages/auth/SignIn.tsx (modified), app/frontend/pages/auth/SignUp.tsx (modified), config/initializers/devise.rb (modified), config/routes.rb (modified), app/frontend/i18n/locales/en.json (modified), app/frontend/i18n/locales/ar.json (modified), config/locales/ar.yml (modified)
+- **Learnings for future iterations:**
+  - OmniAuth callbacks controller must `skip_before_action :verify_authenticity_token` for the callback action since OAuth redirects lose the CSRF token
+  - OmniAuth test mode: set `OmniAuth.config.test_mode = true` in setup, mock auth with `OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(...)`, and clean up in teardown
+  - OmniAuth failure with `:invalid_credentials` mock: POST to callback URL → OmniAuth middleware intercepts → redirects (the Devise failure app handles the redirect chain)
+  - Google sign-in button must use a native HTML form POST (not Inertia router) to `/users/auth/google_oauth2` — the CSRF token is read from the `<meta>` tag via `document.querySelector`
+  - The "or" divider between password form and Google button uses a CSS pattern with absolute positioned border-t and relative centered text
 ---
 
 ## 2026-02-11 - US-011
