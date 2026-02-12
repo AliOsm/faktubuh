@@ -18,14 +18,14 @@ const appName = import.meta.env.VITE_APP_NAME ?? 'Faktubuh'
 void createInertiaApp({
   title: (title) => (title ? `${title} - ${appName}` : appName),
 
-  resolve: (name) => {
-    const pages = import.meta.glob<{ default: ResolvedComponent }>('../pages/**/*.tsx', {
-      eager: true
-    })
-    const page = pages[`../pages/${name}.tsx`]
-    if (!page) {
+  resolve: async (name) => {
+    const pages = import.meta.glob<{ default: ResolvedComponent }>('../pages/**/*.tsx')
+    const resolver = pages[`../pages/${name}.tsx`]
+    if (!resolver) {
       console.error(`Missing Inertia page component: '${name}.tsx'`)
     }
+
+    const page = await resolver()
 
     const existing = page.default.layout
     if (Array.isArray(existing)) {

@@ -10,6 +10,14 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 
+function switchTheme(setTheme: (theme: string) => void, theme: string) {
+  const style = document.createElement('style')
+  style.textContent = '*, *::before, *::after { transition: color 150ms ease-out, background-color 150ms ease-out, border-color 150ms ease-out !important; }'
+  document.head.appendChild(style)
+  setTheme(theme)
+  setTimeout(() => style.remove(), 150)
+}
+
 export default function DarkModeToggle() {
   const { setTheme } = useTheme()
   const { t } = useTranslation()
@@ -27,15 +35,15 @@ export default function DarkModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>
+        <DropdownMenuItem onClick={() => switchTheme(setTheme, 'light')}>
           <Sun className="size-4" />
           {t('theme.light')}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
+        <DropdownMenuItem onClick={() => switchTheme(setTheme, 'dark')}>
           <Moon className="size-4" />
           {t('theme.dark')}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
+        <DropdownMenuItem onClick={() => switchTheme(setTheme, 'system')}>
           <Monitor className="size-4" />
           {t('theme.system')}
         </DropdownMenuItem>
