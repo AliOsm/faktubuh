@@ -3,10 +3,11 @@ import { LayoutDashboard, List, Bell, Menu, LogOut, UserIcon } from 'lucide-reac
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import Avatar from 'boring-avatars'
+
 import DarkModeToggle from '@/components/dark-mode-toggle'
 import LanguageToggle from '@/components/language-toggle'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -24,16 +25,6 @@ interface NavItem {
   href: string
   icon: ReactNode
   badge?: number
-}
-
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
 }
 
 export default function AppLayout({ children }: { children: ReactNode }) {
@@ -114,14 +105,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="relative size-8 rounded-full"
+                  <button
+                    type="button"
+                    className="relative size-7 rounded-full overflow-hidden hover:opacity-80 transition-opacity focus:outline-none"
                   >
-                    <Avatar>
-                      <AvatarFallback>{getInitials(user.full_name)}</AvatarFallback>
-                    </Avatar>
-                  </Button>
+                    <Avatar name={user.email} size={28} variant="marble" />
+                  </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
