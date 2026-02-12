@@ -46,7 +46,7 @@ const CONTEXT_STYLES: Record<
 }
 
 export default function AyatAlDayn({ context, className }: AyatAlDaynProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const styles = CONTEXT_STYLES[context]
 
   return (
@@ -57,7 +57,9 @@ export default function AyatAlDayn({ context, className }: AyatAlDaynProps) {
       >
         {t(`ayat.${context}.verse`)}
       </p>
-      <p className={styles.translation}>{t(`ayat.${context}.translation`)}</p>
+      {i18n.language !== 'ar' && (
+        <p className={styles.translation}>{t(`ayat.${context}.translation`)}</p>
+      )}
       <p className={styles.reference}>{t(`ayat.${context}.reference`)}</p>
     </div>
   )

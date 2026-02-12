@@ -6,7 +6,7 @@ import LanguageToggle from '@/components/language-toggle'
 import { Button } from '@/components/ui/button'
 
 export default function Home() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   return (
     <>
@@ -25,7 +25,9 @@ export default function Home() {
 
           <blockquote className="border-s-4 border-primary/30 ps-4 text-end">
             <p className="text-lg leading-relaxed">{t('ayat.welcome.verse')}</p>
-            <p className="mt-2 text-sm text-muted-foreground">{t('ayat.welcome.translation')}</p>
+            {i18n.language !== 'ar' && (
+              <p className="mt-2 text-sm text-muted-foreground">{t('ayat.welcome.translation')}</p>
+            )}
             <footer className="mt-1 text-xs text-muted-foreground">{t('ayat.welcome.reference')}</footer>
           </blockquote>
 
