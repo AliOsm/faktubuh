@@ -127,16 +127,7 @@ export default function Index({ debts, filters }: IndexProps) {
               </SelectContent>
             </Select>
 
-            <Button
-              variant={filters.status === 'settled' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => updateFilters('status', filters.status === 'settled' ? 'all' : 'settled')}
-            >
-              <Archive className="size-3.5" />
-              {t('debts_list.archive')}
-            </Button>
-
-            <Select
+<Select
               value={filters.mode}
               onValueChange={(v) => updateFilters('mode', v)}
             >
