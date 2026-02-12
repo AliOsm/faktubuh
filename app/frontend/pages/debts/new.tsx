@@ -446,7 +446,7 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
               className="flex items-center gap-2"
               onClick={onBack}
             >
-              <ArrowLeft className="size-4" />
+              <ArrowLeft className="size-4 rtl:rotate-180" />
               {t('common.back')}
             </Button>
             <Button
@@ -567,7 +567,7 @@ function NewDebt() {
                   className="flex items-center gap-2"
                   onClick={handleBack}
                 >
-                  <ArrowLeft className="size-4" />
+                  <ArrowLeft className="size-4 rtl:rotate-180" />
                   {t('common.back')}
                 </Button>
                 <Button
