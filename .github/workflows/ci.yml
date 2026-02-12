@@ -71,7 +71,10 @@ jobs:
 
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev node-gyp
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libpq-dev node-gyp
+          version: 1.0
 
       - name: Checkout code
         uses: actions/checkout@v6
@@ -97,11 +100,6 @@ jobs:
 
       - name: Install JS dependencies
         run: yarn install --immutable
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
 
       - name: Run tests
         env:
