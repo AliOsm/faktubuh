@@ -10,7 +10,7 @@ class NotificationService
       create_notification(
         user: other_user,
         notification_type: "debt_created",
-        message: I18n.t("notifications.debt_created", creator: creator.full_name, amount: debt.amount, currency: debt.currency),
+        message: I18n.t("notifications.debt_created", creator: creator.full_name, amount: format_amount(debt.amount), currency: debt.currency),
         debt: debt
       )
       DebtMailer.debt_created(debt, other_user).deliver_later
@@ -23,7 +23,7 @@ class NotificationService
       create_notification(
         user: creator,
         notification_type: "debt_confirmed",
-        message: I18n.t("notifications.debt_confirmed", confirmer: confirmer.full_name, amount: debt.amount, currency: debt.currency),
+        message: I18n.t("notifications.debt_confirmed", confirmer: confirmer.full_name, amount: format_amount(debt.amount), currency: debt.currency),
         debt: debt
       )
       DebtMailer.debt_confirmed(debt, creator).deliver_later
@@ -36,7 +36,7 @@ class NotificationService
       create_notification(
         user: creator,
         notification_type: "debt_rejected",
-        message: I18n.t("notifications.debt_rejected", rejecter: rejecter.full_name, amount: debt.amount, currency: debt.currency),
+        message: I18n.t("notifications.debt_rejected", rejecter: rejecter.full_name, amount: format_amount(debt.amount), currency: debt.currency),
         debt: debt
       )
     end
@@ -46,7 +46,7 @@ class NotificationService
       create_notification(
         user: debt.lender,
         notification_type: "payment_submitted",
-        message: I18n.t("notifications.payment_submitted", submitter: payment.submitter.full_name, amount: payment.amount, currency: debt.currency),
+        message: I18n.t("notifications.payment_submitted", submitter: payment.submitter.full_name, amount: format_amount(payment.amount), currency: debt.currency),
         debt: debt
       )
       DebtMailer.payment_submitted(payment, debt.lender).deliver_later
@@ -57,7 +57,7 @@ class NotificationService
       create_notification(
         user: payment.submitter,
         notification_type: "payment_approved",
-        message: I18n.t("notifications.payment_approved", amount: payment.amount, currency: debt.currency),
+        message: I18n.t("notifications.payment_approved", amount: format_amount(payment.amount), currency: debt.currency),
         debt: debt
       )
       DebtMailer.payment_approved(payment, payment.submitter).deliver_later
@@ -68,7 +68,7 @@ class NotificationService
       create_notification(
         user: payment.submitter,
         notification_type: "payment_rejected",
-        message: I18n.t("notifications.payment_rejected", amount: payment.amount, currency: debt.currency, reason: payment.rejection_reason),
+        message: I18n.t("notifications.payment_rejected", amount: format_amount(payment.amount), currency: debt.currency, reason: payment.rejection_reason),
         debt: debt
       )
       DebtMailer.payment_rejected(payment, payment.submitter).deliver_later
@@ -80,7 +80,7 @@ class NotificationService
       create_notification(
         user: witness.user,
         notification_type: "witness_invited",
-        message: I18n.t("notifications.witness_invited", inviter: creator.full_name, amount: debt.amount, currency: debt.currency),
+        message: I18n.t("notifications.witness_invited", inviter: creator.full_name, amount: format_amount(debt.amount), currency: debt.currency),
         debt: debt
       )
       DebtMailer.witness_invitation(witness).deliver_later
@@ -94,7 +94,7 @@ class NotificationService
       create_notification(
         user: creator,
         notification_type: "witness_confirmed",
-        message: I18n.t("notifications.witness_confirmed", witness: witness.user.full_name, amount: debt.amount, currency: debt.currency),
+        message: I18n.t("notifications.witness_confirmed", witness: witness.user.full_name, amount: format_amount(debt.amount), currency: debt.currency),
         debt: debt
       )
     end
@@ -107,7 +107,7 @@ class NotificationService
       create_notification(
         user: creator,
         notification_type: "witness_declined",
-        message: I18n.t("notifications.witness_declined", witness: witness.user.full_name, amount: debt.amount, currency: debt.currency),
+        message: I18n.t("notifications.witness_declined", witness: witness.user.full_name, amount: format_amount(debt.amount), currency: debt.currency),
         debt: debt
       )
     end
@@ -117,7 +117,7 @@ class NotificationService
       create_notification(
         user: recipient,
         notification_type: "upgrade_requested",
-        message: I18n.t("notifications.upgrade_requested", creator: creator.full_name, amount: debt.amount, currency: debt.currency),
+        message: I18n.t("notifications.upgrade_requested", creator: creator.full_name, amount: format_amount(debt.amount), currency: debt.currency),
         debt: debt
       )
     end
@@ -129,7 +129,7 @@ class NotificationService
       create_notification(
         user: creator,
         notification_type: "upgrade_accepted",
-        message: I18n.t("notifications.upgrade_accepted", accepter: accepter.full_name, amount: debt.amount, currency: debt.currency),
+        message: I18n.t("notifications.upgrade_accepted", accepter: accepter.full_name, amount: format_amount(debt.amount), currency: debt.currency),
         debt: debt
       )
     end
@@ -141,7 +141,7 @@ class NotificationService
       create_notification(
         user: creator,
         notification_type: "upgrade_declined",
-        message: I18n.t("notifications.upgrade_declined", decliner: decliner.full_name, amount: debt.amount, currency: debt.currency),
+        message: I18n.t("notifications.upgrade_declined", decliner: decliner.full_name, amount: format_amount(debt.amount), currency: debt.currency),
         debt: debt
       )
     end
@@ -151,7 +151,7 @@ class NotificationService
         create_notification(
           user: user,
           notification_type: "debt_settled",
-          message: I18n.t("notifications.debt_settled", amount: debt.amount, currency: debt.currency),
+          message: I18n.t("notifications.debt_settled", amount: format_amount(debt.amount), currency: debt.currency),
           debt: debt
         )
         DebtMailer.debt_settled(debt, user).deliver_later
@@ -159,6 +159,10 @@ class NotificationService
     end
 
     private
+
+    def format_amount(amount)
+      ActiveSupport::NumberHelper.number_to_delimited(format("%.2f", amount), delimiter: ",")
+    end
 
     def create_notification(user:, notification_type:, message:, debt:)
       Notification.create!(

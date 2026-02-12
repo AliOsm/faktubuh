@@ -10,7 +10,7 @@ class WitnessTest < ActiveSupport::TestCase
 
   test "belongs to user" do
     witness = witnesses(:invited_witness)
-    assert_equal users(:two), witness.user
+    assert_equal users(:three), witness.user
   end
 
   # === Validations ===
@@ -26,10 +26,19 @@ class WitnessTest < ActiveSupport::TestCase
   test "user_id uniqueness scoped to debt_id" do
     witness = Witness.new(
       debt: debts(:mutual_debt),
-      user: users(:two)
+      user: users(:three)
     )
     assert_not witness.valid?
     assert_includes witness.errors[:user_id], "has already been taken"
+  end
+
+  test "debt party cannot be witness" do
+    witness = Witness.new(
+      debt: debts(:mutual_debt),
+      user: users(:two)
+    )
+    assert_not witness.valid?
+    assert_includes witness.errors[:user_id], "cannot be a party to the debt"
   end
 
   test "same user can witness different debts" do

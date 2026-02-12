@@ -1,6 +1,6 @@
 import { Head, useForm, usePage } from '@inertiajs/react'
 import { Check, Copy, Share2 } from 'lucide-react'
-import { type FormEvent, useEffect, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import AppLayout from '@/layouts/app-layout'
-import type { SharedData } from '@/types'
+
 
 interface ProfileProps {
   user: {
@@ -25,7 +25,6 @@ interface ProfileProps {
 
 export default function Show({ user }: ProfileProps) {
   const { t } = useTranslation()
-  const { flash } = usePage<SharedData>().props
   const { errors: pageErrors } = usePage().props as { errors?: Record<string, string> }
   const [copied, setCopied] = useState(false)
 
@@ -36,12 +35,6 @@ export default function Show({ user }: ProfileProps) {
   })
 
   const errors = pageErrors ?? {}
-
-  useEffect(() => {
-    if (flash?.notice) {
-      toast.success(flash.notice)
-    }
-  }, [flash?.notice])
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()

@@ -1,0 +1,3 @@
+CREATE DATABASE faktubuh_production;
+CREATE DATABASE faktubuh_production_cache;
+CREATE DATABASE faktubuh_production_cable;

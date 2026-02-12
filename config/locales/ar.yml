@@ -50,6 +50,7 @@ ar:
     debt_not_eligible: "لا يمكن إضافة شهود للديون المسددة أو المرفوضة."
     not_invited_witness: "أنت لست الشاهد المدعو."
     already_responded: "تم الرد على دعوة الشهادة هذه بالفعل."
+    cannot_invite_party: "لا يمكن دعوة المُقرض أو المُقترض كشاهد."
   notifications:
     debt_created: "قام %{creator} بإنشاء دين بقيمة %{amount} %{currency} معك."
     debt_confirmed: "قام %{confirmer} بتأكيد الدين بقيمة %{amount} %{currency}."

@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { router, usePage } from '@inertiajs/react'
-import { HandCoins, HandHeart, Users, User, Check, ArrowLeft, Loader2, CheckCircle2, XCircle } from 'lucide-react'
+import * as Flags from 'country-flag-icons/react/3x2'
+import { format } from 'date-fns'
+import { ar } from 'date-fns/locale'
+import { HandCoins, HandHeart, Users, User, Check, ArrowLeft, Loader2, CheckCircle2, XCircle, CalendarIcon } from 'lucide-react'
+import { arSA } from 'react-day-picker/locale'
 
 import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -24,37 +30,37 @@ interface LookedUpUser {
 }
 
 const CURRENCIES = [
-  { code: 'USD', name: 'US Dollar' },
-  { code: 'EUR', name: 'Euro' },
-  { code: 'GBP', name: 'British Pound' },
-  { code: 'CAD', name: 'Canadian Dollar' },
-  { code: 'AUD', name: 'Australian Dollar' },
-  { code: 'CHF', name: 'Swiss Franc' },
-  { code: 'JPY', name: 'Japanese Yen' },
-  { code: 'CNY', name: 'Chinese Yuan' },
-  { code: 'INR', name: 'Indian Rupee' },
-  { code: 'SAR', name: 'Saudi Riyal' },
-  { code: 'AED', name: 'UAE Dirham' },
-  { code: 'KWD', name: 'Kuwaiti Dinar' },
-  { code: 'BHD', name: 'Bahraini Dinar' },
-  { code: 'OMR', name: 'Omani Rial' },
-  { code: 'QAR', name: 'Qatari Riyal' },
-  { code: 'JOD', name: 'Jordanian Dinar' },
-  { code: 'EGP', name: 'Egyptian Pound' },
-  { code: 'MAD', name: 'Moroccan Dirham' },
-  { code: 'TND', name: 'Tunisian Dinar' },
-  { code: 'DZD', name: 'Algerian Dinar' },
-  { code: 'LBP', name: 'Lebanese Pound' },
-  { code: 'IQD', name: 'Iraqi Dinar' },
-  { code: 'SYP', name: 'Syrian Pound' },
-  { code: 'LYD', name: 'Libyan Dinar' },
-  { code: 'SDG', name: 'Sudanese Pound' },
-  { code: 'YER', name: 'Yemeni Rial' },
-  { code: 'TRY', name: 'Turkish Lira' },
-  { code: 'PKR', name: 'Pakistani Rupee' },
-  { code: 'BDT', name: 'Bangladeshi Taka' },
-  { code: 'MYR', name: 'Malaysian Ringgit' },
-  { code: 'IDR', name: 'Indonesian Rupiah' }
+  { code: 'USD', name: 'US Dollar', flag: 'US' },
+  { code: 'EUR', name: 'Euro', flag: 'EU' },
+  { code: 'GBP', name: 'British Pound', flag: 'GB' },
+  { code: 'CAD', name: 'Canadian Dollar', flag: 'CA' },
+  { code: 'AUD', name: 'Australian Dollar', flag: 'AU' },
+  { code: 'CHF', name: 'Swiss Franc', flag: 'CH' },
+  { code: 'JPY', name: 'Japanese Yen', flag: 'JP' },
+  { code: 'CNY', name: 'Chinese Yuan', flag: 'CN' },
+  { code: 'INR', name: 'Indian Rupee', flag: 'IN' },
+  { code: 'SAR', name: 'Saudi Riyal', flag: 'SA' },
+  { code: 'AED', name: 'UAE Dirham', flag: 'AE' },
+  { code: 'KWD', name: 'Kuwaiti Dinar', flag: 'KW' },
+  { code: 'BHD', name: 'Bahraini Dinar', flag: 'BH' },
+  { code: 'OMR', name: 'Omani Rial', flag: 'OM' },
+  { code: 'QAR', name: 'Qatari Riyal', flag: 'QA' },
+  { code: 'JOD', name: 'Jordanian Dinar', flag: 'JO' },
+  { code: 'EGP', name: 'Egyptian Pound', flag: 'EG' },
+  { code: 'MAD', name: 'Moroccan Dirham', flag: 'MA' },
+  { code: 'TND', name: 'Tunisian Dinar', flag: 'TN' },
+  { code: 'DZD', name: 'Algerian Dinar', flag: 'DZ' },
+  { code: 'LBP', name: 'Lebanese Pound', flag: 'LB' },
+  { code: 'IQD', name: 'Iraqi Dinar', flag: 'IQ' },
+  { code: 'SYP', name: 'Syrian Pound', flag: 'SY' },
+  { code: 'LYD', name: 'Libyan Dinar', flag: 'LY' },
+  { code: 'SDG', name: 'Sudanese Pound', flag: 'SD' },
+  { code: 'YER', name: 'Yemeni Rial', flag: 'YE' },
+  { code: 'TRY', name: 'Turkish Lira', flag: 'TR' },
+  { code: 'PKR', name: 'Pakistani Rupee', flag: 'PK' },
+  { code: 'BDT', name: 'Bangladeshi Taka', flag: 'BD' },
+  { code: 'MYR', name: 'Malaysian Ringgit', flag: 'MY' },
+  { code: 'IDR', name: 'Indonesian Rupiah', flag: 'ID' }
 ] as const
 
 const INSTALLMENT_TYPES: InstallmentType[] = ['lump_sum', 'monthly', 'bi_weekly', 'quarterly', 'yearly', 'custom_split']
@@ -193,7 +199,7 @@ function PersonalIdLookup({
 }
 
 function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: () => void }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { props } = usePage()
   const serverErrors = (props as unknown as { errors?: Record<string, string[]> }).errors
 
@@ -205,7 +211,7 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
   const [counterpartyName, setCounterpartyName] = useState('')
   const [amount, setAmount] = useState('')
   const [currency, setCurrency] = useState('')
-  const [deadline, setDeadline] = useState('')
+  const [deadline, setDeadline] = useState<Date | undefined>()
   const [description, setDescription] = useState('')
   const [installmentType, setInstallmentType] = useState<InstallmentType>('lump_sum')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -223,9 +229,8 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
     }
   }, [serverErrors])
 
-  const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  const minDate = tomorrow.toISOString().split('T')[0]
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {}
@@ -249,13 +254,8 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
 
     if (!deadline) {
       newErrors.deadline = t('debt_creation.details.deadline_required')
-    } else {
-      const deadlineDate = new Date(deadline)
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
-      if (deadlineDate <= today) {
-        newErrors.deadline = t('debt_creation.details.deadline_future')
-      }
+    } else if (deadline <= today) {
+      newErrors.deadline = t('debt_creation.details.deadline_future')
     }
 
     setErrors(newErrors)
@@ -275,7 +275,7 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
           mode,
           amount: parseFloat(amount),
           currency,
-          deadline,
+          deadline: deadline ? format(deadline, 'yyyy-MM-dd') : '',
           description,
           installment_type: installmentType,
           counterparty_name: mode === 'personal' ? counterpartyName : undefined,
@@ -347,14 +347,20 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
                 <SelectValue placeholder={t('debt_creation.details.currency_placeholder')} />
               </SelectTrigger>
               <SelectContent>
-                {CURRENCIES.map((c) => (
-                  <SelectItem
-                    key={c.code}
-                    value={c.code}
-                  >
-                    {c.code} — {c.name}
-                  </SelectItem>
-                ))}
+                {CURRENCIES.map((c) => {
+                  const FlagIcon = Flags[c.flag as keyof typeof Flags]
+                  return (
+                    <SelectItem
+                      key={c.code}
+                      value={c.code}
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        {FlagIcon && <FlagIcon className="inline-block h-3.5 w-5 rounded-sm" />}
+                        {c.code} — {c.name}
+                      </span>
+                    </SelectItem>
+                  )
+                })}
               </SelectContent>
             </Select>
             {errors.currency && <p className="text-sm text-destructive">{errors.currency}</p>}
@@ -362,12 +368,32 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
 
           <div className="space-y-2">
             <Label>{t('debt_creation.details.deadline')}</Label>
-            <Input
-              type="date"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              min={minDate}
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    'w-full justify-start text-left font-normal',
+                    !deadline && 'text-muted-foreground'
+                  )}
+                >
+                  <CalendarIcon className="size-4" />
+                  {deadline
+                    ? format(deadline, 'PPP', { locale: i18n.language === 'ar' ? ar : undefined })
+                    : t('debt_creation.details.pick_date')}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={deadline}
+                  onSelect={setDeadline}
+                  disabled={{ before: new Date(today.getTime() + 86400000) }}
+                  locale={i18n.language === 'ar' ? arSA : undefined}
+                  dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+                />
+              </PopoverContent>
+            </Popover>
             {errors.deadline && <p className="text-sm text-destructive">{errors.deadline}</p>}
           </div>
 

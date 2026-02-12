@@ -46,6 +46,7 @@ en:
     debt_not_eligible: "Witnesses cannot be added to settled or rejected debts."
     not_invited_witness: "You are not the invited witness."
     already_responded: "This witness invitation has already been responded to."
+    cannot_invite_party: "The lender or borrower cannot be invited as a witness."
   notifications:
     debt_created: "%{creator} created a debt for %{amount} %{currency} with you."
     debt_confirmed: "%{confirmer} confirmed the debt for %{amount} %{currency}."

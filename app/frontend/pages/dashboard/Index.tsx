@@ -39,6 +39,14 @@ function formatCurrency(amount: number, currency: string): string {
   return `${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`
 }
 
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
+}
+
 function StatusBadge({ status, t }: { status: string; t: (key: string) => string }) {
   const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
     pending: 'outline',
@@ -94,17 +102,17 @@ function CurrencySummaryCard({ summary, t }: { summary: CurrencySummary; t: (key
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-start gap-2">
-            <HandCoins className="mt-0.5 size-4 text-green-600" />
+            <HandCoins className="mt-0.5 size-4 text-green-600 dark:text-green-400" />
             <div>
               <p className="text-xs text-muted-foreground">{t('dashboard.total_lent')}</p>
-              <p className="font-semibold text-green-600">{formatCurrency(summary.total_lent, summary.currency)}</p>
+              <p className="font-semibold text-green-600 dark:text-green-400">{formatCurrency(summary.total_lent, summary.currency)}</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
-            <HandHeart className="mt-0.5 size-4 text-blue-600" />
+            <HandHeart className="mt-0.5 size-4 text-blue-600 dark:text-blue-400" />
             <div>
               <p className="text-xs text-muted-foreground">{t('dashboard.total_borrowed')}</p>
-              <p className="font-semibold text-blue-600">{formatCurrency(summary.total_borrowed, summary.currency)}</p>
+              <p className="font-semibold text-blue-600 dark:text-blue-400">{formatCurrency(summary.total_borrowed, summary.currency)}</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
@@ -115,10 +123,10 @@ function CurrencySummaryCard({ summary, t }: { summary: CurrencySummary; t: (key
             </div>
           </div>
           <div className="flex items-start gap-2">
-            <TrendingUp className="mt-0.5 size-4 text-orange-600" />
+            <TrendingUp className="mt-0.5 size-4 text-orange-600 dark:text-orange-400" />
             <div>
               <p className="text-xs text-muted-foreground">{t('dashboard.remaining')}</p>
-              <p className="font-semibold text-orange-600">{formatCurrency(summary.remaining, summary.currency)}</p>
+              <p className="font-semibold text-orange-600 dark:text-orange-400">{formatCurrency(summary.remaining, summary.currency)}</p>
             </div>
           </div>
         </div>
@@ -128,7 +136,7 @@ function CurrencySummaryCard({ summary, t }: { summary: CurrencySummary; t: (key
             <Calendar className="size-4 text-muted-foreground" />
             <span className="text-muted-foreground">{t('dashboard.next_installment')}:</span>
             <span className="font-medium">{formatCurrency(summary.next_installment_amount, summary.currency)}</span>
-            <span className="text-muted-foreground">{summary.next_installment_date}</span>
+            <span className="text-muted-foreground">{formatDate(summary.next_installment_date)}</span>
           </div>
         ) : (
           <div className="mt-4 flex items-center gap-2 rounded-md border bg-muted/50 p-2 text-sm text-muted-foreground">

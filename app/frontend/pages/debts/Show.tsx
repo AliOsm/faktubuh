@@ -1,4 +1,4 @@
-import { Head, router, usePage } from '@inertiajs/react'
+import { Head, router } from '@inertiajs/react'
 import {
   AlertTriangle,
   Archive,
@@ -19,9 +19,19 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
 
 import AyatAlDayn from '@/components/ayat-al-dayn'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -40,7 +50,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import AppLayout from '@/layouts/app-layout'
 import { cn } from '@/lib/utils'
-import type { SharedData } from '@/types'
+
 
 interface UserSummary {
   id: number
@@ -115,17 +125,17 @@ function StatusBadge({ status }: { status: string }) {
   const { t } = useTranslation()
 
   const variants: Record<string, string> = {
-    pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    active: 'bg-green-100 text-green-800 border-green-200',
-    settled: 'bg-blue-100 text-blue-800 border-blue-200',
-    rejected: 'bg-red-100 text-red-800 border-red-200',
-    upcoming: 'bg-slate-100 text-slate-800 border-slate-200',
-    submitted: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    approved: 'bg-green-100 text-green-800 border-green-200',
-    overdue: 'bg-red-100 text-red-800 border-red-200',
-    invited: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    confirmed: 'bg-green-100 text-green-800 border-green-200',
-    declined: 'bg-red-100 text-red-800 border-red-200'
+    pending: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800',
+    active: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800',
+    settled: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
+    rejected: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',
+    upcoming: 'bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-900/30 dark:text-slate-300 dark:border-slate-800',
+    submitted: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800',
+    approved: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800',
+    overdue: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',
+    invited: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800',
+    confirmed: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800',
+    declined: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800'
   }
 
   const label = t(`debt_detail.status.${status}`, t(`debt_detail.witnesses.${status}`, status))
@@ -144,11 +154,11 @@ function InstallmentStatusBadge({ status }: { status: string }) {
   const { t } = useTranslation()
 
   const variants: Record<string, string> = {
-    upcoming: 'bg-slate-100 text-slate-800 border-slate-200',
-    submitted: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    approved: 'bg-green-100 text-green-800 border-green-200',
-    rejected: 'bg-red-100 text-red-800 border-red-200',
-    overdue: 'bg-red-100 text-red-800 border-red-200'
+    upcoming: 'bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-900/30 dark:text-slate-300 dark:border-slate-800',
+    submitted: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800',
+    approved: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800',
+    rejected: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',
+    overdue: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800'
   }
 
   return (
@@ -165,9 +175,9 @@ function PaymentStatusBadge({ status }: { status: string }) {
   const { t } = useTranslation()
 
   const variants: Record<string, string> = {
-    pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    approved: 'bg-green-100 text-green-800 border-green-200',
-    rejected: 'bg-red-100 text-red-800 border-red-200'
+    pending: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800',
+    approved: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800',
+    rejected: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800'
   }
 
   return (
@@ -207,11 +217,11 @@ function WitnessReminder({ mode, witnesses }: { mode: string; witnesses: Witness
     <div
       className={cn(
         'flex flex-col gap-3 rounded-lg border p-4',
-        isStrong ? 'border-amber-200 bg-amber-50 text-amber-900' : 'border-yellow-200 bg-yellow-50 text-yellow-900'
+        isStrong ? 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300' : 'border-yellow-200 bg-yellow-50 text-yellow-900 dark:border-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300'
       )}
     >
       <div className="flex items-start gap-3">
-        <AlertTriangle className={cn('mt-0.5 size-5 shrink-0', isStrong ? 'text-amber-600' : 'text-yellow-600')} />
+        <AlertTriangle className={cn('mt-0.5 size-5 shrink-0', isStrong ? 'text-amber-600 dark:text-amber-400' : 'text-yellow-600 dark:text-yellow-400')} />
         <p className="text-sm">{message}</p>
       </div>
       <AyatAlDayn
@@ -251,39 +261,69 @@ function ConfirmationBanner({ debt }: { debt: DebtData }) {
   }
 
   return (
-    <Card className="border-amber-200 bg-amber-50">
+    <Card className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20">
       <CardContent className="p-4 sm:p-6">
         <div className="flex flex-col gap-4">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-600" />
+            <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400" />
             <div>
-              <h3 className="font-semibold text-amber-900">{t('debt_detail.confirmation.banner_title')}</h3>
-              <p className="mt-1 text-sm text-amber-800">
+              <h3 className="font-semibold text-amber-900 dark:text-amber-300">{t('debt_detail.confirmation.banner_title')}</h3>
+              <p className="mt-1 text-sm text-amber-800 dark:text-amber-400">
                 {t('debt_detail.confirmation.banner_description', { creator: creatorName })}
               </p>
             </div>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button
-              onClick={handleConfirm}
-              disabled={processing !== null}
-              className="bg-green-600 text-white hover:bg-green-700"
-            >
-              <CheckCircle className="size-4 ltr:mr-2 rtl:ml-2" />
-              {processing === 'confirm'
-                ? t('debt_detail.confirmation.confirming')
-                : t('debt_detail.confirmation.confirm_button')}
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleReject}
-              disabled={processing !== null}
-            >
-              <XCircle className="size-4 ltr:mr-2 rtl:ml-2" />
-              {processing === 'reject'
-                ? t('debt_detail.confirmation.rejecting')
-                : t('debt_detail.confirmation.reject_button')}
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  disabled={processing !== null}
+                  className="bg-green-600 text-white hover:bg-green-700"
+                >
+                  <CheckCircle className="size-4 ltr:mr-2 rtl:ml-2" />
+                  {processing === 'confirm'
+                    ? t('debt_detail.confirmation.confirming')
+                    : t('debt_detail.confirmation.confirm_button')}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t('debt_detail.confirmation.confirm_dialog_title')}</AlertDialogTitle>
+                  <AlertDialogDescription>{t('debt_detail.confirmation.confirm_dialog_description')}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleConfirm} className="bg-green-600 text-white hover:bg-green-700">
+                    {t('debt_detail.confirmation.confirm_dialog_confirm')}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  disabled={processing !== null}
+                >
+                  <XCircle className="size-4 ltr:mr-2 rtl:ml-2" />
+                  {processing === 'reject'
+                    ? t('debt_detail.confirmation.rejecting')
+                    : t('debt_detail.confirmation.reject_button')}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t('debt_detail.confirmation.reject_dialog_title')}</AlertDialogTitle>
+                  <AlertDialogDescription>{t('debt_detail.confirmation.reject_dialog_description')}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleReject} variant="destructive">
+                    {t('debt_detail.confirmation.reject_dialog_confirm')}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </CardContent>
@@ -297,10 +337,10 @@ function AwaitingConfirmation({ debt }: { debt: DebtData }) {
   const confirmingPartyName = debt.creator_role === 'lender' ? (debt.borrower?.full_name ?? '') : debt.lender.full_name
 
   return (
-    <Card className="border-blue-200 bg-blue-50">
+    <Card className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
       <CardContent className="flex items-center gap-3 p-4 sm:p-6">
-        <Clock className="size-5 shrink-0 text-blue-600" />
-        <p className="text-sm font-medium text-blue-800">
+        <Clock className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
+        <p className="text-sm font-medium text-blue-800 dark:text-blue-300">
           {t('debt_detail.confirmation.awaiting', { name: confirmingPartyName })}
         </p>
       </CardContent>
@@ -342,15 +382,30 @@ function PaymentActions({ debt, payment }: { debt: DebtData; payment: PaymentDat
 
   return (
     <div className="flex flex-wrap gap-2 pt-1">
-      <Button
-        size="sm"
-        onClick={handleApprove}
-        disabled={processing !== null}
-        className="bg-green-600 text-white hover:bg-green-700"
-      >
-        <CheckCircle className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
-        {processing === 'approve' ? t('debt_detail.payments.approving') : t('debt_detail.payments.approve')}
-      </Button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            size="sm"
+            disabled={processing !== null}
+            className="bg-green-600 text-white hover:bg-green-700"
+          >
+            <CheckCircle className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+            {processing === 'approve' ? t('debt_detail.payments.approving') : t('debt_detail.payments.approve')}
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('debt_detail.payments.approve_dialog_title')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('debt_detail.payments.approve_dialog_description')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleApprove} className="bg-green-600 text-white hover:bg-green-700">
+              {t('debt_detail.payments.approve_dialog_confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <Dialog
         open={rejectOpen}
         onOpenChange={(isOpen) => {
@@ -808,14 +863,14 @@ function UpgradeRequestBanner({ debt }: { debt: DebtData }) {
   }
 
   return (
-    <Card className="border-purple-200 bg-purple-50">
+    <Card className="border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20">
       <CardContent className="p-4 sm:p-6">
         <div className="flex flex-col gap-4">
           <div className="flex items-start gap-3">
-            <ArrowUpCircle className="mt-0.5 size-5 shrink-0 text-purple-600" />
+            <ArrowUpCircle className="mt-0.5 size-5 shrink-0 text-purple-600 dark:text-purple-400" />
             <div>
-              <h3 className="font-semibold text-purple-900">{t('debt_detail.upgrade.request_title')}</h3>
-              <p className="mt-1 text-sm text-purple-800">
+              <h3 className="font-semibold text-purple-900 dark:text-purple-300">{t('debt_detail.upgrade.request_title')}</h3>
+              <p className="mt-1 text-sm text-purple-800 dark:text-purple-400">
                 {t('debt_detail.upgrade.request_description', {
                   creator: creatorName,
                   amount: debt.amount.toLocaleString(),
@@ -852,10 +907,10 @@ function AwaitingUpgrade({ name }: { name: string }) {
   const { t } = useTranslation()
 
   return (
-    <Card className="border-purple-200 bg-purple-50">
+    <Card className="border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20">
       <CardContent className="flex items-center gap-3 p-4 sm:p-6">
-        <Clock className="size-5 shrink-0 text-purple-600" />
-        <p className="text-sm font-medium text-purple-800">{t('debt_detail.upgrade.awaiting', { name })}</p>
+        <Clock className="size-5 shrink-0 text-purple-600 dark:text-purple-400" />
+        <p className="text-sm font-medium text-purple-800 dark:text-purple-300">{t('debt_detail.upgrade.awaiting', { name })}</p>
       </CardContent>
     </Card>
   )
@@ -865,13 +920,13 @@ function SettlementBanner() {
   const { t } = useTranslation()
 
   return (
-    <Card className="border-green-200 bg-green-50">
+    <Card className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
       <CardContent className="p-4 sm:p-6">
         <div className="flex items-start gap-3">
-          <CheckCircle className="mt-0.5 size-5 shrink-0 text-green-600" />
+          <CheckCircle className="mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400" />
           <div className="flex-1">
-            <h3 className="font-semibold text-green-900">{t('debt_detail.settlement.title')}</h3>
-            <p className="mt-1 text-sm text-green-800">{t('debt_detail.settlement.message')}</p>
+            <h3 className="font-semibold text-green-900 dark:text-green-300">{t('debt_detail.settlement.title')}</h3>
+            <p className="mt-1 text-sm text-green-800 dark:text-green-400">{t('debt_detail.settlement.message')}</p>
             <AyatAlDayn
               context="settlement"
               className="mt-3"
@@ -950,13 +1005,6 @@ export default function Show({
   upgrade_recipient_name
 }: ShowProps) {
   const { t } = useTranslation()
-  const { flash } = usePage<SharedData>().props
-
-  useEffect(() => {
-    if (flash?.notice) {
-      toast.success(flash.notice)
-    }
-  }, [flash?.notice])
 
   const installmentTypeLabel = t(`debt_creation.details.installment.${debt.installment_type}`, debt.installment_type)
 
@@ -1070,7 +1118,7 @@ export default function Show({
                         className={cn(
                           'border-b last:border-b-0',
                           inst.status === 'overdue' || (inst.status === 'upcoming' && isOverdue(inst.due_date))
-                            ? 'bg-red-50 text-red-900'
+                            ? 'bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-300'
                             : ''
                         )}
                       >
@@ -1089,79 +1137,6 @@ export default function Show({
                     ))}
                   </tbody>
                 </table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Payment History */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="size-5" />
-                {t('debt_detail.payments.title')}
-              </CardTitle>
-              {debt.status === 'active' && is_borrower && remaining_balance > 0 && (
-                <SubmitPaymentDialog
-                  debt={debt}
-                  installments={installments}
-                  remainingBalance={remaining_balance}
-                />
-              )}
-            </div>
-          </CardHeader>
-          <CardContent>
-            {payments.length === 0 ? (
-              <p className="text-sm text-muted-foreground">{t('debt_detail.payments.no_payments')}</p>
-            ) : (
-              <div className="space-y-3">
-                {payments.map((payment) => (
-                  <div
-                    key={payment.id}
-                    className="flex flex-col gap-1.5 rounded-md border p-3"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium">
-                        {payment.amount.toLocaleString()} {debt.currency}
-                      </span>
-                      <div className="flex items-center gap-1.5">
-                        {payment.self_reported && (
-                          <Badge
-                            variant="outline"
-                            className="border-orange-200 bg-orange-50 text-xs text-orange-700"
-                          >
-                            {t('debt_detail.payments.self_reported')}
-                          </Badge>
-                        )}
-                        <PaymentStatusBadge status={payment.status} />
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                      <span>
-                        {t('debt_detail.payments.date')}: {formatDate(payment.submitted_at)}
-                      </span>
-                      <span>
-                        {t('debt_detail.payments.submitted_by')}: {payment.submitter_name}
-                      </span>
-                    </div>
-                    {payment.description && <p className="text-xs text-foreground/70">{payment.description}</p>}
-                    {payment.status === 'rejected' && payment.rejection_reason && (
-                      <p className="text-xs text-red-600">
-                        {t('debt_detail.payments.rejection_reason')}: {payment.rejection_reason}
-                      </p>
-                    )}
-                    {payment.status === 'pending' &&
-                      is_lender &&
-                      debt.mode === 'mutual' &&
-                      debt.status !== 'settled' && (
-                        <PaymentActions
-                          debt={debt}
-                          payment={payment}
-                        />
-                      )}
-                  </div>
-                ))}
               </div>
             )}
           </CardContent>
@@ -1214,6 +1189,79 @@ export default function Show({
                 mode={debt.mode}
                 witnesses={witnesses}
               />
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Payment History */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="size-5" />
+                {t('debt_detail.payments.title')}
+              </CardTitle>
+              {debt.status === 'active' && is_borrower && remaining_balance > 0 && (
+                <SubmitPaymentDialog
+                  debt={debt}
+                  installments={installments}
+                  remainingBalance={remaining_balance}
+                />
+              )}
+            </div>
+          </CardHeader>
+          <CardContent>
+            {payments.length === 0 ? (
+              <p className="text-sm text-muted-foreground">{t('debt_detail.payments.no_payments')}</p>
+            ) : (
+              <div className="space-y-3">
+                {payments.map((payment) => (
+                  <div
+                    key={payment.id}
+                    className="flex flex-col gap-1.5 rounded-md border p-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">
+                        {payment.amount.toLocaleString()} {debt.currency}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {payment.self_reported && (
+                          <Badge
+                            variant="outline"
+                            className="border-orange-200 bg-orange-50 text-xs text-orange-700 dark:border-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
+                          >
+                            {t('debt_detail.payments.self_reported')}
+                          </Badge>
+                        )}
+                        <PaymentStatusBadge status={payment.status} />
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                      <span>
+                        {t('debt_detail.payments.date')}: {formatDate(payment.submitted_at)}
+                      </span>
+                      <span>
+                        {t('debt_detail.payments.submitted_by')}: {payment.submitter_name}
+                      </span>
+                    </div>
+                    {payment.description && <p className="text-xs text-foreground/70">{payment.description}</p>}
+                    {payment.status === 'rejected' && payment.rejection_reason && (
+                      <p className="text-xs text-red-600">
+                        {t('debt_detail.payments.rejection_reason')}: {payment.rejection_reason}
+                      </p>
+                    )}
+                    {payment.status === 'pending' &&
+                      is_lender &&
+                      debt.mode === 'mutual' &&
+                      debt.status !== 'settled' && (
+                        <PaymentActions
+                          debt={debt}
+                          payment={payment}
+                        />
+                      )}
+                  </div>
+                ))}
+              </div>
             )}
           </CardContent>
         </Card>

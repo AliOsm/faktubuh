@@ -40,6 +40,12 @@
     "english": "English",
     "arabic": "العربية"
   },
+  "theme": {
+    "toggle": "تبديل المظهر",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  },
   "profile": {
     "title": "الملف الشخصي",
     "personal_id": "المعرف الشخصي",
@@ -112,7 +118,12 @@
     "title": "ديوني",
     "new_debt": "دين جديد",
     "empty": "لا توجد ديون تطابق عوامل التصفية. حاول تعديل البحث أو أنشئ دينًا جديدًا.",
-    "showing": "{{count}} ديون",
+    "showing_zero": "لا توجد ديون",
+    "showing_one": "دين واحد",
+    "showing_two": "دينان",
+    "showing_few": "{{count}} ديون",
+    "showing_many": "{{count}} دينًا",
+    "showing_other": "{{count}} دين",
     "archive": "الأرشيف",
     "status": {
       "pending": "قيد الانتظار",
@@ -180,6 +191,7 @@
       "deadline": "تاريخ الاستحقاق",
       "deadline_required": "تاريخ الاستحقاق مطلوب",
       "deadline_future": "يجب أن يكون تاريخ الاستحقاق في المستقبل",
+      "pick_date": "اختر تاريخًا",
       "description_label": "الوصف (اختياري)",
       "description_placeholder": "أضف ملاحظة حول هذا الدين...",
       "installment_type": "نوع الأقساط",
@@ -207,7 +219,9 @@
   "notifications_page": {
     "title": "الإشعارات",
     "mark_all_read": "تعيين الكل كمقروء",
-    "empty": "لا توجد إشعارات بعد."
+    "mark_read": "تعيين كمقروء",
+    "empty": "لا توجد إشعارات بعد.",
+    "empty_description": "عندما ينشئ شخص ما ديناً معك، أو يرسل دفعة، أو يدعوك كشاهد، ستراه هنا."
   },
   "ayat": {
     "welcome": {
@@ -304,7 +318,10 @@
       "status_pending": "قيد الانتظار",
       "status_approved": "موافق عليها",
       "status_rejected": "مرفوضة",
-      "self_reported": "مُبلَّغ ذاتياً"
+      "self_reported": "مُبلَّغ ذاتياً",
+      "approve_dialog_title": "الموافقة على هذه الدفعة؟",
+      "approve_dialog_description": "بالموافقة، سيتم تسجيل هذه الدفعة وتحديث رصيد الدين. لا يمكن التراجع عن هذا الإجراء.",
+      "approve_dialog_confirm": "نعم، الموافقة على الدفعة"
     },
     "upgrade": {
       "link_button": "ربط بمستخدم مسجل",
@@ -353,7 +370,13 @@
       "reject_button": "رفض الدين",
       "confirming": "جارٍ التأكيد...",
       "rejecting": "جارٍ الرفض...",
-      "awaiting": "في انتظار التأكيد من {{name}}"
+      "awaiting": "في انتظار التأكيد من {{name}}",
+      "confirm_dialog_title": "تأكيد هذا الدين؟",
+      "confirm_dialog_description": "بالتأكيد، أنت تقر بهذا الدين وسيصبح نشطاً. لا يمكن التراجع عن هذا الإجراء.",
+      "confirm_dialog_confirm": "نعم، تأكيد الدين",
+      "reject_dialog_title": "رفض هذا الدين؟",
+      "reject_dialog_description": "بالرفض، أنت ترفض سجل الدين هذا. سيتم إخطار المنشئ. لا يمكن التراجع عن هذا الإجراء.",
+      "reject_dialog_confirm": "نعم، رفض الدين"
     },
     "settlement": {
       "title": "تم تسديد الدين",

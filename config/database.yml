@@ -96,7 +96,8 @@ production:
     <<: *default
     database: faktubuh_production
     username: faktubuh
-    password: <%= ENV["FAKTUBUH_DATABASE_PASSWORD"] %>
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
+    host: <%= ENV["DB_HOST"] %>
   cache:
     <<: *primary_production
     database: faktubuh_production_cache

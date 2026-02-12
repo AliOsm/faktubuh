@@ -25,6 +25,11 @@ class WitnessesController < InertiaController
       return
     end
 
+    if [@debt.lender_id, @debt.borrower_id].include?(user.id)
+      redirect_to debt_path(@debt), alert: I18n.t("witnesses.cannot_invite_party")
+      return
+    end
+
     if @debt.witnesses.count >= 2
       redirect_to debt_path(@debt), alert: I18n.t("witnesses.max_witnesses")
       return

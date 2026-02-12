@@ -21,18 +21,18 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
 
     assert_difference [ "Witness.count", "Notification.count" ], 1 do
       post debt_witnesses_url(@mutual_debt), params: {
-        witness: { personal_id: @witness_user.personal_id }
+        witness: { personal_id: @fourth_user.personal_id }
       }
     end
 
     assert_redirected_to debt_path(@mutual_debt)
     witness = Witness.last
-    assert_equal @witness_user.id, witness.user_id
+    assert_equal @fourth_user.id, witness.user_id
     assert_equal @mutual_debt.id, witness.debt_id
     assert_equal "invited", witness.status
 
     notification = Notification.last
-    assert_equal @witness_user.id, notification.user_id
+    assert_equal @fourth_user.id, notification.user_id
     assert_equal "witness_invited", notification.notification_type
     assert_equal @mutual_debt.id, notification.debt_id
   end
@@ -40,12 +40,12 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
   test "max 2 witnesses enforced" do
     sign_in @lender
 
-    # mutual_debt already has invited_witness (user two). Add another:
-    @mutual_debt.witnesses.create!(user: @witness_user, status: "confirmed")
+    # mutual_debt already has invited_witness (user three). Add another:
+    @mutual_debt.witnesses.create!(user: @fourth_user, status: "confirmed")
 
     assert_no_difference "Witness.count" do
       post debt_witnesses_url(@mutual_debt), params: {
-        witness: { personal_id: @fourth_user.personal_id }
+        witness: { personal_id: users(:five).personal_id }
       }
     end
 
@@ -55,7 +55,19 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
   test "duplicate invitation prevented" do
     sign_in @lender
 
-    # invited_witness fixture already exists for user two on mutual_debt
+    # invited_witness fixture already exists for user three on mutual_debt
+    assert_no_difference "Witness.count" do
+      post debt_witnesses_url(@mutual_debt), params: {
+        witness: { personal_id: @witness_user.personal_id }
+      }
+    end
+
+    assert_redirected_to debt_path(@mutual_debt)
+  end
+
+  test "cannot invite borrower as witness" do
+    sign_in @lender
+
     assert_no_difference "Witness.count" do
       post debt_witnesses_url(@mutual_debt), params: {
         witness: { personal_id: @borrower.personal_id }
@@ -64,6 +76,7 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to debt_path(@mutual_debt)
   end
+
 
   test "cannot invite self as witness" do
     sign_in @lender
@@ -82,7 +95,7 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
 
     assert_no_difference "Witness.count" do
       post debt_witnesses_url(@mutual_debt), params: {
-        witness: { personal_id: @witness_user.personal_id }
+        witness: { personal_id: @fourth_user.personal_id }
       }
     end
 
@@ -92,7 +105,7 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
   # --- confirm action tests ---
 
   test "witness confirms invitation" do
-    sign_in @borrower
+    sign_in @witness_user
     invited_witness = witnesses(:invited_witness)
 
     assert_difference "Notification.count", 1 do
@@ -112,7 +125,7 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
   # --- decline action tests ---
 
   test "witness declines invitation" do
-    sign_in @borrower
+    sign_in @witness_user
     invited_witness = witnesses(:invited_witness)
 
     assert_difference "Notification.count", 1 do
@@ -129,7 +142,7 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "non-invited user cannot confirm witness" do
-    sign_in @witness_user
+    sign_in @fourth_user
     invited_witness = witnesses(:invited_witness)
 
     post confirm_debt_witness_url(@mutual_debt, invited_witness)
@@ -156,7 +169,7 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
 
     assert_no_difference "Witness.count" do
       post debt_witnesses_url(@mutual_debt), params: {
-        witness: { personal_id: @witness_user.personal_id }
+        witness: { personal_id: @fourth_user.personal_id }
       }
     end
 

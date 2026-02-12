@@ -2,7 +2,7 @@
 
 invited_witness:
   debt: mutual_debt
-  user: two
+  user: three
   status: invited
 
 confirmed_witness:

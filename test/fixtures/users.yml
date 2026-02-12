@@ -27,3 +27,10 @@ four:
   full_name: Test User Four
   personal_id: KMN345
   locale: en
+
+five:
+  email: user_five@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+  full_name: Test User Five
+  personal_id: PQR678
+  locale: en

@@ -1,14 +1,10 @@
-import { Head, router, usePage } from '@inertiajs/react'
-import { Bell, BellOff, CheckCheck, CreditCard, FileText, HandCoins, Shield, XCircle } from 'lucide-react'
-import { useEffect } from 'react'
+import { Head, router } from '@inertiajs/react'
+import { Bell, BellOff, Check, CheckCheck, CreditCard, FileText, HandCoins, Shield, XCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import AppLayout from '@/layouts/app-layout'
-import type { SharedData } from '@/types'
 
 interface NotificationData {
   id: number
@@ -25,16 +21,16 @@ interface IndexProps {
 }
 
 const NOTIFICATION_ICONS: Record<string, React.ReactNode> = {
-  debt_created: <FileText className="size-5 text-blue-600" />,
-  debt_confirmed: <CheckCheck className="size-5 text-green-600" />,
-  debt_rejected: <XCircle className="size-5 text-red-600" />,
-  payment_submitted: <CreditCard className="size-5 text-yellow-600" />,
-  payment_approved: <CreditCard className="size-5 text-green-600" />,
-  payment_rejected: <CreditCard className="size-5 text-red-600" />,
-  witness_invited: <Shield className="size-5 text-blue-600" />,
-  witness_confirmed: <Shield className="size-5 text-green-600" />,
-  witness_declined: <Shield className="size-5 text-red-600" />,
-  debt_settled: <HandCoins className="size-5 text-emerald-600" />
+  debt_created: <FileText className="size-5 text-blue-600 dark:text-blue-400" />,
+  debt_confirmed: <CheckCheck className="size-5 text-green-600 dark:text-green-400" />,
+  debt_rejected: <XCircle className="size-5 text-red-600 dark:text-red-400" />,
+  payment_submitted: <CreditCard className="size-5 text-yellow-600 dark:text-yellow-400" />,
+  payment_approved: <CreditCard className="size-5 text-green-600 dark:text-green-400" />,
+  payment_rejected: <CreditCard className="size-5 text-red-600 dark:text-red-400" />,
+  witness_invited: <Shield className="size-5 text-blue-600 dark:text-blue-400" />,
+  witness_confirmed: <Shield className="size-5 text-green-600 dark:text-green-400" />,
+  witness_declined: <Shield className="size-5 text-red-600 dark:text-red-400" />,
+  debt_settled: <HandCoins className="size-5 text-emerald-600 dark:text-emerald-400" />
 }
 
 function getNotificationIcon(type: string): React.ReactNode {
@@ -59,6 +55,8 @@ function formatRelativeTime(dateStr: string, locale: string): string {
 }
 
 function NotificationItem({ notification, locale }: { notification: NotificationData; locale: string }) {
+  const { t } = useTranslation()
+
   function handleClick() {
     router.post(
       `/notifications/${notification.id}/mark_read`,
@@ -72,6 +70,11 @@ function NotificationItem({ notification, locale }: { notification: Notification
         }
       }
     )
+  }
+
+  function handleMarkRead(e: React.MouseEvent) {
+    e.stopPropagation()
+    router.post(`/notifications/${notification.id}/mark_read`, {}, { preserveScroll: true })
   }
 
   return (
@@ -89,12 +92,14 @@ function NotificationItem({ notification, locale }: { notification: Notification
         <p className="mt-1 text-xs text-muted-foreground">{formatRelativeTime(notification.created_at, locale)}</p>
       </div>
       {!notification.read && (
-        <Badge
-          variant="default"
-          className="mt-0.5 shrink-0 rounded-full px-1.5 py-0.5 text-[10px]"
+        <button
+          type="button"
+          onClick={handleMarkRead}
+          className="mt-0.5 shrink-0 rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          title={t('notifications_page.mark_read')}
         >
-          {' '}
-        </Badge>
+          <Check className="size-4" />
+        </button>
       )}
     </button>
   )
@@ -102,13 +107,6 @@ function NotificationItem({ notification, locale }: { notification: Notification
 
 export default function Index({ notifications }: IndexProps) {
   const { t, i18n } = useTranslation()
-  const { flash } = usePage<SharedData>().props
-
-  useEffect(() => {
-    if (flash?.notice) {
-      toast.success(flash.notice)
-    }
-  }, [flash?.notice])
 
   const hasUnread = notifications.some((n) => !n.read)
 
@@ -140,6 +138,7 @@ export default function Index({ notifications }: IndexProps) {
             <CardContent className="flex flex-col items-center gap-3 py-12">
               <BellOff className="size-10 text-muted-foreground/50" />
               <p className="text-sm text-muted-foreground">{t('notifications_page.empty')}</p>
+              <p className="max-w-sm text-center text-xs text-muted-foreground/70">{t('notifications_page.empty_description')}</p>
             </CardContent>
           </Card>
         ) : (

@@ -40,6 +40,12 @@
     "english": "English",
     "arabic": "العربية"
   },
+  "theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "profile": {
     "title": "Profile",
     "personal_id": "Personal ID",
@@ -112,7 +118,8 @@
     "title": "My Debts",
     "new_debt": "New Debt",
     "empty": "No debts match your filters. Try adjusting your search or create a new debt.",
-    "showing": "{{count}} debts",
+    "showing_one": "{{count}} debt",
+    "showing_other": "{{count}} debts",
     "archive": "Archive",
     "status": {
       "pending": "Pending",
@@ -180,6 +187,7 @@
       "deadline": "Deadline",
       "deadline_required": "Deadline is required",
       "deadline_future": "Deadline must be in the future",
+      "pick_date": "Pick a date",
       "description_label": "Description (optional)",
       "description_placeholder": "Add a note about this debt...",
       "installment_type": "Installment Type",
@@ -207,7 +215,9 @@
   "notifications_page": {
     "title": "Notifications",
     "mark_all_read": "Mark all as read",
-    "empty": "No notifications yet."
+    "mark_read": "Mark as read",
+    "empty": "No notifications yet.",
+    "empty_description": "When someone creates a debt with you, sends a payment, or invites you as a witness, you'll see it here."
   },
   "ayat": {
     "welcome": {
@@ -304,7 +314,10 @@
       "status_pending": "Pending",
       "status_approved": "Approved",
       "status_rejected": "Rejected",
-      "self_reported": "Self-reported"
+      "self_reported": "Self-reported",
+      "approve_dialog_title": "Approve this payment?",
+      "approve_dialog_description": "By approving, this payment will be recorded and the debt balance will be updated. This action cannot be undone.",
+      "approve_dialog_confirm": "Yes, Approve Payment"
     },
     "upgrade": {
       "link_button": "Link to Registered User",
@@ -353,7 +366,13 @@
       "reject_button": "Reject Debt",
       "confirming": "Confirming...",
       "rejecting": "Rejecting...",
-      "awaiting": "Awaiting confirmation from {{name}}"
+      "awaiting": "Awaiting confirmation from {{name}}",
+      "confirm_dialog_title": "Confirm this debt?",
+      "confirm_dialog_description": "By confirming, you acknowledge this debt and it will become active. This action cannot be undone.",
+      "confirm_dialog_confirm": "Yes, Confirm Debt",
+      "reject_dialog_title": "Reject this debt?",
+      "reject_dialog_description": "By rejecting, you decline this debt record. The creator will be notified. This action cannot be undone.",
+      "reject_dialog_confirm": "Yes, Reject Debt"
     },
     "settlement": {
       "title": "Debt Settled",

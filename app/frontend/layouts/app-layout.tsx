@@ -1,11 +1,14 @@
 import { Link, router, usePage } from '@inertiajs/react'
 import { LayoutDashboard, List, Bell, Menu, LogOut, UserIcon } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import DarkModeToggle from '@/components/dark-mode-toggle'
 import LanguageToggle from '@/components/language-toggle'
+import { ThemeProvider } from '@/components/theme-provider'
 import { Badge } from '@/components/ui/badge'
 import { Toaster } from '@/components/ui/sonner'
+import { toast } from 'sonner'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -43,6 +46,20 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const user = auth?.user
   const [mobileOpen, setMobileOpen] = useState(false)
 
+  const flash = (props as unknown as { flash?: { notice?: string; alert?: string } }).flash
+
+  useEffect(() => {
+    if (flash?.notice) {
+      toast.success(flash.notice)
+    }
+  }, [flash?.notice])
+
+  useEffect(() => {
+    if (flash?.alert) {
+      toast.error(flash.alert)
+    }
+  }, [flash?.alert])
+
   const currentPath = window.location.pathname
 
   const navItems: NavItem[] = [
@@ -64,6 +81,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const appName = t('app.name')
 
   return (
+    <ThemeProvider>
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex h-14 max-w-7xl items-center px-4">
@@ -101,6 +119,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
           <div className="flex flex-1 items-center justify-end gap-2">
             <LanguageToggle />
+            <DarkModeToggle />
 
             {user && (
               <Link
@@ -190,5 +209,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
       <Toaster />
     </div>
+    </ThemeProvider>
   )
 }
