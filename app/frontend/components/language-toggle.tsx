@@ -37,13 +37,19 @@ export default function LanguageToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => switchLocale('en')}>
-          {i18n.language === 'en' && <Check className="size-4" />}
-          English
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => switchLocale('ar')}>
+        <DropdownMenuItem onClick={() => switchLocale('ar')} className="flex items-center justify-between">
+          <span className="flex items-center gap-2">
+            <span className="text-base leading-none">🇸🇦</span>
+            العربية
+          </span>
           {i18n.language === 'ar' && <Check className="size-4" />}
-          العربية
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => switchLocale('en')} className="flex items-center justify-between">
+          <span className="flex items-center gap-2">
+            <span className="text-base leading-none">🇺🇸</span>
+            English
+          </span>
+          {i18n.language === 'en' && <Check className="size-4" />}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
