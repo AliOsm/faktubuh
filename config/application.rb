@@ -16,8 +16,8 @@ module Faktubuh
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
-    config.i18n.available_locales = [ :en, :ar ]
-    config.i18n.default_locale = :en
+    config.i18n.available_locales = [ :ar, :en ]
+    config.i18n.default_locale = :ar
 
     config.active_job.queue_adapter = :good_job
   end

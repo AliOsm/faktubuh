@@ -40,7 +40,7 @@ void createInertiaApp({
   },
 
   setup({ el, App, props }) {
-    const locale = (props.initialPage.props.locale as string | undefined) ?? 'en'
+    const locale = (props.initialPage.props.locale as string | undefined) ?? 'ar'
     i18n.changeLanguage(locale)
     document.documentElement.lang = locale
     document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr'
