@@ -239,6 +239,6 @@ function Dashboard({ summaries, recent_debts }: DashboardProps) {
   )
 }
 
-Dashboard.layout = (page: React.ReactNode) => <AppLayout>{page}</AppLayout>
+Dashboard.layout = [AppLayout]
 
 export default Dashboard

@@ -1,4 +1,4 @@
-import { Head, Link, useForm, usePage } from '@inertiajs/react'
+import { Head, Link, useForm } from '@inertiajs/react'
 import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -11,9 +11,6 @@ import { Label } from '@/components/ui/label'
 
 export default function SignIn() {
   const { t } = useTranslation()
-  const { flash } = usePage().props as {
-    flash?: { notice?: string; alert?: string }
-  }
 
   const form = useForm({
     user: {
@@ -44,10 +41,6 @@ export default function SignIn() {
             <CardDescription>{t('auth.sign_in.subtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
-            {flash?.alert && (
-              <div className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">{flash.alert}</div>
-            )}
-
             <form
               onSubmit={handleSubmit}
               className="flex flex-col gap-4"

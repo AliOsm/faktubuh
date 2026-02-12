@@ -145,4 +145,4 @@ export default function Show({ user }: ProfileProps) {
   )
 }
 
-Show.layout = (page: React.ReactNode) => <AppLayout>{page}</AppLayout>
+Show.layout = [AppLayout]

@@ -1273,4 +1273,4 @@ export default function Show({
   )
 }
 
-Show.layout = (page: React.ReactNode) => <AppLayout>{page}</AppLayout>
+Show.layout = [AppLayout]

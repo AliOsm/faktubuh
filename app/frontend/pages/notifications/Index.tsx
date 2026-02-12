@@ -157,4 +157,4 @@ export default function Index({ notifications }: IndexProps) {
   )
 }
 
-Index.layout = (page: React.ReactNode) => <AppLayout>{page}</AppLayout>
+Index.layout = [AppLayout]

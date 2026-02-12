@@ -4,6 +4,16 @@ class ApplicationController < ActionController::Base
 
   around_action :switch_locale
 
+  inertia_share do
+    {
+      locale: I18n.locale.to_s,
+      flash: {
+        notice: flash[:notice],
+        alert: flash[:alert]
+      }
+    }
+  end
+
   private
 
   def switch_locale(&action)

@@ -245,4 +245,4 @@ export default function Index({ debts, filters }: IndexProps) {
   )
 }
 
-Index.layout = (page: React.ReactNode) => <AppLayout>{page}</AppLayout>
+Index.layout = [AppLayout]

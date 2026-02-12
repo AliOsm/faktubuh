@@ -5,7 +5,7 @@ class Users::SessionsController < Devise::SessionsController
     self.resource = resource_class.new(sign_in_params)
     clean_up_passwords(resource)
 
-    render inertia: "auth/SignIn", props: { locale: I18n.locale.to_s }
+    render inertia: "auth/SignIn"
   end
 
   def create = super

@@ -27,7 +27,14 @@ void createInertiaApp({
       console.error(`Missing Inertia page component: '${name}.tsx'`)
     }
 
-    page.default.layout ??= [PersistentLayout]
+    const existing = page.default.layout
+    if (Array.isArray(existing)) {
+      if (existing[0] !== PersistentLayout) {
+        page.default.layout = [PersistentLayout, ...existing]
+      }
+    } else {
+      page.default.layout = [PersistentLayout]
+    }
 
     return page
   },

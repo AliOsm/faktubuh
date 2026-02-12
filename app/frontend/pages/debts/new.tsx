@@ -596,6 +596,6 @@ function NewDebt() {
   )
 }
 
-NewDebt.layout = (page: React.ReactNode) => <AppLayout>{page}</AppLayout>
+NewDebt.layout = [AppLayout]
 
 export default NewDebt
