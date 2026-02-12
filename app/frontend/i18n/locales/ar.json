@@ -64,6 +64,7 @@
     "or": "أو",
     "google_sign_in": "تسجيل الدخول بحساب Google",
     "google_sign_up": "إنشاء حساب بحساب Google",
+    "continue_with_email": "المتابعة بالبريد الإلكتروني",
     "oauth_failure": "تعذر تسجيل الدخول عبر {{provider}}. يرجى المحاولة مرة أخرى.",
     "sign_up": {
       "title": "إنشاء حساب",

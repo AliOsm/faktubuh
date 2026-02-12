@@ -64,6 +64,7 @@
     "or": "Or",
     "google_sign_in": "Sign in with Google",
     "google_sign_up": "Sign up with Google",
+    "continue_with_email": "Continue with email",
     "oauth_failure": "Could not sign in with {{provider}}. Please try again.",
     "sign_up": {
       "title": "Create Account",
