@@ -470,15 +470,15 @@ DEPENDENCIES
   capybara
   debug
   devise (~> 5.0)
-  good_job
+  good_job (~> 4.13, >= 4.13.2)
   image_processing (~> 1.2)
-  inertia_rails (~> 3.6)
+  inertia_rails (~> 3.17)
   jbuilder
-  js-routes
+  js-routes (~> 2.3, >= 2.3.6)
   kamal
-  omniauth (~> 2.1)
-  omniauth-google-oauth2 (~> 1.2)
-  omniauth-rails_csrf_protection (~> 2.0)
+  omniauth (~> 2.1, >= 2.1.4)
+  omniauth-google-oauth2 (~> 1.2, >= 1.2.1)
+  omniauth-rails_csrf_protection (~> 2.0, >= 2.0.1)
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)
@@ -490,7 +490,7 @@ DEPENDENCIES
   solid_cache
   thruster
   tzinfo-data
-  vite_rails (~> 3.0)
+  vite_rails (~> 3.0, >= 3.0.20)
   web-console
 
 BUNDLED WITH

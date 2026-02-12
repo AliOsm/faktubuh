@@ -1,27 +1,28 @@
 source "https://rubygems.org"
 
+gem "devise", "~> 5.0"
+gem "good_job", "~> 4.13", ">= 4.13.2"
+gem "inertia_rails", "~> 3.17"
+gem "js-routes", "~> 2.3", ">= 2.3.6"
+gem "omniauth", "~> 2.1", ">= 2.1.4"
+gem "omniauth-google-oauth2", "~> 1.2", ">= 1.2.1"
+gem "omniauth-rails_csrf_protection", "~> 2.0", ">= 2.0.1"
+gem "vite_rails", "~> 3.0", ">= 3.0.20"
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.2"
+
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
+
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
+
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
-# Use Vite in Rails [https://vite-ruby.netlify.app]
-gem "vite_rails", "~> 3.0"
-# The Rails adapter for Inertia.js [https://inertia-rails.dev]
-gem "inertia_rails", "~> 3.6"
-# Brings Rails named routes to javascript
-gem "js-routes"
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
-# Flexible authentication solution for Rails [https://github.com/heartcombo/devise]
-gem "devise", "~> 5.0"
-# OmniAuth strategies for third-party authentication
-gem "omniauth", "~> 2.1"
-gem "omniauth-google-oauth2", "~> 1.2"
-gem "omniauth-rails_csrf_protection", "~> 2.0"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
@@ -31,7 +32,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
-gem "good_job"
+# gem "solid_queue"
 gem "solid_cable"
 
 # Reduces boot times through caching; required in config/boot.rb
@@ -69,6 +70,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
   # Code coverage reporting [https://github.com/simplecov-ruby/simplecov]
   gem "simplecov", require: false
 end

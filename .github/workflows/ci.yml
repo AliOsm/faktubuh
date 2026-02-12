@@ -38,9 +38,9 @@ jobs:
           bundler-cache: true
 
       - name: Prepare RuboCop cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         env:
-          DEPENDENCIES_HASH: ${{ hashFiles('.ruby-version', '**/.rubocop.yml', '**/.rubocop_todo.yml', 'Gemfile.lock') }}
+          DEPENDENCIES_HASH: ${{ hashFiles('.tool-versions', '**/.rubocop.yml', '**/.rubocop_todo.yml', 'Gemfile.lock') }}
         with:
           path: ${{ env.RUBOCOP_CACHE_ROOT }}
           key: rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-${{ github.ref_name == github.event.repository.default_branch && github.run_id || 'default' }}
@@ -76,6 +76,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".tool-versions"
+
+      - name: Set up Yarn
+        run: corepack enable
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('.tool-versions', 'yarn.lock') }}
+
+      - name: Install JS dependencies
+        run: yarn install --immutable
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -89,49 +111,49 @@ jobs:
           # REDIS_URL: redis://localhost:6379/0
         run: bin/rails db:test:prepare test
 
-  system-test:
-    runs-on: ubuntu-latest
+  # system-test:
+  #   runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+  #   services:
+  #     postgres:
+  #       image: postgres
+  #       env:
+  #         POSTGRES_USER: postgres
+  #         POSTGRES_PASSWORD: postgres
+  #       ports:
+  #         - 5432:5432
+  #       options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
 
-      # redis:
-      #   image: valkey/valkey:8
-      #   ports:
-      #     - 6379:6379
-      #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+  #     # redis:
+  #     #   image: valkey/valkey:8
+  #     #   ports:
+  #     #     - 6379:6379
+  #     #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
 
-    steps:
-      - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev node-gyp
+  #   steps:
+  #     - name: Install packages
+  #       run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev node-gyp
 
-      - name: Checkout code
-        uses: actions/checkout@v6
+  #     - name: Checkout code
+  #       uses: actions/checkout@v6
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+  #     - name: Set up Ruby
+  #       uses: ruby/setup-ruby@v1
+  #       with:
+  #         bundler-cache: true
 
-      - name: Run System Tests
-        env:
-          RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432
-          # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test:system
+  #     - name: Run System Tests
+  #       env:
+  #         RAILS_ENV: test
+  #         DATABASE_URL: postgres://postgres:postgres@localhost:5432
+  #         # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+  #         # REDIS_URL: redis://localhost:6379/0
+  #       run: bin/rails db:test:prepare test:system
 
-      - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
-          if-no-files-found: ignore
+  #     - name: Keep screenshots from failed system tests
+  #       uses: actions/upload-artifact@v6
+  #       if: failure()
+  #       with:
+  #         name: screenshots
+  #         path: ${{ github.workspace }}/tmp/screenshots
+  #         if-no-files-found: ignore

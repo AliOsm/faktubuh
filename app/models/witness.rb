@@ -16,7 +16,7 @@ class Witness < ApplicationRecord
   def user_is_not_debt_party
     return unless debt
 
-    if [debt.lender_id, debt.borrower_id].include?(user_id)
+    if [ debt.lender_id, debt.borrower_id ].include?(user_id)
       errors.add(:user_id, "cannot be a party to the debt")
     end
   end

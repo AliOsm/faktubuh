@@ -25,7 +25,7 @@ class WitnessesController < InertiaController
       return
     end
 
-    if [@debt.lender_id, @debt.borrower_id].include?(user.id)
+    if [ @debt.lender_id, @debt.borrower_id ].include?(user.id)
       redirect_to debt_path(@debt), alert: I18n.t("witnesses.cannot_invite_party")
       return
     end
