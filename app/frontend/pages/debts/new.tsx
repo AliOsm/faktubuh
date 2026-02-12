@@ -4,18 +4,18 @@ import { router, usePage } from '@inertiajs/react'
 import * as Flags from 'country-flag-icons/react/3x2'
 import { format } from 'date-fns'
 import { ar } from 'date-fns/locale'
-import { HandCoins, HandHeart, Users, User, Check, ArrowLeft, Loader2, CheckCircle2, XCircle, CalendarIcon } from 'lucide-react'
+import { HandCoins, HandHeart, Users, User, Check, ArrowLeft, Loader2, CheckCircle2, XCircle, CalendarIcon, ChevronsUpDown } from 'lucide-react'
 import { arSA } from 'react-day-picker/locale'
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import AyatAlDayn from '@/components/ayat-al-dayn'
 import AppLayout from '@/layouts/app-layout'
 import { cn } from '@/lib/utils'
@@ -30,38 +30,51 @@ interface LookedUpUser {
 }
 
 const CURRENCIES = [
-  { code: 'USD', name: 'US Dollar', flag: 'US' },
-  { code: 'EUR', name: 'Euro', flag: 'EU' },
-  { code: 'GBP', name: 'British Pound', flag: 'GB' },
-  { code: 'CAD', name: 'Canadian Dollar', flag: 'CA' },
-  { code: 'AUD', name: 'Australian Dollar', flag: 'AU' },
-  { code: 'CHF', name: 'Swiss Franc', flag: 'CH' },
-  { code: 'JPY', name: 'Japanese Yen', flag: 'JP' },
-  { code: 'CNY', name: 'Chinese Yuan', flag: 'CN' },
-  { code: 'INR', name: 'Indian Rupee', flag: 'IN' },
-  { code: 'SAR', name: 'Saudi Riyal', flag: 'SA' },
-  { code: 'AED', name: 'UAE Dirham', flag: 'AE' },
-  { code: 'KWD', name: 'Kuwaiti Dinar', flag: 'KW' },
-  { code: 'BHD', name: 'Bahraini Dinar', flag: 'BH' },
-  { code: 'OMR', name: 'Omani Rial', flag: 'OM' },
-  { code: 'QAR', name: 'Qatari Riyal', flag: 'QA' },
-  { code: 'JOD', name: 'Jordanian Dinar', flag: 'JO' },
-  { code: 'EGP', name: 'Egyptian Pound', flag: 'EG' },
-  { code: 'MAD', name: 'Moroccan Dirham', flag: 'MA' },
-  { code: 'TND', name: 'Tunisian Dinar', flag: 'TN' },
-  { code: 'DZD', name: 'Algerian Dinar', flag: 'DZ' },
-  { code: 'LBP', name: 'Lebanese Pound', flag: 'LB' },
-  { code: 'IQD', name: 'Iraqi Dinar', flag: 'IQ' },
-  { code: 'SYP', name: 'Syrian Pound', flag: 'SY' },
-  { code: 'LYD', name: 'Libyan Dinar', flag: 'LY' },
-  { code: 'SDG', name: 'Sudanese Pound', flag: 'SD' },
-  { code: 'YER', name: 'Yemeni Rial', flag: 'YE' },
-  { code: 'TRY', name: 'Turkish Lira', flag: 'TR' },
-  { code: 'PKR', name: 'Pakistani Rupee', flag: 'PK' },
-  { code: 'BDT', name: 'Bangladeshi Taka', flag: 'BD' },
-  { code: 'MYR', name: 'Malaysian Ringgit', flag: 'MY' },
-  { code: 'IDR', name: 'Indonesian Rupiah', flag: 'ID' }
+  // Arab & Islamic world
+  { code: 'SAR', flag: 'SA' },
+  { code: 'AED', flag: 'AE' },
+  { code: 'KWD', flag: 'KW' },
+  { code: 'BHD', flag: 'BH' },
+  { code: 'OMR', flag: 'OM' },
+  { code: 'QAR', flag: 'QA' },
+  { code: 'JOD', flag: 'JO' },
+  { code: 'EGP', flag: 'EG' },
+  { code: 'MAD', flag: 'MA' },
+  { code: 'TND', flag: 'TN' },
+  { code: 'DZD', flag: 'DZ' },
+  { code: 'LBP', flag: 'LB' },
+  { code: 'IQD', flag: 'IQ' },
+  { code: 'SYP', flag: 'SY' },
+  { code: 'LYD', flag: 'LY' },
+  { code: 'SDG', flag: 'SD' },
+  { code: 'YER', flag: 'YE' },
+  { code: 'TRY', flag: 'TR' },
+  { code: 'PKR', flag: 'PK' },
+  { code: 'BDT', flag: 'BD' },
+  { code: 'MYR', flag: 'MY' },
+  { code: 'IDR', flag: 'ID' },
+  // Other
+  { code: 'USD', flag: 'US' },
+  { code: 'EUR', flag: 'EU' },
+  { code: 'GBP', flag: 'GB' },
+  { code: 'CAD', flag: 'CA' },
+  { code: 'AUD', flag: 'AU' },
+  { code: 'CHF', flag: 'CH' },
+  { code: 'JPY', flag: 'JP' },
+  { code: 'CNY', flag: 'CN' },
+  { code: 'INR', flag: 'IN' }
 ] as const
+
+function CurrencyLabel({ code, flag, language }: { code: string; flag?: string; language: string }) {
+  const FlagIcon = flag ? Flags[flag as keyof typeof Flags] : null
+  const name = new Intl.DisplayNames([language], { type: 'currency' }).of(code)
+  return (
+    <span className="inline-flex items-center gap-2">
+      {FlagIcon && <FlagIcon className="inline-block h-3.5 w-5 rounded-sm" />}
+      {code} — {name}
+    </span>
+  )
+}
 
 const INSTALLMENT_TYPES: InstallmentType[] = ['lump_sum', 'monthly', 'bi_weekly', 'quarterly', 'yearly', 'custom_split']
 
@@ -211,6 +224,7 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
   const [counterpartyName, setCounterpartyName] = useState('')
   const [amount, setAmount] = useState('')
   const [currency, setCurrency] = useState('')
+  const [currencyOpen, setCurrencyOpen] = useState(false)
   const [deadline, setDeadline] = useState<Date | undefined>()
   const [description, setDescription] = useState('')
   const [installmentType, setInstallmentType] = useState<InstallmentType>('lump_sum')
@@ -339,30 +353,55 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
 
           <div className="space-y-2">
             <Label>{t('debt_creation.details.currency')}</Label>
-            <Select
-              value={currency}
-              onValueChange={setCurrency}
+            <Popover
+              open={currencyOpen}
+              onOpenChange={setCurrencyOpen}
             >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={t('debt_creation.details.currency_placeholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                {CURRENCIES.map((c) => {
-                  const FlagIcon = Flags[c.flag as keyof typeof Flags]
-                  return (
-                    <SelectItem
-                      key={c.code}
-                      value={c.code}
-                    >
-                      <span className="inline-flex items-center gap-2">
-                        {FlagIcon && <FlagIcon className="inline-block h-3.5 w-5 rounded-sm" />}
-                        {c.code} — {c.name}
-                      </span>
-                    </SelectItem>
-                  )
-                })}
-              </SelectContent>
-            </Select>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={currencyOpen}
+                  className="w-full justify-between font-normal"
+                >
+                  {currency ? (
+                    <CurrencyLabel code={currency} flag={CURRENCIES.find((c) => c.code === currency)?.flag} language={i18n.language} />
+                  ) : (
+                    <span className="text-muted-foreground">{t('debt_creation.details.currency_placeholder')}</span>
+                  )}
+                  <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-[var(--radix-popover-trigger-width)] p-0"
+                align="start"
+              >
+                <Command>
+                  <CommandInput placeholder={t('debt_creation.details.currency_search')} />
+                  <CommandList>
+                    <CommandEmpty>{t('debt_creation.details.currency_not_found')}</CommandEmpty>
+                    <CommandGroup>
+                      {CURRENCIES.map((c) => {
+                        const currencyName = new Intl.DisplayNames([i18n.language], { type: 'currency' }).of(c.code)
+                        return (
+                          <CommandItem
+                            key={c.code}
+                            value={`${c.code} ${currencyName}`}
+                            onSelect={() => {
+                              setCurrency(c.code)
+                              setCurrencyOpen(false)
+                            }}
+                          >
+                            <CurrencyLabel code={c.code} flag={c.flag} language={i18n.language} />
+                            {currency === c.code && <Check className="ms-auto size-4" />}
+                          </CommandItem>
+                        )
+                      })}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
             {errors.currency && <p className="text-sm text-destructive">{errors.currency}</p>}
           </div>
 

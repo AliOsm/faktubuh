@@ -187,6 +187,8 @@
       "amount_positive": "يجب أن يكون المبلغ أكبر من صفر",
       "currency": "العملة",
       "currency_placeholder": "اختر عملة",
+      "currency_search": "ابحث عن عملة...",
+      "currency_not_found": "لم يتم العثور على عملة.",
       "currency_required": "العملة مطلوبة",
       "deadline": "تاريخ الاستحقاق",
       "deadline_required": "تاريخ الاستحقاق مطلوب",

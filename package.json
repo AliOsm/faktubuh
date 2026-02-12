@@ -22,6 +22,7 @@
     "@vitejs/plugin-react": "^5.1.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
     "country-flag-icons": "^1.6.13",
     "date-fns": "^4.1.0",
     "i18next": "^25.8.5",

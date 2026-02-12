@@ -183,6 +183,8 @@
       "amount_positive": "Amount must be greater than zero",
       "currency": "Currency",
       "currency_placeholder": "Select a currency",
+      "currency_search": "Search currencies...",
+      "currency_not_found": "No currency found.",
       "currency_required": "Currency is required",
       "deadline": "Deadline",
       "deadline_required": "Deadline is required",
