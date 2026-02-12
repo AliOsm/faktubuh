@@ -673,10 +673,10 @@ function AddWitnessForm({ debt, witnessCount }: { debt: DebtData; witnessCount: 
         <UserPlus className="size-4" />
         {t('debt_detail.witnesses.add_witness')}
       </h4>
-      <div className="flex items-end gap-2">
-        <div className="flex-1 space-y-1.5">
-          <Label htmlFor="witness-personal-id">{t('debt_detail.witnesses.personal_id')}</Label>
-          <div className="relative">
+      <div className="space-y-1.5">
+        <Label htmlFor="witness-personal-id">{t('debt_detail.witnesses.personal_id')}</Label>
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
             <Input
               id="witness-personal-id"
               value={personalId}
@@ -694,20 +694,20 @@ function AddWitnessForm({ debt, witnessCount }: { debt: DebtData; witnessCount: 
               )}
             </div>
           </div>
-          {lookupResult && (
-            <p className="text-sm text-green-700">
-              {t('debt_detail.witnesses.found_user', { name: lookupResult.full_name })}
-            </p>
-          )}
-          {lookupError && <p className="text-sm text-red-600">{lookupError}</p>}
+          <Button
+            onClick={handleInvite}
+            disabled={!lookupResult || submitting}
+            size="sm"
+          >
+            {submitting ? t('debt_detail.witnesses.inviting') : t('debt_detail.witnesses.invite')}
+          </Button>
         </div>
-        <Button
-          onClick={handleInvite}
-          disabled={!lookupResult || submitting}
-          size="sm"
-        >
-          {submitting ? t('debt_detail.witnesses.inviting') : t('debt_detail.witnesses.invite')}
-        </Button>
+        {lookupResult && (
+          <p className="text-sm text-green-700">
+            {t('debt_detail.witnesses.found_user', { name: lookupResult.full_name })}
+          </p>
+        )}
+        {lookupError && <p className="text-sm text-red-600">{lookupError}</p>}
       </div>
     </div>
   )
