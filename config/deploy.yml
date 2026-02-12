@@ -1,5 +1,5 @@
 service: faktubuh
-image: ieasybooks/faktubuh
+image: aliosm/faktubuh
 
 servers:
   web:
@@ -19,7 +19,7 @@ proxy:
 
 registry:
   server: ghcr.io
-  username: ieasybooks
+  username: aliosm
   password:
     - KAMAL_REGISTRY_PASSWORD
 
