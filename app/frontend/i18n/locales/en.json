@@ -258,7 +258,11 @@
       "pending": "Pending",
       "active": "Active",
       "settled": "Settled",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "upcoming": "Upcoming",
+      "submitted": "Submitted",
+      "approved": "Approved",
+      "overdue": "Overdue"
     },
     "mode": {
       "mutual": "Mutual",

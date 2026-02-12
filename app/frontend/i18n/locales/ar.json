@@ -262,7 +262,11 @@
       "pending": "قيد الانتظار",
       "active": "نشط",
       "settled": "مسدد",
-      "rejected": "مرفوض"
+      "rejected": "مرفوض",
+      "upcoming": "قادم",
+      "submitted": "مقدّم",
+      "approved": "موافق عليه",
+      "overdue": "متأخر"
     },
     "mode": {
       "mutual": "مشترك",
