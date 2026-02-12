@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 
+import { ThemeProvider } from '@/components/theme-provider'
+
 interface PersistentLayoutProps {
   children: ReactNode
 }
 
 export default function PersistentLayout({ children }: PersistentLayoutProps) {
-  return <>{children}</>
+  return <ThemeProvider>{children}</ThemeProvider>
 }

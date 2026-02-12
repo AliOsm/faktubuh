@@ -14,8 +14,8 @@ function Privacy() {
 
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
         <div className="fixed top-4 end-4 flex items-center gap-1">
-          <DarkModeToggle />
           <LanguageToggle />
+          <DarkModeToggle />
         </div>
 
         <Card className="w-full max-w-2xl">

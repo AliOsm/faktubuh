@@ -2,6 +2,7 @@ import { Head, Link, useForm, usePage } from '@inertiajs/react'
 import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import DarkModeToggle from '@/components/dark-mode-toggle'
 import LanguageToggle from '@/components/language-toggle'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -33,8 +34,9 @@ export default function SignUp() {
       <Head title={t('auth.sign_up.title')} />
 
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
-        <div className="fixed top-4 end-4">
+        <div className="fixed top-4 end-4 flex gap-1">
           <LanguageToggle />
+          <DarkModeToggle />
         </div>
 
         <Card className="w-full max-w-md">
