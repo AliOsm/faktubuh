@@ -127,7 +127,7 @@ export default function Index({ notifications }: IndexProps) {
               size="sm"
               onClick={handleMarkAllRead}
             >
-              <CheckCheck className="size-4 ltr:mr-2 rtl:ml-2" />
+              <CheckCheck className="size-4" />
               {t('notifications_page.mark_all_read')}
             </Button>
           )}

@@ -72,7 +72,7 @@ function EmptyState({ t }: { t: (key: string) => string }) {
             size="lg"
           >
             <Link href="/debts/new">
-              <Plus className="size-4 ltr:mr-2 rtl:ml-2" />
+              <Plus className="size-4" />
               {t('dashboard.empty_cta')}
             </Link>
           </Button>
@@ -192,7 +192,7 @@ function Dashboard({ summaries, recent_debts }: DashboardProps) {
           <h1 className="text-2xl font-bold">{t('dashboard.title')}</h1>
           <Button asChild>
             <Link href="/debts/new">
-              <Plus className="size-4 ltr:mr-2 rtl:ml-2" />
+              <Plus className="size-4" />
               {t('dashboard.new_debt')}
             </Link>
           </Button>
@@ -219,7 +219,7 @@ function Dashboard({ summaries, recent_debts }: DashboardProps) {
               >
                 <Link href="/debts">
                   {t('dashboard.view_all')}
-                  <ArrowRight className="size-4 ltr:ml-1 rtl:mr-1 rtl:rotate-180" />
+                  <ArrowRight className="size-4 rtl:rotate-180" />
                 </Link>
               </Button>
             </CardHeader>

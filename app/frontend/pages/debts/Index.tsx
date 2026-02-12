@@ -101,7 +101,7 @@ export default function Index({ debts, filters }: IndexProps) {
           <h1 className="text-2xl font-bold">{t('debts_list.title')}</h1>
           <Button asChild>
             <Link href="/debts/new">
-              <Plus className="size-4 ltr:mr-2 rtl:ml-2" />
+              <Plus className="size-4" />
               {t('debts_list.new_debt')}
             </Link>
           </Button>
@@ -132,7 +132,7 @@ export default function Index({ debts, filters }: IndexProps) {
               size="sm"
               onClick={() => updateFilters('status', filters.status === 'settled' ? 'all' : 'settled')}
             >
-              <Archive className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+              <Archive className="size-3.5" />
               {t('debts_list.archive')}
             </Button>
 
@@ -190,7 +190,7 @@ export default function Index({ debts, filters }: IndexProps) {
                 asChild
               >
                 <Link href="/debts/new">
-                  <Plus className="size-4 ltr:mr-2 rtl:ml-2" />
+                  <Plus className="size-4" />
                   {t('debts_list.new_debt')}
                 </Link>
               </Button>

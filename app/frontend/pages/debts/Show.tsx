@@ -280,7 +280,7 @@ function ConfirmationBanner({ debt }: { debt: DebtData }) {
                   disabled={processing !== null}
                   className="bg-green-600 text-white hover:bg-green-700"
                 >
-                  <CheckCircle className="size-4 ltr:mr-2 rtl:ml-2" />
+                  <CheckCircle className="size-4" />
                   {processing === 'confirm'
                     ? t('debt_detail.confirmation.confirming')
                     : t('debt_detail.confirmation.confirm_button')}
@@ -305,7 +305,7 @@ function ConfirmationBanner({ debt }: { debt: DebtData }) {
                   variant="destructive"
                   disabled={processing !== null}
                 >
-                  <XCircle className="size-4 ltr:mr-2 rtl:ml-2" />
+                  <XCircle className="size-4" />
                   {processing === 'reject'
                     ? t('debt_detail.confirmation.rejecting')
                     : t('debt_detail.confirmation.reject_button')}
@@ -389,7 +389,7 @@ function PaymentActions({ debt, payment }: { debt: DebtData; payment: PaymentDat
             disabled={processing !== null}
             className="bg-green-600 text-white hover:bg-green-700"
           >
-            <CheckCircle className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+            <CheckCircle className="size-3.5" />
             {processing === 'approve' ? t('debt_detail.payments.approving') : t('debt_detail.payments.approve')}
           </Button>
         </AlertDialogTrigger>
@@ -419,7 +419,7 @@ function PaymentActions({ debt, payment }: { debt: DebtData; payment: PaymentDat
             variant="destructive"
             disabled={processing !== null}
           >
-            <XCircle className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+            <XCircle className="size-3.5" />
             {t('debt_detail.payments.reject')}
           </Button>
         </DialogTrigger>
@@ -528,7 +528,7 @@ function SubmitPaymentDialog({
     >
       <DialogTrigger asChild>
         <Button>
-          <Plus className="size-4 ltr:mr-2 rtl:ml-2" />
+          <Plus className="size-4" />
           {t('debt_detail.payments.submit_payment')}
         </Button>
       </DialogTrigger>
@@ -782,7 +782,7 @@ function UpgradeDialog({ debt }: { debt: DebtData }) {
     >
       <DialogTrigger asChild>
         <Button variant="outline">
-          <Link2 className="size-4 ltr:mr-2 rtl:ml-2" />
+          <Link2 className="size-4" />
           {t('debt_detail.upgrade.link_button')}
         </Button>
       </DialogTrigger>
@@ -885,7 +885,7 @@ function UpgradeRequestBanner({ debt }: { debt: DebtData }) {
               disabled={processing !== null}
               className="bg-green-600 text-white hover:bg-green-700"
             >
-              <CheckCircle className="size-4 ltr:mr-2 rtl:ml-2" />
+              <CheckCircle className="size-4" />
               {processing === 'accept' ? t('debt_detail.upgrade.accepting') : t('debt_detail.upgrade.accept_button')}
             </Button>
             <Button
@@ -893,7 +893,7 @@ function UpgradeRequestBanner({ debt }: { debt: DebtData }) {
               onClick={handleDecline}
               disabled={processing !== null}
             >
-              <XCircle className="size-4 ltr:mr-2 rtl:ml-2" />
+              <XCircle className="size-4" />
               {processing === 'decline' ? t('debt_detail.upgrade.declining') : t('debt_detail.upgrade.decline_button')}
             </Button>
           </div>
@@ -972,7 +972,7 @@ function WitnessActions({ debt, witnessId }: { debt: DebtData; witnessId: number
         disabled={processing !== null}
         className="bg-green-600 text-white hover:bg-green-700"
       >
-        <CheckCircle className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+        <CheckCircle className="size-3.5" />
         {processing === 'confirm' ? t('debt_detail.witnesses.accepting') : t('debt_detail.witnesses.accept')}
       </Button>
       <Button
@@ -981,7 +981,7 @@ function WitnessActions({ debt, witnessId }: { debt: DebtData; witnessId: number
         onClick={handleDecline}
         disabled={processing !== null}
       >
-        <XCircle className="size-3.5 ltr:mr-1.5 rtl:ml-1.5" />
+        <XCircle className="size-3.5" />
         {processing === 'decline' ? t('debt_detail.witnesses.declining') : t('debt_detail.witnesses.decline')}
       </Button>
     </div>

@@ -67,7 +67,7 @@ export default function SignIn() {
                     className="w-full"
                   >
                     <svg
-                      className="me-2 h-4 w-4"
+                      className="h-4 w-4"
                       viewBox="0 0 24 24"
                     >
                       <path
@@ -105,7 +105,7 @@ export default function SignIn() {
                   className="w-full"
                   onClick={() => setShowEmailForm(true)}
                 >
-                  <Mail className="me-2 h-4 w-4" />
+                  <Mail className="h-4 w-4" />
                   {t('auth.continue_with_email')}
                 </Button>
               </div>
