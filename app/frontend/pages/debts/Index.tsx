@@ -73,7 +73,7 @@ function ProgressBar({ progress }: { progress: number }) {
 }
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString(undefined, {
+  return new Date(dateStr).toLocaleDateString(document.documentElement.lang, {
     year: 'numeric',
     month: 'short',
     day: 'numeric'

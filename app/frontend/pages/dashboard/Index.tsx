@@ -36,11 +36,11 @@ interface DashboardProps {
 }
 
 function formatCurrency(amount: number, currency: string): string {
-  return `${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`
+  return `${amount.toLocaleString(document.documentElement.lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`
 }
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString(undefined, {
+  return new Date(dateStr).toLocaleDateString(document.documentElement.lang, {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
