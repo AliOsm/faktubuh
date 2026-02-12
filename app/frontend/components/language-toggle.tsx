@@ -16,13 +16,26 @@ export default function LanguageToggle() {
   function switchLocale(locale: string) {
     if (locale === i18n.language) return
 
-    i18n.changeLanguage(locale)
-    document.documentElement.lang = locale
-    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr'
+    document.body.style.transition = 'opacity 150ms ease-out'
+    document.body.style.opacity = '0'
 
-    document.cookie = `locale=${locale};path=/;max-age=${365 * 24 * 60 * 60}`
+    setTimeout(() => {
+      i18n.changeLanguage(locale)
+      document.documentElement.lang = locale
+      document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr'
 
-    router.reload({ data: { locale } })
+      document.cookie = `locale=${locale};path=/;max-age=${365 * 24 * 60 * 60}`
+
+      router.reload({
+        data: { locale },
+        onFinish: () => {
+          document.body.style.opacity = '1'
+          setTimeout(() => {
+            document.body.style.transition = ''
+          }, 150)
+        }
+      })
+    }, 150)
   }
 
   return (
