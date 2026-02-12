@@ -23,7 +23,7 @@ export default function Home() {
           <p className="text-xl text-muted-foreground">{t('home.subtitle')}</p>
           <p className="text-sm text-muted-foreground">{t('home.description')}</p>
 
-          <blockquote className="border-s-4 border-primary/30 ps-4 text-end">
+          <blockquote className="border-s-4 border-primary/30 ps-4 text-right">
             <p className="text-lg leading-relaxed">{t('ayat.welcome.verse')}</p>
             {i18n.language !== 'ar' && (
               <p className="mt-2 text-sm text-muted-foreground">{t('ayat.welcome.translation')}</p>

@@ -1,10 +1,17 @@
 import type { ResolvedComponent } from '@inertiajs/react'
 import { createInertiaApp } from '@inertiajs/react'
-import { StrictMode } from 'react'
+import { StrictMode, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { useTranslation } from 'react-i18next'
 
+import { DirectionProvider } from '@/components/ui/direction'
 import i18n from '@/i18n/config'
 import PersistentLayout from '@/layouts/persistent-layout'
+
+function DirectionWrapper({ children }: { children: ReactNode }) {
+  const { i18n } = useTranslation()
+  return <DirectionProvider dir={i18n.dir()}>{children}</DirectionProvider>
+}
 
 const appName = import.meta.env.VITE_APP_NAME ?? 'Faktubuh'
 
@@ -33,7 +40,9 @@ void createInertiaApp({
 
     createRoot(el).render(
       <StrictMode>
-        <App {...props} />
+        <DirectionWrapper>
+          <App {...props} />
+        </DirectionWrapper>
       </StrictMode>
     )
   },

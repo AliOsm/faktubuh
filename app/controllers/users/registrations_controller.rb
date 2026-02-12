@@ -4,7 +4,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def new
     build_resource
 
-    render inertia: "auth/SignUp"
+    render inertia: "auth/SignUp", props: { locale: I18n.locale.to_s }
   end
 
   def create = super

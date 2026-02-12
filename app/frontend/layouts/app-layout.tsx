@@ -152,7 +152,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  align={isRtl ? 'start' : 'end'}
+                  align="end"
                   className="w-56"
                 >
                   <DropdownMenuLabel className="font-normal">
