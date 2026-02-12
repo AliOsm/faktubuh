@@ -23,6 +23,7 @@ interface NavItem {
   label: string
   href: string
   icon: ReactNode
+  badge?: number
 }
 
 function getInitials(name: string): string {
@@ -48,7 +49,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const navItems: NavItem[] = [
     { label: t('nav.dashboard'), href: '/dashboard', icon: <LayoutDashboard className="size-4" /> },
     { label: t('nav.my_debts'), href: '/debts', icon: <List className="size-4" /> },
-    { label: t('nav.notifications'), href: '/notifications', icon: <Bell className="size-4" /> }
+    { label: t('nav.notifications'), href: '/notifications', icon: <Bell className="size-4" />, badge: unreadCount }
   ]
 
   const isActive = (href: string) => {
@@ -95,31 +96,20 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               >
                 {item.icon}
                 {item.label}
+                {item.badge != null && item.badge > 0 && (
+                  <Badge variant="destructive" className="rounded-full px-1.5 py-0.5 text-[10px] leading-none">
+                    {item.badge > 99 ? '99+' : item.badge}
+                  </Badge>
+                )}
               </Link>
             ))}
           </nav>
 
           <div className="flex flex-1 items-center justify-end gap-2">
-            <LanguageToggle />
-            <DarkModeToggle />
-
-            {user && (
-              <Link
-                href="/notifications"
-                className="relative inline-flex items-center justify-center rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-              >
-                <Bell className="size-5" />
-                {unreadCount > 0 && (
-                  <Badge
-                    variant="destructive"
-                    className="absolute -top-0.5 rounded-full px-1.5 py-0.5 text-[10px] leading-none ltr:-right-0.5 rtl:-left-0.5"
-                  >
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                  </Badge>
-                )}
-                <span className="sr-only">{t('nav.notifications')}</span>
-              </Link>
-            )}
+            <div className="flex items-center gap-1">
+              <LanguageToggle />
+              <DarkModeToggle />
+            </div>
 
             {user && (
               <DropdownMenu>
@@ -182,6 +172,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               >
                 {item.icon}
                 {item.label}
+                {item.badge != null && item.badge > 0 && (
+                  <Badge variant="destructive" className="rounded-full px-1.5 py-0.5 text-[10px] leading-none">
+                    {item.badge > 99 ? '99+' : item.badge}
+                  </Badge>
+                )}
               </Link>
             ))}
           </nav>
