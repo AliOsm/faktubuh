@@ -35,8 +35,12 @@ interface DashboardProps {
   recent_debts: RecentDebt[]
 }
 
+function currencyName(code: string): string {
+  return new Intl.DisplayNames(document.documentElement.lang, { type: 'currency' }).of(code) || code
+}
+
 function formatCurrency(amount: number, currency: string): string {
-  return `${amount.toLocaleString(document.documentElement.lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`
+  return `${amount.toLocaleString(document.documentElement.lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencyName(currency)}`
 }
 
 function formatDate(dateStr: string): string {
@@ -87,7 +91,7 @@ function CurrencySummaryCard({ summary, t }: { summary: CurrencySummary; t: (key
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
-          <span className="text-xl font-bold">{summary.currency}</span>
+          <span className="text-xl font-bold">{currencyName(summary.currency)}</span>
           <div className="flex gap-2 text-sm font-normal text-muted-foreground">
             <span>
               {summary.active_count} {t('dashboard.active_debts')}
