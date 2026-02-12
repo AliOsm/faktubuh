@@ -471,31 +471,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inertiajs/core@npm:2.3.13":
-  version: 2.3.13
-  resolution: "@inertiajs/core@npm:2.3.13"
+"@inertiajs/core@npm:2.3.14":
+  version: 2.3.14
+  resolution: "@inertiajs/core@npm:2.3.14"
   dependencies:
     "@types/lodash-es": "npm:^4.17.12"
     axios: "npm:^1.13.2"
     laravel-precognition: "npm:^1.0.1"
     lodash-es: "npm:^4.17.23"
     qs: "npm:^6.14.1"
-  checksum: 10c0/1ee36ca4a4112371090ce2d9f224312043a40874c96e2a23df3ec1f8ee0bde0ba1603b424f2baf739272fc95bf09549f387679b3b853cd24d5d4487042147dd2
+  checksum: 10c0/3d00d5e725fc421e95cf40c1396d49b60ec0fcd5ac6e386222034410a793bda60a990b9e50b32bb606892a9211992719d3c12699b16c0dfd5ba6b16625884620
   languageName: node
   linkType: hard
 
-"@inertiajs/react@npm:^2.1.2":
-  version: 2.3.13
-  resolution: "@inertiajs/react@npm:2.3.13"
+"@inertiajs/react@npm:^2.3.14":
+  version: 2.3.14
+  resolution: "@inertiajs/react@npm:2.3.14"
   dependencies:
-    "@inertiajs/core": "npm:2.3.13"
+    "@inertiajs/core": "npm:2.3.14"
     "@types/lodash-es": "npm:^4.17.12"
     laravel-precognition: "npm:^1.0.1"
     lodash-es: "npm:^4.17.23"
   peerDependencies:
     react: ^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/3d2af810ccec3a2c18d217e0fea4e8e1469b54da32ac8063343ef32ff26715a15a78f27399cd0a8a618ff975e23d037e4058df900fb2902ff0ec37dc2b9803ba
+  checksum: 10c0/5bf2ee02ecce126ffb663b6a9d47632d93464c2e53f07dfe65d5436e7437a169ece49e228bfc3b957f6941507a10c0589569aca5b42ffd48ac06438b26c62468
   languageName: node
   linkType: hard
 
@@ -761,44 +761,44 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oxlint-tsgolint/darwin-arm64@npm:0.11.5":
-  version: 0.11.5
-  resolution: "@oxlint-tsgolint/darwin-arm64@npm:0.11.5"
+"@oxlint-tsgolint/darwin-arm64@npm:0.12.0":
+  version: 0.12.0
+  resolution: "@oxlint-tsgolint/darwin-arm64@npm:0.12.0"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@oxlint-tsgolint/darwin-x64@npm:0.11.5":
-  version: 0.11.5
-  resolution: "@oxlint-tsgolint/darwin-x64@npm:0.11.5"
+"@oxlint-tsgolint/darwin-x64@npm:0.12.0":
+  version: 0.12.0
+  resolution: "@oxlint-tsgolint/darwin-x64@npm:0.12.0"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@oxlint-tsgolint/linux-arm64@npm:0.11.5":
-  version: 0.11.5
-  resolution: "@oxlint-tsgolint/linux-arm64@npm:0.11.5"
+"@oxlint-tsgolint/linux-arm64@npm:0.12.0":
+  version: 0.12.0
+  resolution: "@oxlint-tsgolint/linux-arm64@npm:0.12.0"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"@oxlint-tsgolint/linux-x64@npm:0.11.5":
-  version: 0.11.5
-  resolution: "@oxlint-tsgolint/linux-x64@npm:0.11.5"
+"@oxlint-tsgolint/linux-x64@npm:0.12.0":
+  version: 0.12.0
+  resolution: "@oxlint-tsgolint/linux-x64@npm:0.12.0"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"@oxlint-tsgolint/win32-arm64@npm:0.11.5":
-  version: 0.11.5
-  resolution: "@oxlint-tsgolint/win32-arm64@npm:0.11.5"
+"@oxlint-tsgolint/win32-arm64@npm:0.12.0":
+  version: 0.12.0
+  resolution: "@oxlint-tsgolint/win32-arm64@npm:0.12.0"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@oxlint-tsgolint/win32-x64@npm:0.11.5":
-  version: 0.11.5
-  resolution: "@oxlint-tsgolint/win32-x64@npm:0.11.5"
+"@oxlint-tsgolint/win32-x64@npm:0.12.0":
+  version: 0.12.0
+  resolution: "@oxlint-tsgolint/win32-x64@npm:0.12.0"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -2564,7 +2564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tailwindcss/vite@npm:^4.0.6":
+"@tailwindcss/vite@npm:^4.1.18":
   version: 4.1.18
   resolution: "@tailwindcss/vite@npm:4.1.18"
   dependencies:
@@ -2659,16 +2659,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^19.2.7":
-  version: 19.2.13
-  resolution: "@types/react@npm:19.2.13"
+"@types/react@npm:^19.2.14":
+  version: 19.2.14
+  resolution: "@types/react@npm:19.2.14"
   dependencies:
     csstype: "npm:^3.2.2"
-  checksum: 10c0/e512dc53b805b9066f5c6ad42944372e1204290d618dbaec634d8bbd80d3aadcc1b8cdd7251329936bbdafae0425c02f531083213473bb370df903f20bb66e91
+  checksum: 10c0/7d25bf41b57719452d86d2ac0570b659210402707313a36ee612666bf11275a1c69824f8c3ee1fdca077ccfe15452f6da8f1224529b917050eb2d861e52b59b7
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-react@npm:^5.0.0":
+"@vitejs/plugin-react@npm:^5.1.4":
   version: 5.1.4
   resolution: "@vitejs/plugin-react@npm:5.1.4"
   dependencies:
@@ -2702,34 +2702,34 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:."
   dependencies:
-    "@inertiajs/react": "npm:^2.1.2"
-    "@tailwindcss/vite": "npm:^4.0.6"
-    "@types/react": "npm:^19.2.7"
+    "@inertiajs/react": "npm:^2.3.14"
+    "@tailwindcss/vite": "npm:^4.1.18"
+    "@types/react": "npm:^19.2.14"
     "@types/react-dom": "npm:^19.2.3"
-    "@vitejs/plugin-react": "npm:^5.0.0"
+    "@vitejs/plugin-react": "npm:^5.1.4"
     babel-plugin-react-compiler: "npm:^1.0.0"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     country-flag-icons: "npm:^1.6.13"
     date-fns: "npm:^4.1.0"
-    i18next: "npm:^25.8.4"
-    lucide-react: "npm:<1.0"
+    i18next: "npm:^25.8.5"
+    lucide-react: "npm:^0.563.0"
     next-themes: "npm:^0.4.6"
     oxfmt: "npm:^0.31.0"
     oxlint: "npm:^1.46.0"
-    oxlint-tsgolint: "npm:^0.11.5"
+    oxlint-tsgolint: "npm:^0.12.0"
     radix-ui: "npm:^1.4.3"
-    react: "npm:^19.2.3"
+    react: "npm:^19.2.4"
     react-day-picker: "npm:^9.13.2"
-    react-dom: "npm:^19.2.3"
+    react-dom: "npm:^19.2.4"
     react-i18next: "npm:^16.5.4"
     sonner: "npm:^2.0.7"
-    tailwind-merge: "npm:^3.2.0"
-    tailwindcss: "npm:^4.0.6"
+    tailwind-merge: "npm:^3.4.0"
+    tailwindcss: "npm:^4.1.18"
     tw-animate-css: "npm:^1.4.0"
-    typescript: "npm:^5.7.3"
-    vite: "npm:^7.0.5"
-    vite-plugin-ruby: "npm:^5.1.1"
+    typescript: "npm:^5.9.3"
+    vite: "npm:^7.3.1"
+    vite-plugin-ruby: "npm:^5.1.2"
   languageName: unknown
   linkType: soft
 
@@ -3399,9 +3399,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^25.8.4":
-  version: 25.8.4
-  resolution: "i18next@npm:25.8.4"
+"i18next@npm:^25.8.5":
+  version: 25.8.5
+  resolution: "i18next@npm:25.8.5"
   dependencies:
     "@babel/runtime": "npm:^7.28.4"
   peerDependencies:
@@ -3409,7 +3409,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/c2582bd97893b4417c06c5b5f8f3bb37cdf77fc5918d00ff3a0e79c856b94bf8bb52377754bb5d62ade88b457f8ac541471987d359c1adc67bcaeea18121a2b5
+  checksum: 10c0/6f4e52bcfd667715be60bdf93f5e7ae5ef37c3be328b26680ac8edb5477a8ef443dc4fb349d11556e607a47674de049ea72c50fbddd870c7ad2c7c6fa0172728
   languageName: node
   linkType: hard
 
@@ -3653,7 +3653,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:<1.0":
+"lucide-react@npm:^0.563.0":
   version: 0.563.0
   resolution: "lucide-react@npm:0.563.0"
   peerDependencies:
@@ -3962,16 +3962,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oxlint-tsgolint@npm:^0.11.5":
-  version: 0.11.5
-  resolution: "oxlint-tsgolint@npm:0.11.5"
+"oxlint-tsgolint@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "oxlint-tsgolint@npm:0.12.0"
   dependencies:
-    "@oxlint-tsgolint/darwin-arm64": "npm:0.11.5"
-    "@oxlint-tsgolint/darwin-x64": "npm:0.11.5"
-    "@oxlint-tsgolint/linux-arm64": "npm:0.11.5"
-    "@oxlint-tsgolint/linux-x64": "npm:0.11.5"
-    "@oxlint-tsgolint/win32-arm64": "npm:0.11.5"
-    "@oxlint-tsgolint/win32-x64": "npm:0.11.5"
+    "@oxlint-tsgolint/darwin-arm64": "npm:0.12.0"
+    "@oxlint-tsgolint/darwin-x64": "npm:0.12.0"
+    "@oxlint-tsgolint/linux-arm64": "npm:0.12.0"
+    "@oxlint-tsgolint/linux-x64": "npm:0.12.0"
+    "@oxlint-tsgolint/win32-arm64": "npm:0.12.0"
+    "@oxlint-tsgolint/win32-x64": "npm:0.12.0"
   dependenciesMeta:
     "@oxlint-tsgolint/darwin-arm64":
       optional: true
@@ -3987,7 +3987,7 @@ __metadata:
       optional: true
   bin:
     tsgolint: bin/tsgolint.js
-  checksum: 10c0/83c510cf019cd77a31fb61dafcca90d5794869d8a296e0636a7f229858af9410f38ff9cc6617c9ae4e7bd5474884a8078a20f578b5a9bc6694f348539668e38a
+  checksum: 10c0/cbe345d08390fd02988af7ab7dd96cb40230e2f7e3c9e96f552df530fa05ac352a6ebd71d4b453f39d660c56ec018ef3a26d3bfa7d111d7204cc032ef8997308
   languageName: node
   linkType: hard
 
@@ -4239,7 +4239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^19.2.3":
+"react-dom@npm:^19.2.4":
   version: 19.2.4
   resolution: "react-dom@npm:19.2.4"
   dependencies:
@@ -4330,7 +4330,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^19.2.3":
+"react@npm:^19.2.4":
   version: 19.2.4
   resolution: "react@npm:19.2.4"
   checksum: 10c0/cd2c9ff67a720799cc3b38a516009986f7fc4cb8d3e15716c6211cf098d1357ee3e348ab05ad0600042bbb0fd888530ba92e329198c92eafa0994f5213396596
@@ -4584,14 +4584,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwind-merge@npm:^3.2.0":
+"tailwind-merge@npm:^3.4.0":
   version: 3.4.0
   resolution: "tailwind-merge@npm:3.4.0"
   checksum: 10c0/eaf17bb695c51c7bb7a90366a9c62be295473ee97fcfd1da54287714d4a5788a88ff4ad1ab9e0128638257fda777d6c9ea88682e36195e31a7fa2cf43f45e310
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:4.1.18, tailwindcss@npm:^4.0.6":
+"tailwindcss@npm:4.1.18, tailwindcss@npm:^4.1.18":
   version: 4.1.18
   resolution: "tailwindcss@npm:4.1.18"
   checksum: 10c0/c79263cea0b2c577859b02f28284caa4eb3844e4d0f563686726ca97817c045c5c395a55bc776daaa351ba9e4aefa9a75bfbb43c22d86f3c573eecc2b87d6bf1
@@ -4658,7 +4658,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.7.3":
+"typescript@npm:^5.9.3":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -4668,7 +4668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.7.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.9.3#optional!builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
   bin:
@@ -4750,7 +4750,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-ruby@npm:^5.1.1":
+"vite-plugin-ruby@npm:^5.1.2":
   version: 5.1.2
   resolution: "vite-plugin-ruby@npm:5.1.2"
   dependencies:
@@ -4762,7 +4762,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^7.0.5":
+"vite@npm:^7.3.1":
   version: 7.3.1
   resolution: "vite@npm:7.3.1"
   dependencies:
