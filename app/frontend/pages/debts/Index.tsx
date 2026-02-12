@@ -108,8 +108,7 @@ export default function Index({ debts, filters }: IndexProps) {
         </div>
 
         {/* Filters */}
-        <Card>
-          <CardContent className="flex flex-wrap items-center gap-3 p-4">
+        <div className="flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2">
             <Filter className="size-4 text-muted-foreground" />
             <Select
               value={filters.status}
@@ -168,8 +167,7 @@ export default function Index({ debts, filters }: IndexProps) {
                 <SelectItem value="amount_desc">{t('debts_list.sort.amount')}</SelectItem>
               </SelectContent>
             </Select>
-          </CardContent>
-        </Card>
+        </div>
 
         {/* Debts List */}
         {debts.length === 0 ? (
