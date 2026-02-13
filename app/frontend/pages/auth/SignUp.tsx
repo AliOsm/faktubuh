@@ -36,6 +36,10 @@ export default function SignUp() {
       <Head title={t('auth.sign_up.title')} />
 
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+        <Link href="/" className="fixed top-4 start-4 text-xl font-bold hover:opacity-80 transition-opacity">
+          {t('app.name')}
+        </Link>
+
         <div className="fixed top-4 end-4 flex gap-1">
           <LanguageToggle />
           <DarkModeToggle />
