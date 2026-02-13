@@ -14,7 +14,8 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     new_user = User.create!(
       email: "nodebts@example.com",
       password: "password123",
-      full_name: "No Debts User"
+      full_name: "No Debts User",
+      confirmed_at: Time.zone.now
     )
     sign_in new_user
     get dashboard_url

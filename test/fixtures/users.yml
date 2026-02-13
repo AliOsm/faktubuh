@@ -6,6 +6,7 @@ one:
   full_name: Test User One
   personal_id: ABC234
   locale: en
+  confirmed_at: <%= Time.zone.now %>
 
 two:
   email: user_two@example.com
@@ -13,6 +14,7 @@ two:
   full_name: Test User Two
   personal_id: DEF567
   locale: ar
+  confirmed_at: <%= Time.zone.now %>
 
 three:
   email: user_three@example.com
@@ -20,6 +22,7 @@ three:
   full_name: Test User Three
   personal_id: GHJ789
   locale: en
+  confirmed_at: <%= Time.zone.now %>
 
 four:
   email: user_four@example.com
@@ -27,6 +30,7 @@ four:
   full_name: Test User Four
   personal_id: KMN345
   locale: en
+  confirmed_at: <%= Time.zone.now %>
 
 five:
   email: user_five@example.com
@@ -34,3 +38,4 @@ five:
   full_name: Test User Five
   personal_id: PQR678
   locale: en
+  confirmed_at: <%= Time.zone.now %>

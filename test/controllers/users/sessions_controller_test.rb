@@ -47,7 +47,7 @@ class Users::SessionsControllerTest < ActionDispatch::IntegrationTest
 
     # Sign out
     delete destroy_user_session_url
-    assert_redirected_to new_user_session_path
+    assert_redirected_to root_path
   end
 
   test "unauthenticated user sees sign in page at root" do
