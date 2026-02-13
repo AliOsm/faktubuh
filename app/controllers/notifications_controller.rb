@@ -11,9 +11,14 @@ class NotificationsController < InertiaController
 
   def mark_read
     notification = current_user.notifications.find(params[:id])
+    was_unread = !notification.read?
     notification.update!(read: true)
 
-    redirect_to notifications_path, notice: I18n.t("notifications_page.marked_read")
+    if was_unread
+      redirect_to notifications_path, notice: I18n.t("notifications_page.marked_read")
+    else
+      redirect_to notifications_path
+    end
   end
 
   def mark_all_read
