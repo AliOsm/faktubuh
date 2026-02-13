@@ -90,7 +90,43 @@
       "submit": "Sign In",
       "signing_in": "Signing in...",
       "no_account": "Don't have an account?",
-      "sign_up_link": "Sign up"
+      "sign_up_link": "Sign up",
+      "forgot_password": "Forgot your password?",
+      "resend_confirmation": "Didn't receive confirmation email?",
+      "unlock_account": "Account locked?"
+    },
+    "forgot_password": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your email to receive password reset instructions",
+      "email": "Email",
+      "submit": "Send Reset Instructions",
+      "sending": "Sending...",
+      "back_to_sign_in": "Back to Sign In"
+    },
+    "reset_password": {
+      "title": "Reset Password",
+      "subtitle": "Enter your new password",
+      "password": "New Password",
+      "password_confirmation": "Confirm New Password",
+      "submit": "Reset Password",
+      "resetting": "Resetting...",
+      "back_to_sign_in": "Back to Sign In"
+    },
+    "resend_confirmation": {
+      "title": "Resend Confirmation",
+      "subtitle": "Enter your email to receive a new confirmation link",
+      "email": "Email",
+      "submit": "Send Confirmation Email",
+      "sending": "Sending...",
+      "back_to_sign_in": "Back to Sign In"
+    },
+    "request_unlock": {
+      "title": "Unlock Account",
+      "subtitle": "Your account has been locked due to too many failed login attempts",
+      "email": "Email",
+      "submit": "Send Unlock Instructions",
+      "sending": "Sending...",
+      "back_to_sign_in": "Back to Sign In"
     }
   },
   "dashboard": {

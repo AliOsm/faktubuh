@@ -16,6 +16,7 @@ class User < ApplicationRecord
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
+         :confirmable, :lockable,
          :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
   validates :full_name, presence: true
@@ -24,6 +25,17 @@ class User < ApplicationRecord
 
   before_validation :normalize_personal_id
   before_validation :generate_personal_id, on: :create, if: -> { personal_id.blank? }
+
+  # Skip confirmation for OAuth users
+  def confirmation_required?
+    !provider.present?
+  end
+
+  protected
+
+  def send_on_create_confirmation_instructions
+    confirmation_required? ? super : true
+  end
 
   private
 

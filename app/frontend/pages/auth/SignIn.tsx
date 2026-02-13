@@ -194,6 +194,27 @@ export default function SignIn() {
                   >
                     {form.processing ? t('auth.sign_in.signing_in') : t('auth.sign_in.submit')}
                   </Button>
+
+                  <div className="flex flex-col gap-2 text-sm">
+                    <Link
+                      href="/users/password/new"
+                      className="text-primary underline-offset-4 hover:underline"
+                    >
+                      {t('auth.sign_in.forgot_password')}
+                    </Link>
+                    <Link
+                      href="/users/confirmation/new"
+                      className="text-muted-foreground underline-offset-4 hover:underline"
+                    >
+                      {t('auth.sign_in.resend_confirmation')}
+                    </Link>
+                    <Link
+                      href="/users/unlock/new"
+                      className="text-muted-foreground underline-offset-4 hover:underline"
+                    >
+                      {t('auth.sign_in.unlock_account')}
+                    </Link>
+                  </div>
                 </form>
               </div>
             </div>

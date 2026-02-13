@@ -1,8 +1,14 @@
 Rails.application.routes.draw do
   mount GoodJob::Engine, at: "good_job"
 
-  devise_for :users, controllers: { registrations: "users/registrations", sessions: "users/sessions",
-                                    omniauth_callbacks: "users/omniauth_callbacks" }
+  devise_for :users, controllers: {
+    registrations: "users/registrations",
+    sessions: "users/sessions",
+    passwords: "users/passwords",
+    confirmations: "users/confirmations",
+    unlocks: "users/unlocks",
+    omniauth_callbacks: "users/omniauth_callbacks"
+  }
 
   devise_scope :user do
     authenticated :user do
