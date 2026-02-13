@@ -29,6 +29,7 @@ class NotificationsController < InertiaController
       id: notification.id,
       notification_type: notification.notification_type,
       message: notification.message,
+      params: notification.params || {},
       read: notification.read,
       debt_id: notification.debt_id,
       created_at: notification.created_at.iso8601

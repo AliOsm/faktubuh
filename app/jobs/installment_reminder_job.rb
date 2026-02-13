@@ -12,17 +12,14 @@ class InstallmentReminderJob < ApplicationJob
 
       recipients.each do |recipient|
         days_until = (installment.due_date - Date.current).to_i
-        message = I18n.t(
-          "notifications.installment_reminder",
-          amount: installment.amount,
-          currency: debt.currency,
-          days: days_until
-        )
+        params = { amount: installment.amount.to_s, currency: debt.currency, days: days_until.to_s }
+        message = I18n.t("notifications.installment_reminder", locale: :en, **params)
 
         Notification.create!(
           user: recipient,
           notification_type: "installment_reminder",
           message: message,
+          params: params,
           debt: debt
         )
 

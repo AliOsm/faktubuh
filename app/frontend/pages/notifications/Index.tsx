@@ -10,6 +10,7 @@ interface NotificationData {
   id: number
   notification_type: string
   message: string
+  params: Record<string, string>
   read: boolean
   debt_id: number | null
   created_at: string
@@ -87,7 +88,9 @@ function NotificationItem({ notification, locale }: { notification: Notification
       <div className="mt-0.5 shrink-0">{getNotificationIcon(notification.notification_type)}</div>
       <div className="min-w-0 flex-1">
         <p className={`text-sm ${notification.read ? 'text-muted-foreground' : 'font-semibold text-foreground'}`}>
-          {notification.message}
+          {Object.keys(notification.params).length > 0
+            ? t(`notifications.${notification.notification_type}`, notification.params)
+            : notification.message}
         </p>
         <p className="mt-1 text-xs text-muted-foreground">{formatRelativeTime(notification.created_at, locale)}</p>
       </div>

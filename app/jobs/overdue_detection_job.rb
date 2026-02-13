@@ -11,16 +11,14 @@ class OverdueDetectionJob < ApplicationJob
       recipients = [ debt.lender, debt.borrower ].compact
 
       recipients.each do |recipient|
-        message = I18n.t(
-          "notifications.installment_overdue",
-          amount: installment.amount,
-          currency: debt.currency
-        )
+        params = { amount: installment.amount.to_s, currency: debt.currency }
+        message = I18n.t("notifications.installment_overdue", locale: :en, **params)
 
         Notification.create!(
           user: recipient,
           notification_type: "installment_overdue",
           message: message,
+          params: params,
           debt: debt
         )
 

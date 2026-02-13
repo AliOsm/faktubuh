@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_11_110928) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_13_075241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -154,6 +154,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_110928) do
     t.bigint "debt_id"
     t.text "message", null: false
     t.string "notification_type", null: false
+    t.jsonb "params", default: {}
     t.boolean "read", default: false, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false

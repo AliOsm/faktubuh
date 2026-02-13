@@ -215,6 +215,23 @@
     "ayat_translation": "O you who believe, when you contract a debt for a specified term, write it down.",
     "ayat_reference": "Surah Al-Baqarah 2:282"
   },
+  "notifications": {
+    "debt_created": "{{creator}} created a debt for {{amount}} {{currency}} with you.",
+    "debt_confirmed": "{{confirmer}} confirmed the debt for {{amount}} {{currency}}.",
+    "debt_rejected": "{{rejecter}} rejected the debt for {{amount}} {{currency}}.",
+    "payment_submitted": "{{submitter}} submitted a payment of {{amount}} {{currency}}.",
+    "payment_approved": "Your payment of {{amount}} {{currency}} has been approved.",
+    "payment_rejected": "Your payment of {{amount}} {{currency}} has been rejected. Reason: {{reason}}",
+    "debt_settled": "The debt for {{amount}} {{currency}} has been fully settled. Congratulations!",
+    "witness_invited": "{{inviter}} invited you as a witness for a debt of {{amount}} {{currency}}.",
+    "witness_confirmed": "{{witness}} accepted the witness invitation for your debt of {{amount}} {{currency}}.",
+    "witness_declined": "{{witness}} declined the witness invitation for your debt of {{amount}} {{currency}}.",
+    "upgrade_requested": "{{creator}} wants to link a personal debt of {{amount}} {{currency}} with you.",
+    "upgrade_accepted": "{{accepter}} accepted the upgrade request for the debt of {{amount}} {{currency}}.",
+    "upgrade_declined": "{{decliner}} declined the upgrade request for the debt of {{amount}} {{currency}}.",
+    "installment_reminder": "Reminder: An installment of {{amount}} {{currency}} is due in {{days}} days.",
+    "installment_overdue": "An installment of {{amount}} {{currency}} is overdue."
+  },
   "notifications_page": {
     "title": "Notifications",
     "mark_all_read": "Mark all as read",

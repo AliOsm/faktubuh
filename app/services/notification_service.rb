@@ -7,10 +7,11 @@ class NotificationService
       return unless other_user
 
       creator = debt.creator_role_lender? ? debt.lender : debt.borrower
+      params = { creator: creator.full_name, amount: format_amount(debt.amount), currency: debt.currency }
       create_notification(
         user: other_user,
         notification_type: "debt_created",
-        message: I18n.t("notifications.debt_created", creator: creator.full_name, amount: format_amount(debt.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
       DebtMailer.debt_created(debt, other_user).deliver_later
@@ -20,10 +21,11 @@ class NotificationService
       creator = debt.creator_role_lender? ? debt.lender : debt.borrower
       return unless creator
 
+      params = { confirmer: confirmer.full_name, amount: format_amount(debt.amount), currency: debt.currency }
       create_notification(
         user: creator,
         notification_type: "debt_confirmed",
-        message: I18n.t("notifications.debt_confirmed", confirmer: confirmer.full_name, amount: format_amount(debt.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
       DebtMailer.debt_confirmed(debt, creator).deliver_later
@@ -33,20 +35,22 @@ class NotificationService
       creator = debt.creator_role_lender? ? debt.lender : debt.borrower
       return unless creator
 
+      params = { rejecter: rejecter.full_name, amount: format_amount(debt.amount), currency: debt.currency }
       create_notification(
         user: creator,
         notification_type: "debt_rejected",
-        message: I18n.t("notifications.debt_rejected", rejecter: rejecter.full_name, amount: format_amount(debt.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
     end
 
     def payment_submitted(payment)
       debt = payment.debt
+      params = { submitter: payment.submitter.full_name, amount: format_amount(payment.amount), currency: debt.currency }
       create_notification(
         user: debt.lender,
         notification_type: "payment_submitted",
-        message: I18n.t("notifications.payment_submitted", submitter: payment.submitter.full_name, amount: format_amount(payment.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
       DebtMailer.payment_submitted(payment, debt.lender).deliver_later
@@ -54,10 +58,11 @@ class NotificationService
 
     def payment_approved(payment)
       debt = payment.debt
+      params = { amount: format_amount(payment.amount), currency: debt.currency }
       create_notification(
         user: payment.submitter,
         notification_type: "payment_approved",
-        message: I18n.t("notifications.payment_approved", amount: format_amount(payment.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
       DebtMailer.payment_approved(payment, payment.submitter).deliver_later
@@ -65,10 +70,11 @@ class NotificationService
 
     def payment_rejected(payment)
       debt = payment.debt
+      params = { amount: format_amount(payment.amount), currency: debt.currency, reason: payment.rejection_reason }
       create_notification(
         user: payment.submitter,
         notification_type: "payment_rejected",
-        message: I18n.t("notifications.payment_rejected", amount: format_amount(payment.amount), currency: debt.currency, reason: payment.rejection_reason),
+        params: params,
         debt: debt
       )
       DebtMailer.payment_rejected(payment, payment.submitter).deliver_later
@@ -77,10 +83,11 @@ class NotificationService
     def witness_invited(witness)
       debt = witness.debt
       creator = debt.creator_role_lender? ? debt.lender : debt.borrower
+      params = { inviter: creator.full_name, amount: format_amount(debt.amount), currency: debt.currency }
       create_notification(
         user: witness.user,
         notification_type: "witness_invited",
-        message: I18n.t("notifications.witness_invited", inviter: creator.full_name, amount: format_amount(debt.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
       DebtMailer.witness_invitation(witness).deliver_later
@@ -91,10 +98,11 @@ class NotificationService
       creator = debt.creator_role_lender? ? debt.lender : debt.borrower
       return unless creator
 
+      params = { witness: witness.user.full_name, amount: format_amount(debt.amount), currency: debt.currency }
       create_notification(
         user: creator,
         notification_type: "witness_confirmed",
-        message: I18n.t("notifications.witness_confirmed", witness: witness.user.full_name, amount: format_amount(debt.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
     end
@@ -104,20 +112,22 @@ class NotificationService
       creator = debt.creator_role_lender? ? debt.lender : debt.borrower
       return unless creator
 
+      params = { witness: witness.user.full_name, amount: format_amount(debt.amount), currency: debt.currency }
       create_notification(
         user: creator,
         notification_type: "witness_declined",
-        message: I18n.t("notifications.witness_declined", witness: witness.user.full_name, amount: format_amount(debt.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
     end
 
     def upgrade_requested(debt, recipient:)
       creator = debt.creator_role_lender? ? debt.lender : (debt.borrower || debt.lender)
+      params = { creator: creator.full_name, amount: format_amount(debt.amount), currency: debt.currency }
       create_notification(
         user: recipient,
         notification_type: "upgrade_requested",
-        message: I18n.t("notifications.upgrade_requested", creator: creator.full_name, amount: format_amount(debt.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
     end
@@ -126,10 +136,11 @@ class NotificationService
       creator = debt.creator_role_lender? ? debt.lender : debt.borrower
       return unless creator
 
+      params = { accepter: accepter.full_name, amount: format_amount(debt.amount), currency: debt.currency }
       create_notification(
         user: creator,
         notification_type: "upgrade_accepted",
-        message: I18n.t("notifications.upgrade_accepted", accepter: accepter.full_name, amount: format_amount(debt.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
     end
@@ -138,20 +149,22 @@ class NotificationService
       creator = debt.creator_role_lender? ? debt.lender : debt.borrower
       return unless creator
 
+      params = { decliner: decliner.full_name, amount: format_amount(debt.amount), currency: debt.currency }
       create_notification(
         user: creator,
         notification_type: "upgrade_declined",
-        message: I18n.t("notifications.upgrade_declined", decliner: decliner.full_name, amount: format_amount(debt.amount), currency: debt.currency),
+        params: params,
         debt: debt
       )
     end
 
     def debt_settled(debt)
+      params = { amount: format_amount(debt.amount), currency: debt.currency }
       [ debt.lender, debt.borrower ].compact.each do |user|
         create_notification(
           user: user,
           notification_type: "debt_settled",
-          message: I18n.t("notifications.debt_settled", amount: format_amount(debt.amount), currency: debt.currency),
+          params: params,
           debt: debt
         )
         DebtMailer.debt_settled(debt, user).deliver_later
@@ -164,11 +177,13 @@ class NotificationService
       ActiveSupport::NumberHelper.number_to_delimited(format("%.2f", amount), delimiter: ",")
     end
 
-    def create_notification(user:, notification_type:, message:, debt:)
+    def create_notification(user:, notification_type:, params:, debt: nil)
+      message = I18n.t("notifications.#{notification_type}", locale: :en, **params)
       Notification.create!(
         user: user,
         notification_type: notification_type,
         message: message,
+        params: params,
         debt: debt
       )
     end

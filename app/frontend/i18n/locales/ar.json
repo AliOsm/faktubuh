@@ -219,6 +219,23 @@
     "ayat_translation": "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا تَدَايَنتُم بِدَيْنٍ إِلَىٰ أَجَلٍ مُّسَمًّى فَاكْتُبُوهُ",
     "ayat_reference": "سورة البقرة ٢:٢٨٢"
   },
+  "notifications": {
+    "debt_created": "قام {{creator}} بإنشاء دين بقيمة {{amount}} {{currency}} معك.",
+    "debt_confirmed": "قام {{confirmer}} بتأكيد الدين بقيمة {{amount}} {{currency}}.",
+    "debt_rejected": "قام {{rejecter}} برفض الدين بقيمة {{amount}} {{currency}}.",
+    "payment_submitted": "قام {{submitter}} بتقديم دفعة بقيمة {{amount}} {{currency}}.",
+    "payment_approved": "تمت الموافقة على دفعتك بقيمة {{amount}} {{currency}}.",
+    "payment_rejected": "تم رفض دفعتك بقيمة {{amount}} {{currency}}. السبب: {{reason}}",
+    "debt_settled": "تم تسديد الدين بقيمة {{amount}} {{currency}} بالكامل. تهانينا!",
+    "witness_invited": "قام {{inviter}} بدعوتك كشاهد على دين بقيمة {{amount}} {{currency}}.",
+    "witness_confirmed": "قبل {{witness}} دعوة الشهادة على دينك بقيمة {{amount}} {{currency}}.",
+    "witness_declined": "رفض {{witness}} دعوة الشهادة على دينك بقيمة {{amount}} {{currency}}.",
+    "upgrade_requested": "يرغب {{creator}} في ربط دين شخصي بقيمة {{amount}} {{currency}} معك.",
+    "upgrade_accepted": "قبل {{accepter}} طلب ترقية الدين بقيمة {{amount}} {{currency}}.",
+    "upgrade_declined": "رفض {{decliner}} طلب ترقية الدين بقيمة {{amount}} {{currency}}.",
+    "installment_reminder": "تذكير: قسط بقيمة {{amount}} {{currency}} مستحق خلال {{days}} أيام.",
+    "installment_overdue": "قسط بقيمة {{amount}} {{currency}} متأخر عن موعد الاستحقاق."
+  },
   "notifications_page": {
     "title": "الإشعارات",
     "mark_all_read": "تعيين الكل كمقروء",
