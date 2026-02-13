@@ -261,73 +261,69 @@ function ConfirmationBanner({ debt }: { debt: DebtData }) {
   }
 
   return (
-    <Card className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20">
-      <CardContent className="p-4 sm:p-6">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400" />
-            <div>
-              <h3 className="font-semibold text-amber-900 dark:text-amber-300">{t('debt_detail.confirmation.banner_title')}</h3>
-              <p className="mt-1 text-sm text-amber-800 dark:text-amber-400">
-                {t('debt_detail.confirmation.banner_description', { creator: creatorName })}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  disabled={processing !== null}
-                  className="bg-green-600 text-white hover:bg-green-700"
-                >
-                  <CheckCircle className="size-4" />
-                  {processing === 'confirm'
-                    ? t('debt_detail.confirmation.confirming')
-                    : t('debt_detail.confirmation.confirm_button')}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{t('debt_detail.confirmation.confirm_dialog_title')}</AlertDialogTitle>
-                  <AlertDialogDescription>{t('debt_detail.confirmation.confirm_dialog_description')}</AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleConfirm} className="bg-green-600 text-white hover:bg-green-700">
-                    {t('debt_detail.confirmation.confirm_dialog_confirm')}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="destructive"
-                  disabled={processing !== null}
-                >
-                  <XCircle className="size-4" />
-                  {processing === 'reject'
-                    ? t('debt_detail.confirmation.rejecting')
-                    : t('debt_detail.confirmation.reject_button')}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{t('debt_detail.confirmation.reject_dialog_title')}</AlertDialogTitle>
-                  <AlertDialogDescription>{t('debt_detail.confirmation.reject_dialog_description')}</AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleReject} variant="destructive">
-                    {t('debt_detail.confirmation.reject_dialog_confirm')}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
+    <div className="flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
+      <div className="flex items-start gap-3">
+        <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400" />
+        <div>
+          <h3 className="font-semibold text-amber-900 dark:text-amber-300">{t('debt_detail.confirmation.banner_title')}</h3>
+          <p className="mt-1 text-sm text-amber-800 dark:text-amber-400">
+            {t('debt_detail.confirmation.banner_description', { creator: creatorName })}
+          </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+      <div className="flex flex-wrap gap-3">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              disabled={processing !== null}
+              className="bg-green-600 text-white hover:bg-green-700"
+            >
+              <CheckCircle className="size-4" />
+              {processing === 'confirm'
+                ? t('debt_detail.confirmation.confirming')
+                : t('debt_detail.confirmation.confirm_button')}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('debt_detail.confirmation.confirm_dialog_title')}</AlertDialogTitle>
+              <AlertDialogDescription>{t('debt_detail.confirmation.confirm_dialog_description')}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirm} className="bg-green-600 text-white hover:bg-green-700">
+                {t('debt_detail.confirmation.confirm_dialog_confirm')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="destructive"
+              disabled={processing !== null}
+            >
+              <XCircle className="size-4" />
+              {processing === 'reject'
+                ? t('debt_detail.confirmation.rejecting')
+                : t('debt_detail.confirmation.reject_button')}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('debt_detail.confirmation.reject_dialog_title')}</AlertDialogTitle>
+              <AlertDialogDescription>{t('debt_detail.confirmation.reject_dialog_description')}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleReject} variant="destructive">
+                {t('debt_detail.confirmation.reject_dialog_confirm')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </div>
   )
 }
 
@@ -337,14 +333,12 @@ function AwaitingConfirmation({ debt }: { debt: DebtData }) {
   const confirmingPartyName = debt.creator_role === 'lender' ? (debt.borrower?.full_name ?? '') : debt.lender.full_name
 
   return (
-    <Card className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
-      <CardContent className="flex items-center gap-3 p-4 sm:p-6">
-        <Clock className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
-        <p className="text-sm font-medium text-blue-800 dark:text-blue-300">
-          {t('debt_detail.confirmation.awaiting', { name: confirmingPartyName })}
-        </p>
-      </CardContent>
-    </Card>
+    <div className="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+      <Clock className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
+      <p className="text-sm font-medium text-blue-800 dark:text-blue-300">
+        {t('debt_detail.confirmation.awaiting', { name: confirmingPartyName })}
+      </p>
+    </div>
   )
 }
 
@@ -863,43 +857,39 @@ function UpgradeRequestBanner({ debt }: { debt: DebtData }) {
   }
 
   return (
-    <Card className="border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20">
-      <CardContent className="p-4 sm:p-6">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-start gap-3">
-            <ArrowUpCircle className="mt-0.5 size-5 shrink-0 text-purple-600 dark:text-purple-400" />
-            <div>
-              <h3 className="font-semibold text-purple-900 dark:text-purple-300">{t('debt_detail.upgrade.request_title')}</h3>
-              <p className="mt-1 text-sm text-purple-800 dark:text-purple-400">
-                {t('debt_detail.upgrade.request_description', {
-                  creator: creatorName,
-                  amount: debt.amount.toLocaleString(),
-                  currency: debt.currency
-                })}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Button
-              onClick={handleAccept}
-              disabled={processing !== null}
-              className="bg-green-600 text-white hover:bg-green-700"
-            >
-              <CheckCircle className="size-4" />
-              {processing === 'accept' ? t('debt_detail.upgrade.accepting') : t('debt_detail.upgrade.accept_button')}
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDecline}
-              disabled={processing !== null}
-            >
-              <XCircle className="size-4" />
-              {processing === 'decline' ? t('debt_detail.upgrade.declining') : t('debt_detail.upgrade.decline_button')}
-            </Button>
-          </div>
+    <div className="flex flex-col gap-3 rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-900/20">
+      <div className="flex items-start gap-3">
+        <ArrowUpCircle className="mt-0.5 size-5 shrink-0 text-purple-600 dark:text-purple-400" />
+        <div>
+          <h3 className="font-semibold text-purple-900 dark:text-purple-300">{t('debt_detail.upgrade.request_title')}</h3>
+          <p className="mt-1 text-sm text-purple-800 dark:text-purple-400">
+            {t('debt_detail.upgrade.request_description', {
+              creator: creatorName,
+              amount: debt.amount.toLocaleString(),
+              currency: debt.currency
+            })}
+          </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+      <div className="flex flex-wrap gap-3">
+        <Button
+          onClick={handleAccept}
+          disabled={processing !== null}
+          className="bg-green-600 text-white hover:bg-green-700"
+        >
+          <CheckCircle className="size-4" />
+          {processing === 'accept' ? t('debt_detail.upgrade.accepting') : t('debt_detail.upgrade.accept_button')}
+        </Button>
+        <Button
+          variant="destructive"
+          onClick={handleDecline}
+          disabled={processing !== null}
+        >
+          <XCircle className="size-4" />
+          {processing === 'decline' ? t('debt_detail.upgrade.declining') : t('debt_detail.upgrade.decline_button')}
+        </Button>
+      </div>
+    </div>
   )
 }
 
@@ -907,12 +897,10 @@ function AwaitingUpgrade({ name }: { name: string }) {
   const { t } = useTranslation()
 
   return (
-    <Card className="border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20">
-      <CardContent className="flex items-center gap-3 p-4 sm:p-6">
-        <Clock className="size-5 shrink-0 text-purple-600 dark:text-purple-400" />
-        <p className="text-sm font-medium text-purple-800 dark:text-purple-300">{t('debt_detail.upgrade.awaiting', { name })}</p>
-      </CardContent>
-    </Card>
+    <div className="flex items-center gap-3 rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-900/20">
+      <Clock className="size-5 shrink-0 text-purple-600 dark:text-purple-400" />
+      <p className="text-sm font-medium text-purple-800 dark:text-purple-300">{t('debt_detail.upgrade.awaiting', { name })}</p>
+    </div>
   )
 }
 
@@ -920,21 +908,17 @@ function SettlementBanner() {
   const { t } = useTranslation()
 
   return (
-    <Card className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
-      <CardContent className="p-4 sm:p-6">
-        <div className="flex items-start gap-3">
-          <CheckCircle className="mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400" />
-          <div className="flex-1">
-            <h3 className="font-semibold text-green-900 dark:text-green-300">{t('debt_detail.settlement.title')}</h3>
-            <p className="mt-1 text-sm text-green-800 dark:text-green-400">{t('debt_detail.settlement.message')}</p>
-            <AyatAlDayn
-              context="settlement"
-              className="mt-3"
-            />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+      <CheckCircle className="mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400" />
+      <div className="flex-1">
+        <h3 className="font-semibold text-green-900 dark:text-green-300">{t('debt_detail.settlement.title')}</h3>
+        <p className="mt-1 text-sm text-green-800 dark:text-green-400">{t('debt_detail.settlement.message')}</p>
+        <AyatAlDayn
+          context="settlement"
+          className="mt-3"
+        />
+      </div>
+    </div>
   )
 }
 
