@@ -58,7 +58,10 @@
     "personal_info": "Personal Information",
     "personal_info_description": "Update your name. Your email cannot be changed.",
     "full_name": "Full Name",
-    "email": "Email"
+    "email": "Email",
+    "edit_id": "Edit",
+    "cancel_edit_id": "Cancel",
+    "personal_id_format_hint": "3-12 characters: A-Z and 0-9"
   },
   "auth": {
     "or": "Or",
@@ -172,7 +175,7 @@
       "title": "Debt Details",
       "description": "Enter the details of the debt.",
       "personal_id": "Counterparty Personal ID",
-      "personal_id_placeholder": "e.g. ABC234",
+      "personal_id_placeholder": "e.g. ABC234 or MYID",
       "user_not_found": "User not found",
       "lookup_error": "Could not look up user. Please try again.",
       "personal_id_required": "Please enter a valid Personal ID",
@@ -352,7 +355,7 @@
       "dialog_title": "Upgrade to Mutual Debt",
       "dialog_description": "Enter the Personal ID of the other party to link this debt. They will need to accept the upgrade request.",
       "personal_id": "Personal ID",
-      "personal_id_placeholder": "e.g. ABC234",
+      "personal_id_placeholder": "e.g. ABC234 or MYID",
       "user_not_found": "User not found",
       "found_user": "Found: {{name}}",
       "send_request": "Send Upgrade Request",
@@ -376,7 +379,7 @@
       "declined": "Declined",
       "add_witness": "Add Witness",
       "personal_id": "Witness Personal ID",
-      "personal_id_placeholder": "e.g. ABC234",
+      "personal_id_placeholder": "e.g. ABC234 or MYID",
       "user_not_found": "User not found",
       "found_user": "Found: {{name}}",
       "invite": "Invite",

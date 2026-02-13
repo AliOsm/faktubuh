@@ -1,4 +1,11 @@
 en:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            personal_id:
+              invalid: "must be 3-12 characters using A-Z and 0-9"
   app_name: "Faktubuh"
   common:
     save: "Save"

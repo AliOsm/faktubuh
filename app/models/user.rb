@@ -4,6 +4,8 @@ class User < ApplicationRecord
 
   PERSONAL_ID_CHARS = ("A".."Z").to_a.concat(("2".."9").to_a) - %w[O I L]
   PERSONAL_ID_LENGTH = 6
+  PERSONAL_ID_MIN_LENGTH = 3
+  PERSONAL_ID_MAX_LENGTH = 12
   PERSONAL_ID_MAX_ATTEMPTS = 10
 
   has_many :lent_debts, class_name: "Debt", foreign_key: :lender_id, dependent: :destroy, inverse_of: :lender
@@ -18,11 +20,16 @@ class User < ApplicationRecord
 
   validates :full_name, presence: true
   validates :personal_id, presence: true, uniqueness: true,
-                          format: { with: /\A[A-HJ-KM-NP-Z2-9]{6}\z/ }
+                          format: { with: /\A[A-Z0-9]{3,12}\z/ }
 
+  before_validation :normalize_personal_id
   before_validation :generate_personal_id, on: :create, if: -> { personal_id.blank? }
 
   private
+
+  def normalize_personal_id
+    self.personal_id = personal_id.strip.upcase if personal_id.present?
+  end
 
   def generate_personal_id
     PERSONAL_ID_MAX_ATTEMPTS.times do

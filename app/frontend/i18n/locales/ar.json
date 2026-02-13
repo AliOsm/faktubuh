@@ -58,7 +58,10 @@
     "personal_info": "المعلومات الشخصية",
     "personal_info_description": "قم بتحديث اسمك. لا يمكن تغيير بريدك الإلكتروني.",
     "full_name": "الاسم الكامل",
-    "email": "البريد الإلكتروني"
+    "email": "البريد الإلكتروني",
+    "edit_id": "تعديل",
+    "cancel_edit_id": "إلغاء",
+    "personal_id_format_hint": "٣-١٢ حرفًا: A-Z و 0-9"
   },
   "auth": {
     "or": "أو",
@@ -176,7 +179,7 @@
       "title": "تفاصيل الدين",
       "description": "أدخل تفاصيل الدين.",
       "personal_id": "المعرف الشخصي للطرف الآخر",
-      "personal_id_placeholder": "مثال: ABC234",
+      "personal_id_placeholder": "مثال: ABC234 أو MYID",
       "user_not_found": "المستخدم غير موجود",
       "lookup_error": "تعذر البحث عن المستخدم. يرجى المحاولة مرة أخرى.",
       "personal_id_required": "يرجى إدخال معرف شخصي صالح",
@@ -356,7 +359,7 @@
       "dialog_title": "ترقية إلى دين مشترك",
       "dialog_description": "أدخل المعرف الشخصي للطرف الآخر لربط هذا الدين. سيحتاج الطرف الآخر لقبول طلب الترقية.",
       "personal_id": "المعرف الشخصي",
-      "personal_id_placeholder": "مثال: ABC234",
+      "personal_id_placeholder": "مثال: ABC234 أو MYID",
       "user_not_found": "المستخدم غير موجود",
       "found_user": "تم العثور على: {{name}}",
       "send_request": "إرسال طلب الترقية",
@@ -380,7 +383,7 @@
       "declined": "رفض",
       "add_witness": "إضافة شاهد",
       "personal_id": "المعرف الشخصي للشاهد",
-      "personal_id_placeholder": "مثال: ABC234",
+      "personal_id_placeholder": "مثال: ABC234 أو MYID",
       "user_not_found": "المستخدم غير موجود",
       "found_user": "تم العثور على: {{name}}",
       "invite": "دعوة",

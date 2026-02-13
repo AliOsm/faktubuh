@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { router, usePage } from '@inertiajs/react'
 import * as Flags from 'country-flag-icons/react/3x2'
@@ -141,11 +141,10 @@ function PersonalIdLookup({
   onIsLooking: (val: boolean) => void
 }) {
   const { t } = useTranslation()
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null)
 
   const lookupUser = useCallback(
     async (personalId: string) => {
-      if (personalId.length !== 6) return
-
       onIsLooking(true)
       onLookupError(null)
       onLookupResult(null)
@@ -168,13 +167,15 @@ function PersonalIdLookup({
   )
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value.toUpperCase().slice(0, 6)
+    const raw = e.target.value.toUpperCase().slice(0, 12)
     onChange(raw)
     onLookupResult(null)
     onLookupError(null)
 
-    if (raw.length === 6) {
-      lookupUser(raw)
+    if (timerRef.current) clearTimeout(timerRef.current)
+
+    if (raw.length >= 3) {
+      timerRef.current = setTimeout(() => lookupUser(raw), 500)
     }
   }
 
@@ -186,7 +187,7 @@ function PersonalIdLookup({
           value={value}
           onChange={handleChange}
           placeholder={t('debt_creation.details.personal_id_placeholder')}
-          maxLength={6}
+          maxLength={12}
           className="font-mono uppercase tracking-widest"
         />
         {isLooking && (

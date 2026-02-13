@@ -17,7 +17,7 @@ import {
   Users,
   XCircle
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import AyatAlDayn from '@/components/ayat-al-dayn'
@@ -609,6 +609,7 @@ function AddWitnessForm({ debt, witnessCount }: { debt: DebtData; witnessCount: 
   const [lookingUp, setLookingUp] = useState(false)
 
   const maxReached = witnessCount >= 2
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null)
 
   function resetForm() {
     setPersonalId('')
@@ -617,30 +618,38 @@ function AddWitnessForm({ debt, witnessCount }: { debt: DebtData; witnessCount: 
   }
 
   useEffect(() => {
-    if (personalId.length !== 6) {
+    if (personalId.length < 3) {
       setLookupResult(null)
       setLookupError('')
       return
     }
 
-    setLookingUp(true)
-    setLookupResult(null)
-    setLookupError('')
+    if (timerRef.current) clearTimeout(timerRef.current)
 
-    fetch(`/users/lookup?personal_id=${encodeURIComponent(personalId)}`)
-      .then((res) => {
-        if (res.ok) return res.json()
-        throw new Error('not_found')
-      })
-      .then((data) => {
-        setLookupResult(data as { id: number; full_name: string })
-        setLookupError('')
-      })
-      .catch(() => {
-        setLookupResult(null)
-        setLookupError(t('debt_detail.witnesses.user_not_found'))
-      })
-      .finally(() => setLookingUp(false))
+    timerRef.current = setTimeout(() => {
+      setLookingUp(true)
+      setLookupResult(null)
+      setLookupError('')
+
+      fetch(`/users/lookup?personal_id=${encodeURIComponent(personalId)}`)
+        .then((res) => {
+          if (res.ok) return res.json()
+          throw new Error('not_found')
+        })
+        .then((data) => {
+          setLookupResult(data as { id: number; full_name: string })
+          setLookupError('')
+        })
+        .catch(() => {
+          setLookupResult(null)
+          setLookupError(t('debt_detail.witnesses.user_not_found'))
+        })
+        .finally(() => setLookingUp(false))
+    }, 500)
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
   }, [personalId, t])
 
   function handleInvite() {
@@ -676,14 +685,14 @@ function AddWitnessForm({ debt, witnessCount }: { debt: DebtData; witnessCount: 
               value={personalId}
               onChange={(e) => setPersonalId(e.target.value.toUpperCase())}
               placeholder={t('debt_detail.witnesses.personal_id_placeholder')}
-              maxLength={6}
+              maxLength={12}
               className="font-mono uppercase ltr:pr-8 rtl:pl-8"
             />
             <div className="pointer-events-none absolute inset-y-0 flex items-center ltr:right-2.5 rtl:left-2.5">
               {lookingUp && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
               {!lookingUp && lookupResult && <CheckCircle className="size-4 text-green-600" />}
               {!lookingUp && lookupError && <XCircle className="size-4 text-red-600" />}
-              {!lookingUp && !lookupResult && !lookupError && personalId.length < 6 && (
+              {!lookingUp && !lookupResult && !lookupError && personalId.length < 3 && (
                 <Search className="size-4 text-muted-foreground" />
               )}
             </div>
@@ -715,6 +724,7 @@ function UpgradeDialog({ debt }: { debt: DebtData }) {
   const [lookupResult, setLookupResult] = useState<{ id: number; full_name: string } | null>(null)
   const [lookupError, setLookupError] = useState('')
   const [lookingUp, setLookingUp] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null)
 
   function resetForm() {
     setPersonalId('')
@@ -723,30 +733,38 @@ function UpgradeDialog({ debt }: { debt: DebtData }) {
   }
 
   useEffect(() => {
-    if (personalId.length !== 6) {
+    if (personalId.length < 3) {
       setLookupResult(null)
       setLookupError('')
       return
     }
 
-    setLookingUp(true)
-    setLookupResult(null)
-    setLookupError('')
+    if (timerRef.current) clearTimeout(timerRef.current)
 
-    fetch(`/users/lookup?personal_id=${encodeURIComponent(personalId)}`)
-      .then((res) => {
-        if (res.ok) return res.json()
-        throw new Error('not_found')
-      })
-      .then((data) => {
-        setLookupResult(data as { id: number; full_name: string })
-        setLookupError('')
-      })
-      .catch(() => {
-        setLookupResult(null)
-        setLookupError(t('debt_detail.upgrade.user_not_found'))
-      })
-      .finally(() => setLookingUp(false))
+    timerRef.current = setTimeout(() => {
+      setLookingUp(true)
+      setLookupResult(null)
+      setLookupError('')
+
+      fetch(`/users/lookup?personal_id=${encodeURIComponent(personalId)}`)
+        .then((res) => {
+          if (res.ok) return res.json()
+          throw new Error('not_found')
+        })
+        .then((data) => {
+          setLookupResult(data as { id: number; full_name: string })
+          setLookupError('')
+        })
+        .catch(() => {
+          setLookupResult(null)
+          setLookupError(t('debt_detail.upgrade.user_not_found'))
+        })
+        .finally(() => setLookingUp(false))
+    }, 500)
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
   }, [personalId, t])
 
   function handleUpgrade() {
@@ -794,14 +812,14 @@ function UpgradeDialog({ debt }: { debt: DebtData }) {
                 value={personalId}
                 onChange={(e) => setPersonalId(e.target.value.toUpperCase())}
                 placeholder={t('debt_detail.upgrade.personal_id_placeholder')}
-                maxLength={6}
+                maxLength={12}
                 className="font-mono uppercase ltr:pr-8 rtl:pl-8"
               />
               <div className="pointer-events-none absolute inset-y-0 flex items-center ltr:right-2.5 rtl:left-2.5">
                 {lookingUp && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
                 {!lookingUp && lookupResult && <CheckCircle className="size-4 text-green-600" />}
                 {!lookingUp && lookupError && <XCircle className="size-4 text-red-600" />}
-                {!lookingUp && !lookupResult && !lookupError && personalId.length < 6 && (
+                {!lookingUp && !lookupResult && !lookupError && personalId.length < 3 && (
                   <Search className="size-4 text-muted-foreground" />
                 )}
               </div>

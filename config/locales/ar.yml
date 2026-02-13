@@ -1,4 +1,11 @@
 ar:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            personal_id:
+              invalid: "يجب أن يكون من ٣ إلى ١٢ حرفًا باستخدام A-Z و 0-9"
   app_name: "فاكتبوه"
   common:
     save: "حفظ"

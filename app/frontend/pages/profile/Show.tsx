@@ -1,6 +1,6 @@
 import { Head, useForm, usePage } from '@inertiajs/react'
-import { Check, Copy, Share2 } from 'lucide-react'
-import { type FormEvent, useState } from 'react'
+import { Check, Copy, Pencil, Share2, X } from 'lucide-react'
+import { type FormEvent, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
@@ -27,18 +27,39 @@ export default function Show({ user }: ProfileProps) {
   const { t } = useTranslation()
   const { errors: pageErrors } = usePage().props as { errors?: Record<string, string> }
   const [copied, setCopied] = useState(false)
+  const [editingId, setEditingId] = useState(false)
 
-  const form = useForm({
-    user: {
-      full_name: user.full_name
-    }
+  const idForm = useForm({
+    user: { personal_id: user.personal_id }
+  })
+
+  const infoForm = useForm({
+    user: { full_name: user.full_name }
   })
 
   const errors = pageErrors ?? {}
 
-  function handleSubmit(e: FormEvent) {
+  useEffect(() => {
+    if (errors.personal_id) {
+      setEditingId(true)
+    }
+  }, [errors.personal_id])
+
+  function handleIdSubmit(e: FormEvent) {
     e.preventDefault()
-    form.patch('/profile')
+    idForm.patch('/profile', {
+      onSuccess: () => setEditingId(false)
+    })
+  }
+
+  function handleInfoSubmit(e: FormEvent) {
+    e.preventDefault()
+    infoForm.patch('/profile')
+  }
+
+  function handleCancelEdit() {
+    setEditingId(false)
+    idForm.setData('user', { personal_id: user.personal_id })
   }
 
   function handleCopy() {
@@ -73,25 +94,66 @@ export default function Show({ user }: ProfileProps) {
             <CardDescription>{t('profile.personal_id_description')}</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-3xl font-bold tracking-widest">{user.personal_id}</span>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleCopy}
-                aria-label={t('profile.copy_id')}
-              >
-                {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleShare}
-                aria-label={t('profile.share_id')}
-              >
-                <Share2 className="size-4" />
-              </Button>
-            </div>
+            {editingId ? (
+              <form onSubmit={handleIdSubmit} className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={idForm.data.user.personal_id}
+                    onChange={(e) => idForm.setData('user', { personal_id: e.target.value.toUpperCase() })}
+                    maxLength={12}
+                    minLength={3}
+                    className="max-w-xs font-mono uppercase tracking-widest"
+                    autoFocus
+                  />
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={idForm.processing || idForm.data.user.personal_id === user.personal_id}
+                  >
+                    {idForm.processing ? t('common.loading') : t('common.save')}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleCancelEdit}
+                    aria-label={t('profile.cancel_edit_id')}
+                  >
+                    <X className="size-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">{t('profile.personal_id_format_hint')}</p>
+                {errors.personal_id && <p className="text-sm text-destructive">{errors.personal_id}</p>}
+              </form>
+            ) : (
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-3xl font-bold tracking-widest">{user.personal_id}</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setEditingId(true)}
+                  aria-label={t('profile.edit_id')}
+                >
+                  <Pencil className="size-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleCopy}
+                  aria-label={t('profile.copy_id')}
+                >
+                  {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleShare}
+                  aria-label={t('profile.share_id')}
+                >
+                  <Share2 className="size-4" />
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -102,7 +164,7 @@ export default function Show({ user }: ProfileProps) {
           </CardHeader>
           <CardContent>
             <form
-              onSubmit={handleSubmit}
+              onSubmit={handleInfoSubmit}
               className="flex flex-col gap-4"
             >
               <div className="flex flex-col gap-2">
@@ -110,8 +172,8 @@ export default function Show({ user }: ProfileProps) {
                 <Input
                   id="full_name"
                   type="text"
-                  value={form.data.user.full_name}
-                  onChange={(e) => form.setData('user', { ...form.data.user, full_name: e.target.value })}
+                  value={infoForm.data.user.full_name}
+                  onChange={(e) => infoForm.setData('user', { full_name: e.target.value })}
                   autoComplete="name"
                   aria-invalid={!!errors.full_name}
                 />
@@ -132,9 +194,9 @@ export default function Show({ user }: ProfileProps) {
               <div className="flex justify-end">
                 <Button
                   type="submit"
-                  disabled={form.processing}
+                  disabled={infoForm.processing}
                 >
-                  {form.processing ? t('common.loading') : t('common.save')}
+                  {infoForm.processing ? t('common.loading') : t('common.save')}
                 </Button>
               </div>
             </form>

@@ -202,42 +202,46 @@ function Dashboard({ summaries, recent_debts }: DashboardProps) {
           </Button>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {summaries.map((summary) => (
-            <CurrencySummaryCard
-              key={summary.currency}
-              summary={summary}
-              t={t}
-            />
-          ))}
-        </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="flex flex-col gap-4">
+            {summaries.map((summary) => (
+              <CurrencySummaryCard
+                key={summary.currency}
+                summary={summary}
+                t={t}
+              />
+            ))}
+          </div>
 
-        {recent_debts.length > 0 && (
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle>{t('dashboard.recent_debts')}</CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-              >
-                <Link href="/debts">
-                  {t('dashboard.view_all')}
-                  <ArrowRight className="size-4 rtl:rotate-180" />
-                </Link>
-              </Button>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-2">
-              {recent_debts.map((debt) => (
-                <RecentDebtRow
-                  key={debt.id}
-                  debt={debt}
-                  t={t}
-                />
-              ))}
-            </CardContent>
-          </Card>
-        )}
+          {recent_debts.length > 0 && (
+            <div className="flex flex-col gap-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-3">
+                  <CardTitle>{t('dashboard.recent_debts')}</CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                  >
+                    <Link href="/debts">
+                      {t('dashboard.view_all')}
+                      <ArrowRight className="size-4 rtl:rotate-180" />
+                    </Link>
+                  </Button>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-2">
+                  {recent_debts.map((debt) => (
+                    <RecentDebtRow
+                      key={debt.id}
+                      debt={debt}
+                      t={t}
+                    />
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
       </div>
     </>
   )

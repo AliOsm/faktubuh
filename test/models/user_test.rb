@@ -1,6 +1,14 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
+  setup do
+    I18n.locale = :en
+  end
+
+  teardown do
+    I18n.locale = I18n.default_locale
+  end
+
   test "user model exists with devise modules" do
     user = User.new(
       email: "test@example.com",
@@ -35,52 +43,72 @@ class UserTest < ActiveSupport::TestCase
   end
 
   # personal_id format validation
-  test "personal_id must match format of 6 uppercase alphanumeric excluding ambiguous chars" do
+  test "personal_id accepts valid formats of 3-12 uppercase alphanumeric" do
     user = User.new(
       email: "format@example.com",
       password: "password123",
       full_name: "Format Test"
     )
 
-    # Valid format
+    # Valid: 6 chars (original length)
     user.personal_id = "XYZ789"
     user.valid?
     assert_empty user.errors[:personal_id]
 
-    # Invalid: contains O (ambiguous)
-    user.personal_id = "ABCDO2"
-    assert_not user.valid?
-    assert_includes user.errors[:personal_id], "is invalid"
+    # Valid: 3 chars (minimum)
+    user.personal_id = "VW2"
+    user.valid?
+    assert_empty user.errors[:personal_id]
 
-    # Invalid: contains 0 (ambiguous)
-    user.personal_id = "ABCD02"
-    assert_not user.valid?
-    assert_includes user.errors[:personal_id], "is invalid"
+    # Valid: 12 chars (maximum)
+    user.personal_id = "VWXYZ2345678"
+    user.valid?
+    assert_empty user.errors[:personal_id]
 
-    # Invalid: contains 1 (ambiguous)
-    user.personal_id = "ABCD12"
-    assert_not user.valid?
-    assert_includes user.errors[:personal_id], "is invalid"
+    # Valid: contains O, I, L (allowed in user-defined IDs)
+    user.personal_id = "OIL239"
+    user.valid?
+    assert_empty user.errors[:personal_id]
 
-    # Invalid: contains I (ambiguous)
-    user.personal_id = "ABCDI2"
-    assert_not user.valid?
-    assert_includes user.errors[:personal_id], "is invalid"
+    # Valid: contains 0 and 1 (allowed in user-defined IDs)
+    user.personal_id = "ABC01X"
+    user.valid?
+    assert_empty user.errors[:personal_id]
+  end
 
-    # Invalid: contains L (ambiguous)
-    user.personal_id = "ABCDL2"
-    assert_not user.valid?
-    assert_includes user.errors[:personal_id], "is invalid"
+  test "personal_id rejects invalid formats" do
+    user = User.new(
+      email: "format2@example.com",
+      password: "password123",
+      full_name: "Format Test"
+    )
 
-    # Invalid: lowercase
-    user.personal_id = "abc234"
+    # Invalid: 2 chars (below minimum)
+    user.personal_id = "AB"
     assert_not user.valid?
-    assert_includes user.errors[:personal_id], "is invalid"
+    assert_not_empty user.errors[:personal_id]
 
-    # Invalid: too short
-    user.personal_id = "ABC23"
+    # Invalid: 13 chars (above maximum)
+    user.personal_id = "ABCDEFGH23456"
     assert_not user.valid?
-    assert_includes user.errors[:personal_id], "is invalid"
+    assert_not_empty user.errors[:personal_id]
+
+    # Invalid: contains special characters
+    user.personal_id = "ABC-23"
+    assert_not user.valid?
+    assert_not_empty user.errors[:personal_id]
+  end
+
+  # normalize_personal_id callback
+  test "personal_id is normalized to uppercase and stripped" do
+    user = User.new(
+      email: "norm@example.com",
+      password: "password123",
+      full_name: "Norm Test",
+      personal_id: "  abc234  "
+    )
+    user.valid?
+    assert_equal "ABC234", user.personal_id
   end
 
   # personal_id uniqueness
@@ -107,7 +135,7 @@ class UserTest < ActiveSupport::TestCase
     assert_match(/\A[A-HJ-NP-Z2-9]{6}\z/, user.personal_id)
   end
 
-  # personal_id excludes ambiguous characters
+  # personal_id excludes ambiguous characters in auto-generation
   test "auto-generated personal_id excludes ambiguous characters 0 O 1 I L" do
     10.times do
       user = User.create!(
