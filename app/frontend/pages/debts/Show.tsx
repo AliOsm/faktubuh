@@ -1084,6 +1084,14 @@ export default function Show({
                 </p>
               </div>
             </div>
+            {debt.status !== 'settled' && (
+              <div className="mt-4 flex items-center justify-between rounded-lg border bg-muted/50 p-3">
+                <span className="text-sm font-medium text-muted-foreground">{t('debt_detail.remaining_balance')}</span>
+                <span className="text-lg font-bold text-orange-600 dark:text-orange-400">
+                  {remaining_balance.toLocaleString(document.documentElement.lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {debt.currency}
+                </span>
+              </div>
+            )}
           </CardContent>
         </Card>
 

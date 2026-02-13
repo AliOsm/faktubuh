@@ -279,6 +279,7 @@
     "deadline": "Deadline",
     "description": "Description",
     "installment_type": "Installment Type",
+    "remaining_balance": "Remaining Balance",
     "created_at": "Created",
     "no_description": "No description provided",
     "installments": {

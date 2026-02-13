@@ -283,6 +283,7 @@
     "deadline": "تاريخ الاستحقاق",
     "description": "الوصف",
     "installment_type": "نوع الأقساط",
+    "remaining_balance": "المبلغ المتبقي",
     "created_at": "تاريخ الإنشاء",
     "no_description": "لا يوجد وصف",
     "installments": {
