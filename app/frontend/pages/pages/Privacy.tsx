@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import DarkModeToggle from '@/components/dark-mode-toggle'
 import LanguageToggle from '@/components/language-toggle'
+import { GeometricPattern } from '@/components/patterns/GeometricPattern'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 function Privacy() {
@@ -12,17 +13,19 @@ function Privacy() {
     <>
       <Head title={t('privacy.title')} />
 
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
-        <Link href="/" className="fixed top-4 start-4 text-xl font-bold hover:opacity-80 transition-opacity">
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+        <GeometricPattern variant="grid" opacity={0.015} />
+
+        <Link href="/" className="fixed top-4 start-4 text-xl font-bold hover:opacity-80 transition-opacity z-10">
           {t('app.name')}
         </Link>
 
-        <div className="fixed top-4 end-4 flex items-center gap-1">
+        <div className="fixed top-4 end-4 flex items-center gap-1 z-10">
           <LanguageToggle />
           <DarkModeToggle />
         </div>
 
-        <Card className="w-full max-w-2xl">
+        <Card className="relative z-10 w-full max-w-2xl">
           <CardHeader>
             <CardTitle className="text-2xl">Privacy Policy</CardTitle>
             <p className="text-sm text-muted-foreground">Last updated: February 2026</p>

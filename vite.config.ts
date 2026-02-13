@@ -13,4 +13,7 @@ export default defineConfig({
     tailwindcss(),
     RubyPlugin(),
   ],
+  build: {
+    assetsInlineLimit: 0, // Don't inline fonts, keep as separate files
+  },
 })

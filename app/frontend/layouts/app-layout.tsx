@@ -7,6 +7,7 @@ import Avatar from 'boring-avatars'
 
 import DarkModeToggle from '@/components/dark-mode-toggle'
 import LanguageToggle from '@/components/language-toggle'
+import { GeometricPattern } from '@/components/patterns/GeometricPattern'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {

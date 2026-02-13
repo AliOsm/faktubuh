@@ -4,75 +4,124 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* DigitalKhatt Madina Font for Quranic Text */
+@font-face {
+  font-family: 'Digital Khatt Quran';
+  src: url('../assets/fonts/madina.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* Avoid FOUT */
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  /* Trust & Heritage Base Colors */
+  --background: oklch(0.95 0.02 85); /* Warm Beige */
+  --foreground: oklch(0.21 0.05 249); /* Rich Navy for text */
+
+  /* Primary = Deep Emerald Green */
+  --primary: oklch(0.36 0.09 169);
+  --primary-foreground: oklch(0.95 0.02 85);
+
+  /* Secondary = Gold Accent */
+  --secondary: oklch(0.74 0.14 92);
+  --secondary-foreground: oklch(0.21 0.05 249);
+
+  /* Muted = Lighter Beige */
+  --muted: oklch(0.92 0.015 85);
+  --muted-foreground: oklch(0.45 0.04 249);
+
+  /* Accent = Gold with adjusted lightness */
+  --accent: oklch(0.85 0.12 92);
+  --accent-foreground: oklch(0.21 0.05 249);
+
+  /* Destructive = Warm Red */
+  --destructive: oklch(0.50 0.22 15);
+  --destructive-foreground: oklch(0.95 0.02 85);
+
+  /* UI Elements */
+  --card: oklch(0.97 0.01 85);
+  --card-foreground: oklch(0.21 0.05 249);
+  --popover: oklch(0.97 0.01 85);
+  --popover-foreground: oklch(0.21 0.05 249);
+
+  /* Borders */
+  --border: oklch(0.85 0.03 85);
+  --input: oklch(0.85 0.03 85);
+  --ring: oklch(0.36 0.09 169); /* Emerald focus ring */
+
+  /* Chart colors - derive from palette */
+  --chart-1: oklch(0.36 0.09 169); /* Emerald */
+  --chart-2: oklch(0.74 0.14 92); /* Gold */
+  --chart-3: oklch(0.21 0.05 249); /* Navy */
+  --chart-4: oklch(0.55 0.15 169); /* Lighter Emerald */
+  --chart-5: oklch(0.65 0.12 92); /* Lighter Gold */
+
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.54 0.22 29.15);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  /* Sidebar = Deep Emerald */
+  --sidebar: oklch(0.36 0.09 169);
+  --sidebar-foreground: oklch(0.95 0.02 85);
+  --sidebar-primary: oklch(0.74 0.14 92); /* Gold accent */
+  --sidebar-primary-foreground: oklch(0.21 0.05 249);
+  --sidebar-accent: oklch(0.45 0.11 169); /* Lighter emerald */
+  --sidebar-accent-foreground: oklch(0.95 0.02 85);
+  --sidebar-border: oklch(0.45 0.11 169);
+  --sidebar-ring: oklch(0.74 0.14 92); /* Gold ring */
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.54 0.22 29.15);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  /* OLED-optimized Dark Mode */
+  --background: oklch(0.12 0.015 249); /* Near-true black with navy tint */
+  --foreground: oklch(0.95 0.02 85); /* Warm Beige text */
+
+  /* Primary = Brighter Emerald for dark bg */
+  --primary: oklch(0.55 0.15 169);
+  --primary-foreground: oklch(0.12 0.015 249);
+
+  /* Secondary = Brighter Gold */
+  --secondary: oklch(0.80 0.16 92);
+  --secondary-foreground: oklch(0.12 0.015 249);
+
+  /* Muted = Dark navy-tinted gray */
+  --muted: oklch(0.20 0.025 249);
+  --muted-foreground: oklch(0.70 0.03 85);
+
+  /* Accent = Gold with higher lightness */
+  --accent: oklch(0.75 0.15 92);
+  --accent-foreground: oklch(0.12 0.015 249);
+
+  /* Destructive = Brighter red */
+  --destructive: oklch(0.60 0.24 15);
+  --destructive-foreground: oklch(0.95 0.02 85);
+
+  /* UI Elements */
+  --card: oklch(0.16 0.02 249);
+  --card-foreground: oklch(0.95 0.02 85);
+  --popover: oklch(0.16 0.02 249);
+  --popover-foreground: oklch(0.95 0.02 85);
+
+  /* Borders */
+  --border: oklch(0.28 0.04 249);
+  --input: oklch(0.28 0.04 249);
+  --ring: oklch(0.55 0.15 169); /* Brighter emerald ring */
+
+  /* Chart colors - adjusted for dark */
+  --chart-1: oklch(0.55 0.15 169);
+  --chart-2: oklch(0.80 0.16 92);
+  --chart-3: oklch(0.50 0.08 249);
+  --chart-4: oklch(0.45 0.12 169);
+  --chart-5: oklch(0.70 0.14 92);
+
+  /* Sidebar = Darker emerald */
+  --sidebar: oklch(0.18 0.06 169);
+  --sidebar-foreground: oklch(0.95 0.02 85);
+  --sidebar-primary: oklch(0.80 0.16 92); /* Brighter gold */
+  --sidebar-primary-foreground: oklch(0.12 0.015 249);
+  --sidebar-accent: oklch(0.28 0.08 169);
+  --sidebar-accent-foreground: oklch(0.95 0.02 85);
+  --sidebar-border: oklch(0.28 0.08 169);
+  --sidebar-ring: oklch(0.80 0.16 92);
 }
 
 @theme inline {
@@ -138,7 +187,116 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
+    /* Modern font stack with better Arabic support */
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      "Noto Sans Arabic",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+  }
+
+  /* Arabic-specific improvements */
+  :lang(ar) {
+    font-family:
+      "Noto Sans Arabic",
+      "Segoe UI",
+      -apple-system,
+      BlinkMacSystemFont,
+      sans-serif;
+    letter-spacing: 0; /* Reset letter-spacing for Arabic */
+  }
+}
+
+/* Typography utilities */
+@layer components {
+  .font-quran {
+    font-family: 'Digital Khatt Quran', 'Traditional Arabic', 'Noto Naskh Arabic', serif;
+    font-feature-settings: 'liga' 1, 'calt' 1; /* Enable ligatures */
+    line-height: 2; /* Generous line-height for Arabic */
+    letter-spacing: 0.02em;
+  }
+
+  .text-display {
+    @apply text-5xl font-bold tracking-tight;
+  }
+
+  .text-headline {
+    @apply text-3xl font-semibold;
+  }
+
+  .text-title {
+    @apply text-xl font-semibold;
+  }
+
+  .text-body {
+    @apply text-base;
+  }
+
+  .text-caption {
+    @apply text-sm text-muted-foreground;
+  }
+}
+
+/* Animation Utilities */
+@layer utilities {
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 10px oklch(0.36 0.09 169 / 0.2);
+    }
+    50% {
+      box-shadow: 0 0 20px oklch(0.36 0.09 169 / 0.4), 0 0 30px oklch(0.74 0.14 92 / 0.2);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      oklch(0.74 0.14 92 / 0.2) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .transition-glow {
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  @keyframes ripple {
+    to {
+      width: 500px;
+      height: 500px;
+      opacity: 0;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .animate-ripple {
+    animation: ripple 0.6s ease-out;
   }
 }

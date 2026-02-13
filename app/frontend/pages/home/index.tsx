@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import DarkModeToggle from '@/components/dark-mode-toggle'
 import LanguageToggle from '@/components/language-toggle'
+import { GeometricPattern } from '@/components/patterns/GeometricPattern'
 import { Button } from '@/components/ui/button'
 
 export default function Home() {
@@ -12,19 +13,21 @@ export default function Home() {
     <>
       <Head title={t('home.title')} />
 
-      <div className="flex min-h-screen flex-col items-center justify-center gap-8 p-4">
-        <div className="fixed top-4 end-4 flex gap-1">
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 p-4">
+        <GeometricPattern variant="grid" opacity={0.015} />
+
+        <div className="fixed top-4 end-4 flex gap-1 z-10">
           <LanguageToggle />
           <DarkModeToggle />
         </div>
 
-        <div className="flex max-w-lg flex-col items-center gap-6 text-center">
+        <div className="relative z-10 flex max-w-lg flex-col items-center gap-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight">{t('app.name')}</h1>
           <p className="text-xl text-muted-foreground">{t('home.subtitle')}</p>
           <p className="text-sm text-muted-foreground">{t('home.description')}</p>
 
           <blockquote className="border-s-4 border-primary/30 ps-4 text-right">
-            <p className="text-lg leading-relaxed">{t('ayat.welcome.verse')}</p>
+            <p className="font-quran text-lg leading-relaxed" dir="rtl" lang="ar">{t('ayat.welcome.verse')}</p>
             {i18n.language !== 'ar' && (
               <p className="mt-2 text-sm text-muted-foreground">{t('ayat.welcome.translation')}</p>
             )}

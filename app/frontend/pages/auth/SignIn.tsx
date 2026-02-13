@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import DarkModeToggle from '@/components/dark-mode-toggle'
 import LanguageToggle from '@/components/language-toggle'
+import { GeometricPattern } from '@/components/patterns/GeometricPattern'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -31,17 +32,19 @@ export default function SignIn() {
     <>
       <Head title={t('auth.sign_in.title')} />
 
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
-        <Link href="/" className="fixed top-4 start-4 text-xl font-bold hover:opacity-80 transition-opacity">
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+        <GeometricPattern variant="grid" opacity={0.015} />
+
+        <Link href="/" className="fixed top-4 start-4 text-xl font-bold hover:opacity-80 transition-opacity z-10">
           {t('app.name')}
         </Link>
 
-        <div className="fixed top-4 end-4 flex gap-1">
+        <div className="fixed top-4 end-4 flex gap-1 z-10">
           <LanguageToggle />
           <DarkModeToggle />
         </div>
 
-        <Card className="w-full max-w-md">
+        <Card className="relative z-10 w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">{t('auth.sign_in.title')}</CardTitle>
             <CardDescription>{t('auth.sign_in.subtitle')}</CardDescription>
@@ -57,6 +60,7 @@ export default function SignIn() {
               }}
             >
               <div className="overflow-hidden">
+                <div className="px-1 py-2">
                 <form
                   action="/users/auth/google_oauth2"
                   method="post"
@@ -112,6 +116,7 @@ export default function SignIn() {
                   <Mail className="h-4 w-4" />
                   {t('auth.continue_with_email')}
                 </Button>
+                </div>
               </div>
             </div>
 
@@ -125,6 +130,7 @@ export default function SignIn() {
               }}
             >
               <div className="overflow-hidden">
+                <div className="px-1 py-2">
                 <button
                   type="button"
                   onClick={() => setShowEmailForm(false)}
@@ -220,6 +226,7 @@ export default function SignIn() {
                     </Link>
                   </div>
                 </form>
+                </div>
               </div>
             </div>
 

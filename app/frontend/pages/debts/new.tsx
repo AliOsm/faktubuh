@@ -96,8 +96,11 @@ function SelectableCard({
       type="button"
       onClick={onClick}
       className={cn(
-        'relative flex w-full flex-col items-center gap-3 rounded-lg border-2 p-6 text-center transition-all hover:border-primary/50 hover:bg-accent/50',
-        selected ? 'border-primary bg-primary/5 shadow-sm' : 'border-border bg-background'
+        'relative flex w-full flex-col items-center gap-3 rounded-lg border-2 p-6 text-center transition-all duration-300',
+        'hover:border-primary hover:shadow-lg hover:shadow-primary/10 hover:scale-[1.02]',
+        selected
+          ? 'border-primary bg-primary/10 shadow-md shadow-primary/10'
+          : 'border-border bg-card'
       )}
     >
       {selected && (

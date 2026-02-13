@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
+import { GeometricPattern } from '@/components/patterns/GeometricPattern'
 import { cn } from '@/lib/utils'
 
 type AyatContext = 'welcome' | 'creation' | 'detail' | 'witness' | 'settlement'
@@ -7,6 +8,7 @@ type AyatContext = 'welcome' | 'creation' | 'detail' | 'witness' | 'settlement'
 interface AyatAlDaynProps {
   context: AyatContext
   className?: string
+  showPattern?: boolean
 }
 
 const CONTEXT_STYLES: Record<
@@ -14,53 +16,60 @@ const CONTEXT_STYLES: Record<
   { container: string; verse: string; translation: string; reference: string }
 > = {
   welcome: {
-    container: 'rounded-lg border bg-muted/50 p-4',
-    verse: 'text-center text-lg leading-relaxed text-foreground',
-    translation: 'mt-2 text-center text-sm text-muted-foreground',
-    reference: 'mt-1 text-center text-xs text-muted-foreground'
+    container: 'relative rounded-xl border-2 border-primary/20 bg-card/50 backdrop-blur-sm p-6',
+    verse: 'text-center text-2xl leading-loose text-foreground',
+    translation: 'mt-4 text-center text-sm text-muted-foreground italic',
+    reference: 'mt-2 text-center text-xs text-primary font-semibold'
   },
   creation: {
-    container: 'rounded-lg border border-border/50 bg-muted/30 p-4',
-    verse: 'text-center text-sm leading-relaxed text-foreground/80',
-    translation: 'mt-2 text-center text-xs text-muted-foreground',
-    reference: 'mt-1 text-center text-xs text-muted-foreground/70'
+    container: 'relative rounded-lg border border-primary/20 bg-card/50 backdrop-blur-sm p-4',
+    verse: 'text-center text-base leading-relaxed text-foreground/90',
+    translation: 'mt-3 text-center text-xs text-muted-foreground italic',
+    reference: 'mt-1.5 text-center text-xs text-primary/80'
   },
   detail: {
-    container: 'rounded-lg border border-border/50 bg-muted/30 p-4',
+    container: 'relative rounded-lg border border-primary/15 bg-muted/30 p-4',
     verse: 'text-center text-sm leading-relaxed text-foreground/80',
     translation: 'mt-2 text-center text-xs text-muted-foreground',
     reference: 'mt-1 text-center text-xs text-muted-foreground/70'
   },
   witness: {
-    container: 'rounded-lg border border-border/50 bg-muted/30 p-4',
+    container: 'relative rounded-lg border border-primary/15 bg-muted/30 p-4',
     verse: 'text-center text-sm leading-relaxed text-foreground/80',
     translation: 'mt-2 text-center text-xs text-muted-foreground',
     reference: 'mt-1 text-center text-xs text-muted-foreground/70'
   },
   settlement: {
-    container: 'rounded-md border border-green-200 bg-white/60 p-3',
-    verse: 'text-center text-sm leading-relaxed text-green-900',
-    translation: 'mt-1.5 text-center text-xs text-green-700',
-    reference: 'mt-0.5 text-center text-xs text-green-600/70'
+    container: 'relative rounded-lg border-2 border-primary/30 bg-primary/5 p-4',
+    verse: 'text-center text-base leading-relaxed text-foreground',
+    translation: 'mt-2 text-center text-xs text-muted-foreground',
+    reference: 'mt-1 text-center text-xs text-primary'
   }
 }
 
-export default function AyatAlDayn({ context, className }: AyatAlDaynProps) {
+export default function AyatAlDayn({ context, className, showPattern = true }: AyatAlDaynProps) {
   const { t, i18n } = useTranslation()
   const styles = CONTEXT_STYLES[context]
 
   return (
     <div className={cn(styles.container, className)}>
-      <p
-        className={cn('font-arabic', styles.verse)}
-        dir="rtl"
-      >
-        {t(`ayat.${context}.verse`)}
-      </p>
-      {i18n.language !== 'ar' && (
-        <p className={styles.translation}>{t(`ayat.${context}.translation`)}</p>
+      {showPattern && (context === 'welcome' || context === 'creation') && (
+        <GeometricPattern variant="arabesque" opacity={0.03} />
       )}
-      <p className={styles.reference}>{t(`ayat.${context}.reference`)}</p>
+
+      <div className="relative z-10 space-y-2">
+        <p
+          className={cn('font-quran', styles.verse)}
+          dir="rtl"
+          lang="ar"
+        >
+          {t(`ayat.${context}.verse`)}
+        </p>
+        {i18n.language !== 'ar' && (
+          <p className={styles.translation}>{t(`ayat.${context}.translation`)}</p>
+        )}
+        <p className={styles.reference}>{t(`ayat.${context}.reference`)}</p>
+      </div>
     </div>
   )
 }
