@@ -25,6 +25,6 @@ class ProfilesController < InertiaController
   private
 
   def profile_params
-    params.require(:user).permit(:full_name, :personal_id)
+    params.require(:user).permit(:full_name, :personal_id, :locale)
   end
 end

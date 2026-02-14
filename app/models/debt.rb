@@ -5,6 +5,7 @@ class Debt < ApplicationRecord
   has_many :installments, dependent: :destroy
   has_many :payments, dependent: :destroy
   has_many :witnesses, dependent: :destroy
+  has_many :notifications, dependent: :nullify
 
   enum :mode, { mutual: "mutual", personal: "personal" }
   enum :creator_role, { lender: "lender", borrower: "borrower" }, prefix: true

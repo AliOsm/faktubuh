@@ -24,7 +24,10 @@ class ApplicationController < ActionController::Base
   end
 
   def extract_locale
-    locale = params[:locale] || cookies[:locale] || extract_locale_from_accept_language_header
+    locale = params[:locale] ||
+             cookies[:locale] ||
+             current_user&.locale ||
+             extract_locale_from_accept_language_header
     locale.to_s.in?(I18n.available_locales.map(&:to_s)) ? locale : I18n.default_locale
   end
 

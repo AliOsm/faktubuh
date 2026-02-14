@@ -26,13 +26,21 @@ export default function LanguageToggle() {
 
       document.cookie = `locale=${locale};path=/;max-age=${365 * 24 * 60 * 60}`
 
-      router.reload({
-        data: { locale },
+      // Persist locale to database
+      router.put('/profile', { user: { locale } }, {
+        preserveScroll: true,
+        preserveState: true,
+        only: [],  // Don't reload any props
         onFinish: () => {
-          document.body.style.opacity = '1'
-          setTimeout(() => {
-            document.body.style.transition = ''
-          }, 150)
+          router.reload({
+            data: { locale },
+            onFinish: () => {
+              document.body.style.opacity = '1'
+              setTimeout(() => {
+                document.body.style.transition = ''
+              }, 150)
+            }
+          })
         }
       })
     }, 150)

@@ -54,7 +54,7 @@ export function Pagination({ pagination, paramName = 'page' }: PaginationProps) 
           onClick={() => pagination.prev && handlePageChange(pagination.prev)}
           disabled={!pagination.prev}
         >
-          <ChevronLeft className="size-4" />
+          <ChevronLeft className="size-4 rtl:rotate-180" />
         </Button>
 
         {visiblePages.map((page, idx) => {
@@ -84,7 +84,7 @@ export function Pagination({ pagination, paramName = 'page' }: PaginationProps) 
           onClick={() => pagination.next && handlePageChange(pagination.next)}
           disabled={!pagination.next}
         >
-          <ChevronRight className="size-4" />
+          <ChevronRight className="size-4 rtl:rotate-180" />
         </Button>
       </div>
     </div>

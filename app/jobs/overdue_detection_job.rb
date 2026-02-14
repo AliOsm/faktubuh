@@ -32,7 +32,9 @@ class OverdueDetectionJob < ApplicationJob
   private
 
   def already_notified?(installment)
-    installment.debt.lender.notifications
+    # Check if ANY recipient (lender or borrower) was notified in the last 24 hours
+    # This prevents duplicate notifications to all parties
+    Notification
       .where(notification_type: "installment_overdue")
       .where("params->>'installment_id' = ?", installment.id.to_s)
       .where("created_at > ?", 24.hours.ago)
