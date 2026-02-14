@@ -101,13 +101,17 @@ jobs:
       - name: Install JS dependencies
         run: yarn install --immutable
 
+      - name: Setup database
+        run: bin/rails db:test:prepare
+
       - name: Run tests
         env:
+          CI: 1
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432
           # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test
+        run: bin/rails test
 
   # system-test:
   #   runs-on: ubuntu-latest

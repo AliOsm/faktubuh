@@ -62,7 +62,7 @@ class PaymentsController < InertiaController
       @debt.lock!
       @payment.update!(
         status: "rejected",
-        rejection_reason: params.dig(:payment, :rejection_reason)
+        rejection_reason: params[:rejection_reason]
       )
       NotificationService.payment_rejected(@payment)
     end
