@@ -1,6 +1,8 @@
-import { router } from '@inertiajs/react'
+import { router, usePage } from '@inertiajs/react'
 import { Check, Languages } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+
+import type { SharedData } from '@/types'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,12 +14,20 @@ import {
 
 export default function LanguageToggle() {
   const { i18n, t } = useTranslation()
+  const { auth } = usePage<SharedData>().props
 
   function switchLocale(locale: string) {
     if (locale === i18n.language) return
 
     document.body.style.transition = 'opacity 150ms ease-out'
     document.body.style.opacity = '0'
+
+    const fadeIn = () => {
+      document.body.style.opacity = '1'
+      setTimeout(() => {
+        document.body.style.transition = ''
+      }, 150)
+    }
 
     setTimeout(() => {
       i18n.changeLanguage(locale)
@@ -26,23 +36,25 @@ export default function LanguageToggle() {
 
       document.cookie = `locale=${locale};path=/;max-age=${365 * 24 * 60 * 60}`
 
-      // Persist locale to database
-      router.put('/profile', { user: { locale } }, {
-        preserveScroll: true,
-        preserveState: true,
-        only: [],  // Don't reload any props
-        onFinish: () => {
-          router.reload({
-            data: { locale },
-            onFinish: () => {
-              document.body.style.opacity = '1'
-              setTimeout(() => {
-                document.body.style.transition = ''
-              }, 150)
-            }
-          })
-        }
-      })
+      if (auth) {
+        // Persist locale to database for authenticated users
+        router.put('/profile', { user: { locale } }, {
+          preserveScroll: true,
+          preserveState: true,
+          only: [],
+          onFinish: () => {
+            router.reload({
+              data: { locale },
+              onFinish: fadeIn
+            })
+          }
+        })
+      } else {
+        router.reload({
+          data: { locale },
+          onFinish: fadeIn
+        })
+      }
     }, 150)
   }
 
