@@ -90,5 +90,4 @@ class WitnessesController < InertiaController
       nil
     end
   end
-
 end
