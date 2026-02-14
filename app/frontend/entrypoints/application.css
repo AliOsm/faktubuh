@@ -2,7 +2,7 @@
 
 @import 'tw-animate-css';
 
-@custom-variant dark (&:is(.dark *));
+@variant dark (.dark &);
 
 /* DigitalKhatt Madina Font for Quranic Text */
 @font-face {
@@ -77,7 +77,7 @@
 
   /* Primary = Brighter Emerald for dark bg */
   --primary: oklch(0.55 0.15 169);
-  --primary-foreground: oklch(0.12 0.015 249);
+  --primary-foreground: oklch(0.95 0.02 85);
 
   /* Secondary = Brighter Gold */
   --secondary: oklch(0.80 0.16 92);

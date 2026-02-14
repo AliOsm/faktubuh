@@ -7,6 +7,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     user = User.from_omniauth(auth)
 
     if user.persisted?
+      sign_out_all_scopes
       sign_in_and_redirect user, event: :authentication
     else
       session["devise.google_oauth2_data"] = auth.except("extra")

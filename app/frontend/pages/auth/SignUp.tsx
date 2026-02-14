@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { getCsrfToken } from '@/utils/csrf'
 
 export default function SignUp() {
   const { t } = useTranslation()
@@ -72,7 +73,7 @@ export default function SignUp() {
                   <input
                     type="hidden"
                     name="authenticity_token"
-                    value={(document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? ''}
+                    value={getCsrfToken()}
                   />
                   <Button
                     type="submit"
