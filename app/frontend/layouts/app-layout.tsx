@@ -1,7 +1,8 @@
 import { Link, router, usePage } from '@inertiajs/react'
-import { LayoutDashboard, List, Bell, Menu, LogOut, UserIcon } from 'lucide-react'
+import { LayoutDashboard, List, Bell, Menu, LogOut, UserIcon, Copy } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 
 import Avatar from 'boring-avatars'
 
@@ -50,6 +51,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   const handleLogout = () => {
     router.delete('/users/sign_out')
+  }
+
+  const handleCopyPersonalId = () => {
+    if (!user?.personal_id) return
+    navigator.clipboard.writeText(user.personal_id).then(() => {
+      toast.success(t('profile.id_copied'))
+    })
   }
 
   const isRtl = i18n.language === 'ar'
@@ -120,6 +128,21 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     <div className="flex flex-col gap-1">
                       <p className="text-sm font-medium leading-none">{user.full_name}</p>
                       <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">
+                          {t('profile.personal_id')}:
+                        </span>
+                        <span className="text-xs font-mono">{user.personal_id}</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-xs"
+                          onClick={handleCopyPersonalId}
+                          aria-label={t('profile.copy_id')}
+                        >
+                          <Copy className="size-3" />
+                        </Button>
+                      </div>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
