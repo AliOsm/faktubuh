@@ -53,4 +53,16 @@ Rails.application.configure do
 
   # Use the test adapter for Active Job so assert_enqueued_jobs etc. work correctly.
   config.active_job.queue_adapter = :test
+
+  if Rails.application.credentials.google.present?
+    ActionMailer::Base.smtp_settings = {
+      user_name: "faktubuh@gmail.com",
+      password: Rails.application.credentials.google.gmail_application_password,
+      domain: "gmail.com",
+      address: "smtp.gmail.com",
+      port: 587,
+      authentication: :plain,
+      enable_starttls_auto: true
+    }
+  end
 end

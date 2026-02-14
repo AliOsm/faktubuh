@@ -7,7 +7,7 @@ import { GeometricPattern } from '@/components/patterns/GeometricPattern'
 import { Button } from '@/components/ui/button'
 
 export default function Home() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <>
@@ -23,14 +23,10 @@ export default function Home() {
 
         <div className="relative z-10 flex max-w-lg flex-col items-center gap-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight">{t('app.name')}</h1>
-          <p className="text-xl text-muted-foreground">{t('home.subtitle')}</p>
-          <p className="text-sm text-muted-foreground">{t('home.description')}</p>
 
           <blockquote className="border-s-4 border-primary/30 ps-4 text-right">
             <p className="font-quran text-lg leading-relaxed" dir="rtl" lang="ar">{t('ayat.welcome.verse')}</p>
-            {i18n.language !== 'ar' && (
-              <p className="mt-2 text-sm text-muted-foreground">{t('ayat.welcome.translation')}</p>
-            )}
+            <p className="mt-2 text-sm text-muted-foreground">{t('ayat.welcome.translation')}</p>
             <footer className="mt-1 text-xs text-muted-foreground">{t('ayat.welcome.reference')}</footer>
           </blockquote>
 

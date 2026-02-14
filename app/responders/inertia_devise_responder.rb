@@ -20,7 +20,7 @@ class InertiaDeviseResponder < Devise::Controllers::Responder
 
   def redirect_with_errors
     controller.redirect_to controller.send(:after_failure_path_for, resource),
-                           inertia: controller.send(:inertia_errors, resource)
+                           inertia: { errors: controller.send(:inertia_errors, resource) }
   end
 
   def redirect_with_alert

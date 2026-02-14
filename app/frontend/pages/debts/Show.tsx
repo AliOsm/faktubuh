@@ -221,13 +221,11 @@ function formatDate(dateStr: string): string {
 }
 
 function WitnessReminder({ mode, witnesses }: { mode: string; witnesses: WitnessData[] }) {
-  const { t } = useTranslation()
   const hasConfirmedWitness = witnesses.some((w) => w.status === 'confirmed')
 
   if (hasConfirmedWitness) return null
 
   const isStrong = mode === 'personal'
-  const message = isStrong ? t('debt_detail.witness_reminder.strong') : t('debt_detail.witness_reminder.standard')
 
   return (
     <div
@@ -236,10 +234,6 @@ function WitnessReminder({ mode, witnesses }: { mode: string; witnesses: Witness
         isStrong ? 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300' : 'border-yellow-200 bg-yellow-50 text-yellow-900 dark:border-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300'
       )}
     >
-      <div className="flex items-start gap-3">
-        <AlertTriangle className={cn('mt-0.5 size-5 shrink-0', isStrong ? 'text-amber-600 dark:text-amber-400' : 'text-yellow-600 dark:text-yellow-400')} />
-        <p className="text-sm">{message}</p>
-      </div>
       <AyatAlDayn
         context="witness"
         className="border-0 bg-transparent p-0"

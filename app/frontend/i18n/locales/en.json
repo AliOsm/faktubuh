@@ -449,10 +449,6 @@
       "ayat_reference": "Surah Al-Baqarah 2:283",
       "read_only": "This debt is settled and read-only."
     },
-    "witness_reminder": {
-      "strong": "According to Ayat al-Dayn (2:282), it is strongly recommended to have witnesses for this debt. Consider inviting witnesses for proper documentation.",
-      "standard": "Consider adding witnesses to this debt as recommended in Ayat al-Dayn (2:282)."
-    },
     "ayat_verse": "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا تَدَايَنتُم بِدَيْنٍ إِلَىٰ أَجَلٍ مُّسَمًّى فَاكْتُبُوهُ",
     "ayat_translation": "O you who believe, when you contract a debt for a specified term, write it down.",
     "ayat_reference": "Surah Al-Baqarah 2:282"
