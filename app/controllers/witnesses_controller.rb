@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class WitnessesController < InertiaController
+  include DebtCreatorHelper
+
   before_action :set_debt
   before_action :set_witness, only: %i[confirm decline]
   before_action :authorize_witness_creation!, only: :create
@@ -89,7 +91,4 @@ class WitnessesController < InertiaController
     end
   end
 
-  def creator_user(debt)
-    debt.creator_role_lender? ? debt.lender : debt.borrower
-  end
 end

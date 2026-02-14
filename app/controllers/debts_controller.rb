@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class DebtsController < InertiaController
+  include DebtCreatorHelper
+
   rate_limit to: 20, within: 1.hour, only: :create,
     by: -> { current_user.id },
     with: -> {
@@ -347,15 +349,6 @@ class DebtsController < InertiaController
     @debt.personal? && @debt.active? && @debt.upgrade_recipient_id.nil? && creator_user(@debt)&.id == current_user.id
   end
 
-  def creator_user(debt)
-    # For personal debts, lender_id is always the creator (database constraint)
-    # For mutual debts, check creator_role to determine creator
-    if debt.personal?
-      debt.lender
-    else
-      debt.creator_role_lender? ? debt.lender : debt.borrower
-    end
-  end
 
   # --- index helpers ---
 

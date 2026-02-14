@@ -41,7 +41,8 @@ class InstallmentReminderJob < ApplicationJob
   private
 
   def already_reminded?(installment, due_date)
-    installment.debt.borrower.notifications
+    Notification
+      .where(debt: installment.debt)
       .where(notification_type: "installment_reminder")
       .where("params->>'installment_id' = ?", installment.id.to_s)
       .where("params->>'due_date' = ?", due_date.to_s)

@@ -4,7 +4,7 @@ class PaymentsController < InertiaController
   rate_limit to: 10, within: 1.hour, only: :create,
     by: -> { current_user.id },
     with: -> {
-      redirect_to debt_path(@debt), alert: I18n.t("errors.rate_limit")
+      redirect_to debt_path(params[:debt_id]), alert: I18n.t("errors.rate_limit")
     }
 
   before_action :set_debt
@@ -21,6 +21,7 @@ class PaymentsController < InertiaController
       @payment.submitter = current_user
       @payment.submitted_at = Time.current
       @payment.status = @debt.personal? ? "approved" : "pending"
+      @payment.skip_balance_validation = true  # We check manually with lock
 
       # Check remaining balance inside transaction to prevent race condition
       remaining = @debt.amount - @debt.payments.approved.sum(:amount)
@@ -30,7 +31,7 @@ class PaymentsController < InertiaController
         return
       end
 
-      if @payment.save(validate: false)  # Skip validation since we already checked
+      if @payment.save
         NotificationService.payment_submitted(@payment) if @debt.mutual?
         check_auto_settlement if @debt.personal?
         redirect_to debt_path(@debt), notice: I18n.t("payments.submitted")
