@@ -55,9 +55,17 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   const handleCopyPersonalId = () => {
     if (!user?.personal_id) return
-    navigator.clipboard.writeText(user.personal_id).then(() => {
-      toast.success(t('profile.id_copied'))
-    })
+    if (!navigator?.clipboard?.writeText) {
+      toast.error(t('common.error'))
+      return
+    }
+    navigator.clipboard.writeText(user.personal_id)
+      .then(() => {
+        toast.success(t('profile.id_copied'))
+      })
+      .catch(() => {
+        toast.error(t('common.error'))
+      })
   }
 
   const isRtl = i18n.language === 'ar'
@@ -139,6 +147,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                           size="icon-xs"
                           onClick={handleCopyPersonalId}
                           aria-label={t('profile.copy_id')}
+                          className="cursor-pointer"
                         >
                           <Copy className="size-3" />
                         </Button>
