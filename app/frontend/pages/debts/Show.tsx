@@ -102,9 +102,21 @@ interface WitnessData {
   confirmed_at: string | null
 }
 
+interface PaginationMeta {
+  page: number
+  last: number
+  prev: number | null
+  next: number | null
+  pages: number
+  count: number
+  from: number
+  to: number
+}
+
 interface ShowProps {
   debt: DebtData
   installments: InstallmentData[]
+  installments_pagination: PaginationMeta
   payments: PaymentData[]
   witnesses: WitnessData[]
   current_user_id: number
@@ -1055,12 +1067,22 @@ export default function Show({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1">
                 <p className="text-sm font-medium text-muted-foreground">{t('debt_detail.lender')}</p>
-                <p className="text-sm">{debt.lender.full_name}</p>
+                <p className="text-sm">
+                  {debt.mode === 'mutual'
+                    ? debt.lender.full_name
+                    : debt.creator_role === 'lender'
+                      ? debt.lender.full_name
+                      : (debt.counterparty_name ?? '—')}
+                </p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-muted-foreground">{t('debt_detail.borrower')}</p>
                 <p className="text-sm">
-                  {debt.mode === 'mutual' ? (debt.borrower?.full_name ?? '—') : (debt.counterparty_name ?? '—')}
+                  {debt.mode === 'mutual'
+                    ? (debt.borrower?.full_name ?? '—')
+                    : debt.creator_role === 'borrower'
+                      ? debt.lender.full_name
+                      : (debt.counterparty_name ?? '—')}
                 </p>
               </div>
               <div className="space-y-1">

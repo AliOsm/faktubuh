@@ -44,6 +44,9 @@ class InstallmentScheduleGenerator
     base_amount = (@debt.amount / count).floor(2)
     remainder = @debt.amount - (base_amount * (count - 1))
 
+    # Guard against negative remainder from rounding
+    remainder = [remainder, 0.01].max
+
     due_dates.each_with_index.map do |due_date, index|
       amount = index == count - 1 ? remainder : base_amount
       create_installment(amount: amount, due_date: due_date)

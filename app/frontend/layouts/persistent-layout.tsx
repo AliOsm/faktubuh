@@ -13,27 +13,26 @@ interface PersistentLayoutProps {
 export default function PersistentLayout({ children }: PersistentLayoutProps) {
   const { i18n } = useTranslation()
   const { flash } = usePage().props as { flash?: { notice?: string; alert?: string } }
-  const lastFlash = useRef<string>(null)
+
+  // Separate refs for notice and alert
+  const lastNotice = useRef<string | null>(null)
+  const lastAlert = useRef<string | null>(null)
 
   useEffect(() => {
-    if (flash?.notice) {
-      if (flash.notice !== lastFlash.current) {
-        lastFlash.current = flash.notice
-        toast.success(flash.notice)
-      }
-    } else {
-      lastFlash.current = null
+    if (flash?.notice && flash.notice !== lastNotice.current) {
+      lastNotice.current = flash.notice
+      toast.success(flash.notice)
+    } else if (!flash?.notice) {
+      lastNotice.current = null
     }
   }, [flash?.notice])
 
   useEffect(() => {
-    if (flash?.alert) {
-      if (flash.alert !== lastFlash.current) {
-        lastFlash.current = flash.alert
-        toast.error(flash.alert)
-      }
-    } else {
-      lastFlash.current = null
+    if (flash?.alert && flash.alert !== lastAlert.current) {
+      lastAlert.current = flash.alert
+      toast.error(flash.alert)
+    } else if (!flash?.alert) {
+      lastAlert.current = null
     }
   }, [flash?.alert])
 

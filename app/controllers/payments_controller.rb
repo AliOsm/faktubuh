@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class PaymentsController < InertiaController
+  rate_limit to: 10, within: 1.hour, only: :create,
+    by: -> { current_user.id },
+    with: -> {
+      redirect_to debt_path(@debt), alert: I18n.t("errors.rate_limit")
+    }
+
   before_action :set_debt
   before_action :set_payment, only: %i[approve reject]
   before_action :authorize_payment_creation!, only: :create
@@ -8,32 +14,58 @@ class PaymentsController < InertiaController
   before_action :authorize_pending_payment!, only: %i[approve reject]
 
   def create
-    @payment = @debt.payments.new(payment_params)
-    @payment.submitter = current_user
-    @payment.submitted_at = Time.current
-    @payment.status = @debt.personal? ? "approved" : "pending"
+    ActiveRecord::Base.transaction do
+      @debt.lock!  # FOR UPDATE lock prevents concurrent modifications
 
-    if @payment.save
-      NotificationService.payment_submitted(@payment) if @debt.mutual?
-      check_auto_settlement if @debt.personal?
-      redirect_to debt_path(@debt), notice: I18n.t("payments.submitted")
-    else
-      redirect_to debt_path(@debt), inertia: { errors: @payment.errors.to_hash(true) }
+      @payment = @debt.payments.new(payment_params)
+      @payment.submitter = current_user
+      @payment.submitted_at = Time.current
+      @payment.status = @debt.personal? ? "approved" : "pending"
+
+      # Check remaining balance inside transaction to prevent race condition
+      remaining = @debt.amount - @debt.payments.approved.sum(:amount)
+      if @payment.amount > remaining
+        @payment.errors.add(:amount, "exceeds remaining balance of #{remaining}")
+        redirect_to debt_path(@debt), inertia: { errors: @payment.errors.to_hash(true) }
+        return
+      end
+
+      if @payment.save(validate: false)  # Skip validation since we already checked
+        NotificationService.payment_submitted(@payment) if @debt.mutual?
+        check_auto_settlement if @debt.personal?
+        redirect_to debt_path(@debt), notice: I18n.t("payments.submitted")
+      else
+        redirect_to debt_path(@debt), inertia: { errors: @payment.errors.to_hash(true) }
+      end
     end
   end
 
   def approve
-    @payment.update!(status: "approved")
-    mark_installment_if_covered(@payment)
-    NotificationService.payment_approved(@payment)
-    check_auto_settlement
+    ActiveRecord::Base.transaction do
+      @debt.lock!
+      @payment.update!(status: "approved")
+
+      if @payment.installment
+        @payment.installment.lock!
+        mark_installment_if_covered(@payment)
+      end
+
+      NotificationService.payment_approved(@payment)
+      check_auto_settlement
+    end
 
     redirect_to debt_path(@debt), notice: I18n.t("payments.approved")
   end
 
   def reject
-    @payment.update!(status: "rejected", rejection_reason: params[:rejection_reason])
-    NotificationService.payment_rejected(@payment)
+    ActiveRecord::Base.transaction do
+      @debt.lock!
+      @payment.update!(
+        status: "rejected",
+        rejection_reason: params.dig(:payment, :rejection_reason)
+      )
+      NotificationService.payment_rejected(@payment)
+    end
 
     redirect_to debt_path(@debt), notice: I18n.t("payments.rejected")
   end
@@ -82,7 +114,7 @@ class PaymentsController < InertiaController
   end
 
   def payment_params
-    params.require(:payment).permit(:amount, :description, :installment_id)
+    params.require(:payment).permit(:amount, :description, :installment_id, :rejection_reason)
   end
 
   def remaining_balance

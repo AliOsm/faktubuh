@@ -11,6 +11,7 @@ class Payment < ApplicationRecord
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :submitted_at, presence: true
+  validates :rejection_reason, length: { maximum: 500 }, allow_nil: true
   validate :amount_within_remaining_balance, on: :create
 
   private

@@ -33,10 +33,17 @@ class DashboardController < InertiaController
     active = currency_debts.where(status: "active")
     settled = currency_debts.where(status: "settled")
 
-    lent_amount = currency_debts.where(lender_id: current_user.id).sum(:amount).to_f
+    # Lent = mutual debts where user is lender + personal debts where creator_role is lender
+    # (Exclude personal debts where creator_role is borrower - those are counted in borrowed)
+    lent_amount = lent_total(currency_debts)
     borrowed_amount = borrowed_total(currency_debts)
-    total_paid = total_approved_payments(currency_debts)
-    remaining = [ lent_amount + borrowed_amount - total_paid, 0 ].max
+
+    # Calculate lent and borrowed separately
+    lent_paid = lent_payments(currency_debts)
+    borrowed_paid = borrowed_payments(currency_debts)
+
+    lent_remaining = [lent_amount - lent_paid, 0].max
+    borrowed_remaining = [borrowed_amount - borrowed_paid, 0].max
 
     next_installment = next_upcoming_installment(active)
 
@@ -44,13 +51,26 @@ class DashboardController < InertiaController
       currency: currency,
       total_lent: lent_amount,
       total_borrowed: borrowed_amount,
-      total_paid: total_paid,
-      remaining: remaining,
+      lent_paid: lent_paid,
+      borrowed_paid: borrowed_paid,
+      lent_remaining: lent_remaining,
+      borrowed_remaining: borrowed_remaining,
       next_installment_date: next_installment&.due_date&.to_s,
       next_installment_amount: next_installment&.amount&.to_f,
       active_count: active.count,
       settled_count: settled.count
     }
+  end
+
+  def lent_total(currency_debts)
+    # Mutual debts where user is lender
+    mutual_lent = currency_debts.where(lender_id: current_user.id, mode: "mutual").sum(:amount).to_f
+
+    # Personal debts where user is the creator with lender role
+    personal_lent = currency_debts.where(lender_id: current_user.id, mode: "personal")
+                                   .where(creator_role: "lender").sum(:amount).to_f
+
+    mutual_lent + personal_lent
   end
 
   def borrowed_total(currency_debts)
@@ -64,10 +84,21 @@ class DashboardController < InertiaController
     mutual_borrowed + personal_borrowed
   end
 
-  def total_approved_payments(currency_debts)
-    Payment.where(debt_id: currency_debts.select(:id))
-           .where(status: "approved")
-           .sum(:amount).to_f
+  def lent_payments(currency_debts)
+    # Payments for mutual debts where user is lender + personal debts where creator_role is lender
+    mutual_lent_ids = currency_debts.where(lender_id: current_user.id, mode: "mutual").pluck(:id)
+    personal_lent_ids = currency_debts.where(lender_id: current_user.id, mode: "personal", creator_role: "lender").pluck(:id)
+    lent_debt_ids = mutual_lent_ids + personal_lent_ids
+
+    Payment.where(debt_id: lent_debt_ids).where(status: "approved").sum(:amount).to_f
+  end
+
+  def borrowed_payments(currency_debts)
+    mutual_borrowed_ids = currency_debts.where(borrower_id: current_user.id, mode: "mutual").pluck(:id)
+    personal_borrowed_ids = currency_debts.where(lender_id: current_user.id, mode: "personal", creator_role: "borrower").pluck(:id)
+    borrowed_debt_ids = mutual_borrowed_ids + personal_borrowed_ids
+
+    Payment.where(debt_id: borrowed_debt_ids).where(status: "approved").sum(:amount).to_f
   end
 
   def next_upcoming_installment(active_debts)

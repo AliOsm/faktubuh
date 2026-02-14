@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  mount GoodJob::Engine, at: "good_job"
+  authenticate :user, ->(user) { user.admin? } do
+    mount GoodJob::Engine, at: "good_job"
+  end
 
   devise_for :users, controllers: {
     registrations: "users/registrations",

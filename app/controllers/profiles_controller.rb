@@ -13,6 +13,13 @@ class ProfilesController < InertiaController
     else
       redirect_to profile_path, inertia: { errors: current_user.errors.to_hash(true) }
     end
+  rescue ActiveRecord::RecordNotUnique => e
+    if e.message.include?('personal_id')
+      current_user.errors.add(:personal_id, "is already taken")
+      redirect_to profile_path, inertia: { errors: current_user.errors.to_hash(true) }
+    else
+      raise
+    end
   end
 
   private

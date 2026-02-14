@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Pagination } from '@/components/ui/pagination'
 import AppLayout from '@/layouts/app-layout'
 
 interface NotificationData {
@@ -16,8 +17,20 @@ interface NotificationData {
   created_at: string
 }
 
+interface PaginationMeta {
+  page: number
+  last: number
+  prev: number | null
+  next: number | null
+  pages: number
+  count: number
+  from: number
+  to: number
+}
+
 interface IndexProps {
   notifications: NotificationData[]
+  pagination: PaginationMeta
   [key: string]: unknown
 }
 
@@ -108,7 +121,7 @@ function NotificationItem({ notification, locale }: { notification: Notification
   )
 }
 
-export default function Index({ notifications }: IndexProps) {
+export default function Index({ notifications, pagination }: IndexProps) {
   const { t, i18n } = useTranslation()
 
   const hasUnread = notifications.some((n) => !n.read)
@@ -145,15 +158,19 @@ export default function Index({ notifications }: IndexProps) {
             </CardContent>
           </Card>
         ) : (
-          <div className="flex flex-col gap-2">
-            {notifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                notification={notification}
-                locale={i18n.language}
-              />
-            ))}
-          </div>
+          <>
+            <div className="flex flex-col gap-2">
+              {notifications.map((notification) => (
+                <NotificationItem
+                  key={notification.id}
+                  notification={notification}
+                  locale={i18n.language}
+                />
+              ))}
+            </div>
+
+            <Pagination pagination={pagination} />
+          </>
         )}
       </div>
     </>

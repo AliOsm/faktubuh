@@ -3,9 +3,11 @@
 class NotificationsController < InertiaController
   def index
     notifications = current_user.notifications.order(created_at: :desc)
+    @pagy, paginated_notifications = pagy(notifications, limit: 25)
 
     render inertia: "notifications/Index", props: {
-      notifications: notifications.map { |n| notification_json(n) }
+      notifications: paginated_notifications.map { |n| notification_json(n) },
+      pagination: pagy_metadata(@pagy)
     }
   end
 
@@ -38,6 +40,19 @@ class NotificationsController < InertiaController
       read: notification.read,
       debt_id: notification.debt_id,
       created_at: notification.created_at.iso8601
+    }
+  end
+
+  def pagy_metadata(pagy)
+    {
+      page: pagy.page,
+      last: pagy.last,
+      prev: pagy.prev,
+      next: pagy.next,
+      pages: pagy.pages,
+      count: pagy.count,
+      from: pagy.from,
+      to: pagy.to
     }
   end
 end

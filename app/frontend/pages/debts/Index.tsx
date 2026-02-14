@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Pagination } from '@/components/ui/pagination'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import AppLayout from '@/layouts/app-layout'
 import { cn } from '@/lib/utils'
@@ -27,8 +28,20 @@ interface Filters {
   sort: string
 }
 
+interface PaginationMeta {
+  page: number
+  last: number
+  prev: number | null
+  next: number | null
+  pages: number
+  count: number
+  from: number
+  to: number
+}
+
 interface IndexProps {
   debts: DebtRow[]
+  pagination: PaginationMeta
   filters: Filters
   [key: string]: unknown
 }
@@ -37,10 +50,10 @@ function StatusBadge({ status }: { status: string }) {
   const { t } = useTranslation()
 
   const variants: Record<string, string> = {
-    pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    active: 'bg-green-100 text-green-800 border-green-200',
-    settled: 'bg-blue-100 text-blue-800 border-blue-200',
-    rejected: 'bg-red-100 text-red-800 border-red-200'
+    pending: 'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700',
+    active: 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-700',
+    settled: 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700',
+    rejected: 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700'
   }
 
   return (
@@ -90,7 +103,7 @@ function updateFilters(key: string, value: string) {
   router.get(url.pathname + url.search, {}, { preserveState: true, replace: true })
 }
 
-export default function Index({ debts, filters }: IndexProps) {
+export default function Index({ debts, pagination, filters }: IndexProps) {
   const { t } = useTranslation()
 
   return (
@@ -186,6 +199,7 @@ export default function Index({ debts, filters }: IndexProps) {
             </CardContent>
           </Card>
         ) : (
+          <>
           <Card>
             <CardHeader>
               <CardTitle>{t('debts_list.showing', { count: debts.length })}</CardTitle>
@@ -228,6 +242,9 @@ export default function Index({ debts, filters }: IndexProps) {
               ))}
             </CardContent>
           </Card>
+
+          <Pagination pagination={pagination} />
+          </>
         )}
       </div>
     </>

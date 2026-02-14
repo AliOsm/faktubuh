@@ -7,6 +7,8 @@ ar:
             personal_id:
               invalid: "يجب أن يكون من ٣ إلى ١٢ حرفًا باستخدام A-Z و 0-9"
   app_name: "فاكتبوه"
+  errors:
+    rate_limit: "عدد كبير جداً من الطلبات. يرجى المحاولة مرة أخرى لاحقاً."
   common:
     save: "حفظ"
     cancel: "إلغاء"
@@ -33,6 +35,7 @@ ar:
     upgrade_not_recipient: "أنت لست مستلم طلب الترقية."
     upgrade_accepted: "تم قبول الترقية. أصبح هذا الدين مشتركاً."
     upgrade_declined: "تم رفض الترقية. يبقى الدين شخصياً."
+    cannot_upgrade_to_self: "لا يمكنك ترقية الدين إلى نفسك."
   payments:
     submitted: "تم تقديم الدفعة بنجاح."
     approved: "تمت الموافقة على الدفعة بنجاح."

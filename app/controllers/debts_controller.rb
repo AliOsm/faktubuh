@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class DebtsController < InertiaController
+  rate_limit to: 20, within: 1.hour, only: :create,
+    by: -> { current_user.id },
+    with: -> {
+      redirect_to new_debt_path, alert: I18n.t("errors.rate_limit")
+    }
+
   before_action :set_debt, only: %i[show confirm reject upgrade accept_upgrade decline_upgrade]
   before_action :authorize_debt_access!, only: :show
   before_action :authorize_confirmation!, only: %i[confirm reject]
@@ -9,20 +15,29 @@ class DebtsController < InertiaController
   end
 
   def create
-    @debt = build_debt
+    debt = build_debt
 
-    if @debt.save
-      after_create(@debt)
-      redirect_to debt_path(@debt), notice: I18n.t("debts.created")
+    # Check if assign_mutual_parties failed (for mutual debts)
+    if debt.errors.any?
+      redirect_to new_debt_path, inertia: { errors: debt.errors.to_hash(true) }
+      return
+    end
+
+    if debt.save
+      after_create(debt)
+      redirect_to debt_path(debt), notice: I18n.t("debts.created")
     else
-      redirect_to new_debt_path, inertia: { errors: @debt.errors.to_hash(true) }
+      redirect_to new_debt_path, inertia: { errors: debt.errors.to_hash(true) }
     end
   end
 
   def show
+    @pagy_installments, paginated_installments = pagy(@debt.installments.order(:due_date), limit: 10, page_param: :installments_page)
+
     render inertia: "debts/Show", props: {
       debt: debt_json(@debt),
-      installments: @debt.installments.order(:due_date).map { |i| installment_json(i) },
+      installments: paginated_installments.map { |i| installment_json(i) },
+      installments_pagination: pagy_metadata(@pagy_installments),
       payments: @debt.payments.includes(:submitter, :installment).order(submitted_at: :desc).map { |p| payment_json(p) },
       witnesses: @debt.witnesses.includes(:user).map { |w| witness_json(w) },
       current_user_id: current_user.id,
@@ -40,26 +55,34 @@ class DebtsController < InertiaController
   end
 
   def confirm
-    unless @debt.pending?
-      redirect_to debt_path(@debt), alert: I18n.t("debts.already_processed")
-      return
-    end
+    ActiveRecord::Base.transaction do
+      @debt.lock!
 
-    @debt.update!(status: "active")
-    InstallmentScheduleGenerator.new(@debt).generate!
-    NotificationService.debt_confirmed(@debt, confirmer: current_user)
+      unless @debt.pending?
+        redirect_to debt_path(@debt), alert: I18n.t("debts.already_processed")
+        return
+      end
+
+      @debt.update!(status: "active")
+      InstallmentScheduleGenerator.new(@debt).generate!
+      NotificationService.debt_confirmed(@debt, confirmer: current_user)
+    end
 
     redirect_to debt_path(@debt), notice: I18n.t("debts.confirmed")
   end
 
   def reject
-    unless @debt.pending?
-      redirect_to debt_path(@debt), alert: I18n.t("debts.already_processed")
-      return
-    end
+    ActiveRecord::Base.transaction do
+      @debt.lock!
 
-    @debt.update!(status: "rejected")
-    NotificationService.debt_rejected(@debt, rejecter: current_user)
+      unless @debt.pending?
+        redirect_to debt_path(@debt), alert: I18n.t("debts.already_processed")
+        return
+      end
+
+      @debt.update!(status: "rejected")
+      NotificationService.debt_rejected(@debt, rejecter: current_user)
+    end
 
     redirect_to debt_path(@debt), notice: I18n.t("debts.rejected")
   end
@@ -78,36 +101,54 @@ class DebtsController < InertiaController
       return
     end
 
-    @debt.update!(upgrade_recipient_id: recipient.id)
-    NotificationService.upgrade_requested(@debt, recipient: recipient)
+    if recipient.id == current_user.id
+      redirect_to debt_path(@debt), alert: I18n.t("debts.cannot_upgrade_to_self")
+      return
+    end
+
+    ActiveRecord::Base.transaction do
+      @debt.lock!
+      @debt.update!(upgrade_recipient_id: recipient.id)
+      NotificationService.upgrade_requested(@debt, recipient: recipient)
+    end
 
     redirect_to debt_path(@debt), notice: I18n.t("debts.upgrade_requested")
   end
 
   def accept_upgrade
-    unless @debt.upgrade_recipient_id == current_user.id
-      redirect_to debt_path(@debt), alert: I18n.t("debts.upgrade_not_recipient")
-      return
+    ActiveRecord::Base.transaction do
+      @debt.lock!
+
+      unless @debt.upgrade_recipient_id == current_user.id
+        redirect_to debt_path(@debt), alert: I18n.t("debts.upgrade_not_recipient")
+        return
+      end
+
+      if @debt.creator_role_lender?
+        @debt.update!(mode: "mutual", borrower_id: current_user.id, upgrade_recipient_id: nil)
+      else
+        @debt.update!(mode: "mutual", lender_id: current_user.id, upgrade_recipient_id: nil)
+      end
+
+      NotificationService.upgrade_accepted(@debt, accepter: current_user)
     end
 
-    if @debt.creator_role_lender?
-      @debt.update!(mode: "mutual", borrower_id: current_user.id, upgrade_recipient_id: nil)
-    else
-      @debt.update!(mode: "mutual", lender_id: current_user.id, upgrade_recipient_id: nil)
-    end
-
-    NotificationService.upgrade_accepted(@debt, accepter: current_user)
     redirect_to debt_path(@debt), notice: I18n.t("debts.upgrade_accepted")
   end
 
   def decline_upgrade
-    unless @debt.upgrade_recipient_id == current_user.id
-      redirect_to debt_path(@debt), alert: I18n.t("debts.upgrade_not_recipient")
-      return
+    ActiveRecord::Base.transaction do
+      @debt.lock!
+
+      unless @debt.upgrade_recipient_id == current_user.id
+        redirect_to debt_path(@debt), alert: I18n.t("debts.upgrade_not_recipient")
+        return
+      end
+
+      @debt.update!(upgrade_recipient_id: nil)
+      NotificationService.upgrade_declined(@debt, decliner: current_user)
     end
 
-    @debt.update!(upgrade_recipient_id: nil)
-    NotificationService.upgrade_declined(@debt, decliner: current_user)
     redirect_to debt_path(@debt), notice: I18n.t("debts.upgrade_declined")
   end
 
@@ -115,8 +156,11 @@ class DebtsController < InertiaController
     debts = filtered_debts
     debts = sorted_debts(debts)
 
+    @pagy, paginated_debts = pagy(debts.includes(:lender, :borrower, :payments), limit: 20)
+
     render inertia: "debts/Index", props: {
-      debts: debts.includes(:lender, :borrower, :payments).map { |d| index_debt_json(d) },
+      debts: paginated_debts.map { |d| index_debt_json(d) },
+      pagination: pagy_metadata(@pagy),
       filters: {
         status: params[:status] || "all",
         mode: params[:mode] || "all",
@@ -231,6 +275,18 @@ class DebtsController < InertiaController
   def assign_mutual_parties(debt)
     counterparty_id = resolve_counterparty_id
 
+    # Issue #4: Check if counterparty was found
+    if counterparty_id.nil?
+      debt.errors.add(:counterparty_personal_id, "not found")
+      return false
+    end
+
+    # Issue #3: Check if user is creating debt with themselves
+    if counterparty_id == current_user.id
+      debt.errors.add(:counterparty_personal_id, "cannot create a debt with yourself")
+      return false
+    end
+
     if debt.creator_role_lender?
       debt.lender = current_user
       debt.borrower_id = counterparty_id
@@ -238,6 +294,8 @@ class DebtsController < InertiaController
       debt.borrower = current_user
       debt.lender_id = counterparty_id
     end
+
+    true
   end
 
   def debt_params
@@ -290,7 +348,13 @@ class DebtsController < InertiaController
   end
 
   def creator_user(debt)
-    debt.creator_role_lender? ? debt.lender : debt.borrower
+    # For personal debts, lender_id is always the creator (database constraint)
+    # For mutual debts, check creator_role to determine creator
+    if debt.personal?
+      debt.lender
+    else
+      debt.creator_role_lender? ? debt.lender : debt.borrower
+    end
   end
 
   # --- index helpers ---
@@ -298,6 +362,7 @@ class DebtsController < InertiaController
   def user_debts
     Debt.where(lender_id: current_user.id)
         .or(Debt.where(borrower_id: current_user.id))
+        .or(Debt.where(upgrade_recipient_id: current_user.id))
   end
 
   def filtered_debts
@@ -359,5 +424,18 @@ class DebtsController < InertiaController
     else
       debt.lender.full_name
     end
+  end
+
+  def pagy_metadata(pagy)
+    {
+      page: pagy.page,
+      last: pagy.last,
+      prev: pagy.prev,
+      next: pagy.next,
+      pages: pagy.pages,
+      count: pagy.count,
+      from: pagy.from,
+      to: pagy.to
+    }
   end
 end

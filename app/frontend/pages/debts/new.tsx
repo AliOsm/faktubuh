@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { router, usePage } from '@inertiajs/react'
+import { Head, router, usePage } from '@inertiajs/react'
 import * as Flags from 'country-flag-icons/react/3x2'
 import { format } from 'date-fns'
 import { ar } from 'date-fns/locale'
@@ -220,6 +220,12 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
   const { props } = usePage()
   const serverErrors = (props as unknown as { errors?: Record<string, string[]> }).errors
 
+  // Memoize currency display names for performance
+  const currencyDisplayNames = useMemo(
+    () => new Intl.DisplayNames([i18n.language], { type: 'currency' }),
+    [i18n.language]
+  )
+
   const [personalId, setPersonalId] = useState('')
   const [lookedUpUser, setLookedUpUser] = useState<LookedUpUser | null>(null)
   const [lookupError, setLookupError] = useState<string | null>(null)
@@ -249,6 +255,9 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {}
@@ -386,7 +395,7 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
                     <CommandEmpty>{t('debt_creation.details.currency_not_found')}</CommandEmpty>
                     <CommandGroup>
                       {CURRENCIES.map((c) => {
-                        const currencyName = new Intl.DisplayNames([i18n.language], { type: 'currency' }).of(c.code)
+                        const currencyName = currencyDisplayNames.of(c.code)
                         return (
                           <CommandItem
                             key={c.code}
@@ -431,7 +440,7 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
                   mode="single"
                   selected={deadline}
                   onSelect={setDeadline}
-                  disabled={{ before: new Date(today.getTime() + 86400000) }}
+                  disabled={{ before: tomorrow }}
                   locale={i18n.language === 'ar' ? arSA : undefined}
                   dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
                 />
@@ -538,10 +547,12 @@ function NewDebt() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 py-8">
-      <div className="w-full max-w-lg space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">{t('debt_creation.title')}</h1>
+    <>
+      <Head title={t('debt_creation.title')} />
+      <div className="flex flex-col items-center gap-6 py-8">
+        <div className="w-full max-w-lg space-y-6">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold tracking-tight">{t('debt_creation.title')}</h1>
           <p className="text-sm text-muted-foreground">
             {t('debt_creation.step_indicator', { current: step, total: 3 })}
           </p>
@@ -636,6 +647,7 @@ function NewDebt() {
         <AyatAlDayn context="creation" />
       </div>
     </div>
+    </>
   )
 }
 

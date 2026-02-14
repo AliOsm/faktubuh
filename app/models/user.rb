@@ -8,11 +8,26 @@ class User < ApplicationRecord
   PERSONAL_ID_MAX_LENGTH = 12
   PERSONAL_ID_MAX_ATTEMPTS = 10
 
-  has_many :lent_debts, class_name: "Debt", foreign_key: :lender_id, dependent: :destroy, inverse_of: :lender
-  has_many :borrowed_debts, class_name: "Debt", foreign_key: :borrower_id, dependent: :nullify, inverse_of: :borrower
-  has_many :payments, foreign_key: :submitter_id, dependent: :destroy, inverse_of: :submitter
-  has_many :witnesses, dependent: :destroy
+  # Prevent deletion if user is a lender with debts
+  has_many :lent_debts, class_name: "Debt", foreign_key: :lender_id,
+           dependent: :restrict_with_error, inverse_of: :lender
+
+  # Prevent deletion if user is a borrower with debts
+  has_many :borrowed_debts, class_name: "Debt", foreign_key: :borrower_id,
+           dependent: :restrict_with_error, inverse_of: :borrower
+
+  # Prevent deletion if user has submitted payments
+  has_many :payments, foreign_key: :submitter_id,
+           dependent: :restrict_with_error, inverse_of: :submitter
+
+  # Prevent deletion if user is a witness (keep them in history)
+  has_many :witnesses, dependent: :restrict_with_error
+
+  # OK to delete user's own notifications
   has_many :notifications, dependent: :destroy
+
+  # Protect admin attribute from mass assignment
+  attr_readonly :admin
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,

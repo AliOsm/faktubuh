@@ -5,6 +5,8 @@ class OverdueDetectionJob < ApplicationJob
 
   def perform
     Installment.upcoming.where("due_date < ?", Date.current).includes(debt: [ :lender, :borrower ]).find_each do |installment|
+      next if already_notified?(installment)
+
       installment.update!(status: :overdue)
 
       debt = installment.debt
@@ -18,12 +20,22 @@ class OverdueDetectionJob < ApplicationJob
           user: recipient,
           notification_type: "installment_overdue",
           message: message,
-          params: params,
+          params: params.merge(installment_id: installment.id.to_s),
           debt: debt
         )
 
         DebtMailer.overdue_notice(installment, recipient).deliver_later
       end
     end
+  end
+
+  private
+
+  def already_notified?(installment)
+    installment.debt.lender.notifications
+      .where(notification_type: "installment_overdue")
+      .where("params->>'installment_id' = ?", installment.id.to_s)
+      .where("created_at > ?", 24.hours.ago)
+      .exists?
   end
 end

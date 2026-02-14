@@ -12,8 +12,10 @@ interface CurrencySummary {
   currency: string
   total_lent: number
   total_borrowed: number
-  total_paid: number
-  remaining: number
+  lent_paid: number
+  borrowed_paid: number
+  lent_remaining: number
+  borrowed_remaining: number
   next_installment_date: string | null
   next_installment_amount: number | null
   active_count: number
@@ -110,6 +112,7 @@ function CurrencySummaryCard({ summary, t }: { summary: CurrencySummary; t: (key
             <div>
               <p className="text-xs text-muted-foreground">{t('dashboard.total_lent')}</p>
               <p className="font-semibold text-green-600 dark:text-green-400">{formatCurrency(summary.total_lent, summary.currency)}</p>
+              <p className="text-xs text-muted-foreground">{t('dashboard.lent_remaining')}: {formatCurrency(summary.lent_remaining, summary.currency)}</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
@@ -117,20 +120,7 @@ function CurrencySummaryCard({ summary, t }: { summary: CurrencySummary; t: (key
             <div>
               <p className="text-xs text-muted-foreground">{t('dashboard.total_borrowed')}</p>
               <p className="font-semibold text-blue-600 dark:text-blue-400">{formatCurrency(summary.total_borrowed, summary.currency)}</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <CreditCard className="mt-0.5 size-4 text-muted-foreground" />
-            <div>
-              <p className="text-xs text-muted-foreground">{t('dashboard.total_paid')}</p>
-              <p className="font-semibold">{formatCurrency(summary.total_paid, summary.currency)}</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <TrendingUp className="mt-0.5 size-4 text-orange-600 dark:text-orange-400" />
-            <div>
-              <p className="text-xs text-muted-foreground">{t('dashboard.remaining')}</p>
-              <p className="font-semibold text-orange-600 dark:text-orange-400">{formatCurrency(summary.remaining, summary.currency)}</p>
+              <p className="text-xs text-muted-foreground">{t('dashboard.borrowed_remaining')}: {formatCurrency(summary.borrowed_remaining, summary.currency)}</p>
             </div>
           </div>
         </div>

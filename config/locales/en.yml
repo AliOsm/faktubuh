@@ -7,6 +7,8 @@ en:
             personal_id:
               invalid: "must be 3-12 characters using A-Z and 0-9"
   app_name: "Faktubuh"
+  errors:
+    rate_limit: "Too many requests. Please try again later."
   common:
     save: "Save"
     cancel: "Cancel"
@@ -33,6 +35,7 @@ en:
     upgrade_not_recipient: "You are not the upgrade recipient."
     upgrade_accepted: "Upgrade accepted. This debt is now mutual."
     upgrade_declined: "Upgrade declined. The debt remains personal."
+    cannot_upgrade_to_self: "You cannot upgrade a debt to yourself."
   payments:
     submitted: "Payment submitted successfully."
     approved: "Payment approved successfully."
