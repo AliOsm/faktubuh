@@ -6,12 +6,12 @@
 if Rails.env.development? || Rails.env.test?
   puts "Creating admin user..."
 
-  admin = User.find_by(email: "admin@faktubuh.com")
+  admin = User.find_by(email: "faktubuh@gmail.com")
 
   unless admin
     # Create user without admin flag first
     admin = User.new(
-      email: "admin@faktubuh.com",
+      email: "faktubuh@gmail.com",
       full_name: "Admin User",
       password: "password123",
       personal_id: "ADMIN1",
@@ -20,7 +20,7 @@ if Rails.env.development? || Rails.env.test?
     admin.save!
     # Then set admin flag directly in database to bypass attr_readonly
     admin.update_column(:admin, true)
-    puts "✓ Admin user created: admin@faktubuh.com / password123"
+    puts "✓ Admin user created: faktubuh@gmail.com / password123"
   else
     puts "✓ Admin user already exists"
   end

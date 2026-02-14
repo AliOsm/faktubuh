@@ -105,10 +105,10 @@ function Privacy() {
               <p className="text-muted-foreground">
                 If you have any questions about this privacy policy or your data, please contact us at{' '}
                 <a
-                  href="mailto:support@faktubuh.com"
+                  href="mailto:faktubuh@gmail.com"
                   className="text-primary underline-offset-4 hover:underline"
                 >
-                  support@faktubuh.com
+                  faktubuh@gmail.com
                 </a>
                 .
               </p>

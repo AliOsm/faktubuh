@@ -78,7 +78,7 @@ Rails.application.configure do
 
   if Rails.application.credentials.google.present?
     ActionMailer::Base.smtp_settings = {
-      user_name: "ieasybooks.notification@gmail.com",
+      user_name: "faktubuh@gmail.com",
       password: Rails.application.credentials.google.gmail_application_password,
       domain: "gmail.com",
       address: "smtp.gmail.com",
