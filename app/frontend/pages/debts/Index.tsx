@@ -202,7 +202,7 @@ export default function Index({ debts, pagination, filters }: IndexProps) {
                   key={debt.id}
                   href={`/debts/${debt.id}`}
                   className={cn(
-                    'flex items-center justify-between rounded-md border p-4 transition-colors hover:bg-accent',
+                    'flex items-center justify-between rounded-md border p-4 transition-colors hover:bg-accent dark:hover:bg-accent/20',
                     debt.status === 'settled' && 'border-muted bg-muted/30 opacity-75'
                   )}
                 >

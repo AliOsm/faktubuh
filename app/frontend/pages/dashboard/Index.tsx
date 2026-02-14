@@ -140,7 +140,7 @@ function RecentDebtRow({ debt, t, language }: { debt: RecentDebt; t: (key: strin
   return (
     <Link
       href={`/debts/${debt.id}`}
-      className="flex items-center justify-between rounded-md border p-3 transition-colors hover:bg-accent"
+      className="flex items-center justify-between rounded-md border p-3 transition-colors hover:bg-accent dark:hover:bg-accent/20"
     >
       <div className="flex flex-col gap-1">
         <span className="font-medium">{debt.counterparty_name}</span>
