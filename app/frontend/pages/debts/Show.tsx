@@ -208,6 +208,10 @@ function isOverdue(dueDate: string): boolean {
   return new Date(dueDate) < today
 }
 
+function currencyName(code: string, language: string): string {
+  return new Intl.DisplayNames(language, { type: 'currency' }).of(code) || code
+}
+
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString(document.documentElement.lang, {
     year: 'numeric',
@@ -468,7 +472,7 @@ function SubmitPaymentDialog({
   installments: InstallmentData[]
   remainingBalance: number
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [open, setOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [amount, setAmount] = useState('')
@@ -591,7 +595,7 @@ function SubmitPaymentDialog({
                       key={inst.id}
                       value={String(inst.id)}
                     >
-                      {inst.amount.toLocaleString()} {debt.currency} — {formatDate(inst.due_date)}
+                      {inst.amount.toLocaleString()} {currencyName(debt.currency, i18n.language)} — {formatDate(inst.due_date)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -1018,7 +1022,7 @@ export default function Show({
   is_upgrade_recipient,
   upgrade_recipient_name
 }: ShowProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const installmentTypeLabel = t(`debt_creation.details.installment.${debt.installment_type}`, debt.installment_type)
 
@@ -1060,7 +1064,7 @@ export default function Show({
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="size-5" />
-              {t('debt_detail.amount')}: {debt.amount.toLocaleString()} {debt.currency}
+              {t('debt_detail.amount')}: {debt.amount.toLocaleString()} {currencyName(debt.currency, i18n.language)}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -1112,7 +1116,7 @@ export default function Show({
               <div className="mt-4 flex items-center justify-between rounded-lg border bg-muted/50 p-3">
                 <span className="text-sm font-medium text-muted-foreground">{t('debt_detail.remaining_balance')}</span>
                 <span className="text-lg font-bold text-orange-600 dark:text-orange-400">
-                  {remaining_balance.toLocaleString(document.documentElement.lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {debt.currency}
+                  {remaining_balance.toLocaleString(document.documentElement.lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencyName(debt.currency, i18n.language)}
                 </span>
               </div>
             )}
@@ -1155,7 +1159,7 @@ export default function Show({
                         )}
                       >
                         <td className="py-2.5">
-                          {inst.amount.toLocaleString()} {debt.currency}
+                          {inst.amount.toLocaleString()} {currencyName(debt.currency, i18n.language)}
                         </td>
                         <td className="py-2.5">{formatDate(inst.due_date)}</td>
                         <td className="py-2.5">
@@ -1254,7 +1258,7 @@ export default function Show({
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-medium">
-                        {payment.amount.toLocaleString()} {debt.currency}
+                        {payment.amount.toLocaleString()} {currencyName(debt.currency, i18n.language)}
                       </span>
                       <div className="flex items-center gap-1.5">
                         {payment.self_reported && (

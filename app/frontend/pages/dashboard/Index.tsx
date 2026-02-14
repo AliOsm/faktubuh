@@ -37,12 +37,12 @@ interface DashboardProps {
   recent_debts: RecentDebt[]
 }
 
-function currencyName(code: string): string {
-  return new Intl.DisplayNames(document.documentElement.lang, { type: 'currency' }).of(code) || code
+function currencyName(code: string, language: string): string {
+  return new Intl.DisplayNames(language, { type: 'currency' }).of(code) || code
 }
 
-function formatCurrency(amount: number, currency: string): string {
-  return `${amount.toLocaleString(document.documentElement.lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencyName(currency)}`
+function formatCurrency(amount: number, currency: string, language: string): string {
+  return `${amount.toLocaleString(language, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencyName(currency, language)}`
 }
 
 function formatDate(dateStr: string): string {
@@ -88,12 +88,12 @@ function EmptyState({ t }: { t: (key: string) => string }) {
   )
 }
 
-function CurrencySummaryCard({ summary, t }: { summary: CurrencySummary; t: (key: string) => string }) {
+function CurrencySummaryCard({ summary, t, language }: { summary: CurrencySummary; t: (key: string) => string; language: string }) {
   return (
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
-          <span className="text-xl font-bold">{currencyName(summary.currency)}</span>
+          <span className="text-xl font-bold">{currencyName(summary.currency, language)}</span>
           <div className="flex gap-2 text-sm font-normal text-muted-foreground">
             <span>
               {summary.active_count} {t('dashboard.active_debts')}
@@ -111,16 +111,16 @@ function CurrencySummaryCard({ summary, t }: { summary: CurrencySummary; t: (key
             <HandCoins className="mt-0.5 size-4 text-green-600 dark:text-green-400" />
             <div>
               <p className="text-xs text-muted-foreground">{t('dashboard.total_lent')}</p>
-              <p className="font-semibold text-green-600 dark:text-green-400">{formatCurrency(summary.total_lent, summary.currency)}</p>
-              <p className="text-xs text-muted-foreground">{t('dashboard.lent_remaining')}: {formatCurrency(summary.lent_remaining, summary.currency)}</p>
+              <p className="font-semibold text-green-600 dark:text-green-400">{formatCurrency(summary.total_lent, summary.currency, language)}</p>
+              <p className="text-xs text-muted-foreground">{t('dashboard.lent_remaining')}: {formatCurrency(summary.lent_remaining, summary.currency, language)}</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
             <HandHeart className="mt-0.5 size-4 text-blue-600 dark:text-blue-400" />
             <div>
               <p className="text-xs text-muted-foreground">{t('dashboard.total_borrowed')}</p>
-              <p className="font-semibold text-blue-600 dark:text-blue-400">{formatCurrency(summary.total_borrowed, summary.currency)}</p>
-              <p className="text-xs text-muted-foreground">{t('dashboard.borrowed_remaining')}: {formatCurrency(summary.borrowed_remaining, summary.currency)}</p>
+              <p className="font-semibold text-blue-600 dark:text-blue-400">{formatCurrency(summary.total_borrowed, summary.currency, language)}</p>
+              <p className="text-xs text-muted-foreground">{t('dashboard.borrowed_remaining')}: {formatCurrency(summary.borrowed_remaining, summary.currency, language)}</p>
             </div>
           </div>
         </div>
@@ -129,7 +129,7 @@ function CurrencySummaryCard({ summary, t }: { summary: CurrencySummary; t: (key
           <div className="mt-4 flex items-center gap-2 rounded-md border bg-muted/50 p-2 text-sm">
             <Calendar className="size-4 text-muted-foreground" />
             <span className="text-muted-foreground">{t('dashboard.next_installment')}:</span>
-            <span className="font-medium">{formatCurrency(summary.next_installment_amount, summary.currency)}</span>
+            <span className="font-medium">{formatCurrency(summary.next_installment_amount, summary.currency, language)}</span>
             <span className="text-muted-foreground">{formatDate(summary.next_installment_date)}</span>
           </div>
         ) : (
@@ -143,7 +143,7 @@ function CurrencySummaryCard({ summary, t }: { summary: CurrencySummary; t: (key
   )
 }
 
-function RecentDebtRow({ debt, t }: { debt: RecentDebt; t: (key: string) => string }) {
+function RecentDebtRow({ debt, t, language }: { debt: RecentDebt; t: (key: string) => string; language: string }) {
   return (
     <Link
       href={`/debts/${debt.id}`}
@@ -151,7 +151,7 @@ function RecentDebtRow({ debt, t }: { debt: RecentDebt; t: (key: string) => stri
     >
       <div className="flex flex-col gap-1">
         <span className="font-medium">{debt.counterparty_name}</span>
-        <span className="text-sm text-muted-foreground">{formatCurrency(debt.amount, debt.currency)}</span>
+        <span className="text-sm text-muted-foreground">{formatCurrency(debt.amount, debt.currency, language)}</span>
       </div>
       <div className="flex items-center gap-2">
         <StatusBadge
@@ -165,7 +165,7 @@ function RecentDebtRow({ debt, t }: { debt: RecentDebt; t: (key: string) => stri
 }
 
 function Dashboard({ summaries, recent_debts }: DashboardProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const hasDebts = summaries.length > 0 || recent_debts.length > 0
 
@@ -199,6 +199,7 @@ function Dashboard({ summaries, recent_debts }: DashboardProps) {
                 key={summary.currency}
                 summary={summary}
                 t={t}
+                language={i18n.language}
               />
             ))}
           </div>
@@ -225,6 +226,7 @@ function Dashboard({ summaries, recent_debts }: DashboardProps) {
                       key={debt.id}
                       debt={debt}
                       t={t}
+                      language={i18n.language}
                     />
                   ))}
                 </CardContent>

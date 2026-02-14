@@ -53,7 +53,7 @@ export default function LanguageToggle() {
         <DropdownMenuItem onClick={() => switchLocale('ar')} className="flex items-center justify-between">
           <span className="flex items-center gap-2">
             <span className="text-base leading-none">🇸🇦</span>
-            العربية
+            <span lang="ar">العربية</span>
           </span>
           {i18n.language === 'ar' && <Check className="size-4" />}
         </DropdownMenuItem>
