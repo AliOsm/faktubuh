@@ -84,7 +84,8 @@ Rails.application.configure do
       address: "smtp.gmail.com",
       port: 587,
       authentication: :plain,
-      enable_starttls_auto: true
+      enable_starttls_auto: true,
+      openssl_verify_mode: "none"  # Skip SSL verification in development only
     }
   end
 end

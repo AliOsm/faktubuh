@@ -254,6 +254,7 @@ function ConfirmationBanner({ debt }: { debt: DebtData }) {
       `/debts/${debt.id}/confirm`,
       {},
       {
+        preserveScroll: true,
         onFinish: () => setProcessing(null)
       }
     )
@@ -265,6 +266,7 @@ function ConfirmationBanner({ debt }: { debt: DebtData }) {
       `/debts/${debt.id}/reject`,
       {},
       {
+        preserveScroll: true,
         onFinish: () => setProcessing(null)
       }
     )
@@ -364,6 +366,7 @@ function PaymentActions({ debt, payment }: { debt: DebtData; payment: PaymentDat
       `/debts/${debt.id}/payments/${payment.id}/approve`,
       {},
       {
+        preserveScroll: true,
         onFinish: () => setProcessing(null)
       }
     )
@@ -375,6 +378,7 @@ function PaymentActions({ debt, payment }: { debt: DebtData; payment: PaymentDat
       `/debts/${debt.id}/payments/${payment.id}/reject`,
       { rejection_reason: rejectionReason || null },
       {
+        preserveScroll: true,
         onSuccess: () => {
           setRejectOpen(false)
           setRejectionReason('')
@@ -511,6 +515,7 @@ function SubmitPaymentDialog({
         }
       },
       {
+        preserveScroll: true,
         onSuccess: () => {
           setOpen(false)
           resetForm()
@@ -670,6 +675,7 @@ function AddWitnessForm({ debt, witnessCount }: { debt: DebtData; witnessCount: 
       `/debts/${debt.id}/witnesses`,
       { witness: { personal_id: personalId } },
       {
+        preserveScroll: true,
         onSuccess: () => resetForm(),
         onFinish: () => setSubmitting(false)
       }
@@ -785,6 +791,7 @@ function UpgradeDialog({ debt }: { debt: DebtData }) {
       `/debts/${debt.id}/upgrade`,
       { personal_id: personalId },
       {
+        preserveScroll: true,
         onSuccess: () => {
           setOpen(false)
           resetForm()
@@ -868,6 +875,7 @@ function UpgradeRequestBanner({ debt }: { debt: DebtData }) {
       `/debts/${debt.id}/accept_upgrade`,
       {},
       {
+        preserveScroll: true,
         onFinish: () => setProcessing(null)
       }
     )
@@ -879,6 +887,7 @@ function UpgradeRequestBanner({ debt }: { debt: DebtData }) {
       `/debts/${debt.id}/decline_upgrade`,
       {},
       {
+        preserveScroll: true,
         onFinish: () => setProcessing(null)
       }
     )
@@ -960,6 +969,7 @@ function WitnessActions({ debt, witnessId }: { debt: DebtData; witnessId: number
       `/debts/${debt.id}/witnesses/${witnessId}/confirm`,
       {},
       {
+        preserveScroll: true,
         onFinish: () => setProcessing(null)
       }
     )
@@ -971,6 +981,7 @@ function WitnessActions({ debt, witnessId }: { debt: DebtData; witnessId: number
       `/debts/${debt.id}/witnesses/${witnessId}/decline`,
       {},
       {
+        preserveScroll: true,
         onFinish: () => setProcessing(null)
       }
     )
