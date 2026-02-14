@@ -66,7 +66,9 @@ class DebtsController < InertiaController
       end
 
       @debt.update!(status: "active")
-      InstallmentScheduleGenerator.new(@debt).generate!
+      # For mutual debts, confirmation may happen well after creation. Base the
+      # schedule on "today" to avoid generating past-due installments.
+      InstallmentScheduleGenerator.new(@debt).generate!(start_date: Time.zone.today)
       NotificationService.debt_confirmed(@debt, confirmer: current_user)
     end
 
@@ -131,10 +133,12 @@ class DebtsController < InertiaController
         return
       end
 
+      # Personal-mode invariant: lender_id is always the creator.
+      creator_id = @debt.lender_id
       if @debt.creator_role_lender?
         @debt.update!(mode: "mutual", borrower_id: current_user.id, upgrade_recipient_id: nil)
       else
-        @debt.update!(mode: "mutual", lender_id: current_user.id, upgrade_recipient_id: nil)
+        @debt.update!(mode: "mutual", lender_id: current_user.id, borrower_id: creator_id, upgrade_recipient_id: nil)
       end
 
       NotificationService.upgrade_accepted(@debt, accepter: current_user)
@@ -156,7 +160,9 @@ class DebtsController < InertiaController
       NotificationService.upgrade_declined(@debt, decliner: current_user)
     end
 
-    redirect_to debt_path(@debt), notice: I18n.t("debts.upgrade_declined")
+    # Once the upgrade is declined, the user is no longer the upgrade recipient
+    # and may lose access to the debt show page.
+    redirect_to notifications_path, notice: I18n.t("debts.upgrade_declined")
   end
 
   def index
@@ -202,7 +208,7 @@ class DebtsController < InertiaController
     return if @debt.lender_id == current_user.id
     return if @debt.borrower_id == current_user.id
     return if @debt.upgrade_recipient_id == current_user.id
-    return if @debt.witnesses.confirmed.exists?(user_id: current_user.id)
+    return if @debt.witnesses.where(status: %w[invited confirmed]).exists?(user_id: current_user.id)
 
     redirect_to debts_path, alert: I18n.t("debts.unauthorized")
   end
@@ -379,9 +385,19 @@ class DebtsController < InertiaController
   def filter_by_role(debts)
     case params[:role]
     when "lender"
-      debts.where(lender_id: current_user.id)
+      t = Debt.arel_table
+      mutual_as_lender = t[:mode].eq("mutual").and(t[:lender_id].eq(current_user.id))
+      personal_as_lender = t[:mode].eq("personal")
+                                   .and(t[:lender_id].eq(current_user.id))
+                                   .and(t[:creator_role].eq("lender"))
+      debts.where(mutual_as_lender.or(personal_as_lender))
     when "borrower"
-      debts.where(borrower_id: current_user.id)
+      t = Debt.arel_table
+      mutual_as_borrower = t[:mode].eq("mutual").and(t[:borrower_id].eq(current_user.id))
+      personal_as_borrower = t[:mode].eq("personal")
+                                     .and(t[:lender_id].eq(current_user.id))
+                                     .and(t[:creator_role].eq("borrower"))
+      debts.where(mutual_as_borrower.or(personal_as_borrower))
     else
       debts
     end

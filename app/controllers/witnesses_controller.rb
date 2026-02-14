@@ -54,7 +54,8 @@ class WitnessesController < InertiaController
     @witness.update!(status: "declined")
     NotificationService.witness_declined(@witness)
 
-    redirect_to debt_path(@debt), notice: I18n.t("witnesses.declined")
+    # A declined witness is no longer authorized to view the debt show page.
+    redirect_to notifications_path, notice: I18n.t("witnesses.declined")
   end
 
   private

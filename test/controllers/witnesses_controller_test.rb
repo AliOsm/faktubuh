@@ -132,7 +132,7 @@ class WitnessesControllerTest < ActionDispatch::IntegrationTest
       post decline_debt_witness_url(@mutual_debt, invited_witness)
     end
 
-    assert_redirected_to debt_path(@mutual_debt)
+    assert_redirected_to notifications_path
     invited_witness.reload
     assert_equal "declined", invited_witness.status
 

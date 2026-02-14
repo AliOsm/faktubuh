@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Pagination } from '@/components/ui/pagination'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import AppLayout from '@/layouts/app-layout'
-import { cn } from '@/lib/utils'
+import { cn, formatDate } from '@/lib/utils'
 
 interface DebtRow {
   id: number
@@ -83,14 +83,6 @@ function ProgressBar({ progress }: { progress: number }) {
       />
     </div>
   )
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString(document.documentElement.lang, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
 }
 
 function updateFilters(key: string, value: string) {

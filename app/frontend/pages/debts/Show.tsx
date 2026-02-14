@@ -1,4 +1,4 @@
-import { Head, router } from '@inertiajs/react'
+import { Head, router, usePage } from '@inertiajs/react'
 import {
   AlertTriangle,
   Archive,
@@ -45,11 +45,12 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Pagination } from '@/components/ui/pagination'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import AppLayout from '@/layouts/app-layout'
-import { cn } from '@/lib/utils'
+import { cn, formatDate, isOverdue } from '@/lib/utils'
 
 
 interface UserSummary {
@@ -202,22 +203,8 @@ function PaymentStatusBadge({ status }: { status: string }) {
   )
 }
 
-function isOverdue(dueDate: string): boolean {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  return new Date(dueDate) < today
-}
-
 function currencyName(code: string, language: string): string {
   return new Intl.DisplayNames(language, { type: 'currency' }).of(code) || code
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString(document.documentElement.lang, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
 }
 
 function WitnessReminder({ mode, witnesses }: { mode: string; witnesses: WitnessData[] }) {
@@ -471,12 +458,27 @@ function SubmitPaymentDialog({
   remainingBalance: number
 }) {
   const { t, i18n } = useTranslation()
+  const { props } = usePage()
   const [open, setOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
   const [installmentId, setInstallmentId] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const serverErrors = (props as unknown as { errors?: Record<string, unknown> }).errors
+
+  useEffect(() => {
+    if (!serverErrors) return
+
+    const mapped: Record<string, string> = {}
+    for (const [key, value] of Object.entries(serverErrors)) {
+      if (typeof value === 'string') mapped[key] = value
+      if (Array.isArray(value) && typeof value[0] === 'string') mapped[key] = value[0]
+    }
+
+    if (Object.keys(mapped).length > 0) setErrors(mapped)
+  }, [serverErrors])
 
   function resetForm() {
     setAmount('')
@@ -599,6 +601,7 @@ function SubmitPaymentDialog({
                   ))}
                 </SelectContent>
               </Select>
+              {errors.installment_id && <p className="text-sm text-red-600">{errors.installment_id}</p>}
             </div>
           )}
         </div>
@@ -1014,6 +1017,7 @@ function WitnessActions({ debt, witnessId }: { debt: DebtData; witnessId: number
 export default function Show({
   debt,
   installments,
+  installments_pagination,
   payments,
   witnesses,
   is_confirming_party,
@@ -1143,42 +1147,47 @@ export default function Show({
             {installments.length === 0 ? (
               <p className="text-sm text-muted-foreground">{t('debt_detail.installments.no_installments')}</p>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b text-muted-foreground">
-                      <th className="pb-2 text-start font-medium">{t('debt_detail.installments.amount')}</th>
-                      <th className="pb-2 text-start font-medium">{t('debt_detail.installments.due_date')}</th>
-                      <th className="pb-2 text-start font-medium">{t('debt_detail.installments.status')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {installments.map((inst) => (
-                      <tr
-                        key={inst.id}
-                        className={cn(
-                          'border-b last:border-b-0',
-                          inst.status === 'overdue' || (inst.status === 'upcoming' && isOverdue(inst.due_date))
-                            ? 'bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-300'
-                            : ''
-                        )}
-                      >
-                        <td className="py-2.5">
-                          {inst.amount.toLocaleString()} {currencyName(debt.currency, i18n.language)}
-                        </td>
-                        <td className="py-2.5">{formatDate(inst.due_date)}</td>
-                        <td className="py-2.5">
-                          {inst.status === 'upcoming' && isOverdue(inst.due_date) ? (
-                            <InstallmentStatusBadge status="overdue" />
-                          ) : (
-                            <InstallmentStatusBadge status={inst.status} />
-                          )}
-                        </td>
+              <>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b text-muted-foreground">
+                        <th className="pb-2 text-start font-medium">{t('debt_detail.installments.amount')}</th>
+                        <th className="pb-2 text-start font-medium">{t('debt_detail.installments.due_date')}</th>
+                        <th className="pb-2 text-start font-medium">{t('debt_detail.installments.status')}</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {installments.map((inst) => (
+                        <tr
+                          key={inst.id}
+                          className={cn(
+                            'border-b last:border-b-0',
+                            inst.status === 'overdue' || (inst.status === 'upcoming' && isOverdue(inst.due_date))
+                              ? 'bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-300'
+                              : ''
+                          )}
+                        >
+                          <td className="py-2.5">
+                            {inst.amount.toLocaleString()} {currencyName(debt.currency, i18n.language)}
+                          </td>
+                          <td className="py-2.5">{formatDate(inst.due_date)}</td>
+                          <td className="py-2.5">
+                            {inst.status === 'upcoming' && isOverdue(inst.due_date) ? (
+                              <InstallmentStatusBadge status="overdue" />
+                            ) : (
+                              <InstallmentStatusBadge status={inst.status} />
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-4">
+                  <Pagination pagination={installments_pagination} paramName="installments_page" />
+                </div>
+              </>
             )}
           </CardContent>
         </Card>

@@ -4,7 +4,12 @@ class OverdueDetectionJob < ApplicationJob
   queue_as :default
 
   def perform
-    Installment.upcoming.where("due_date < ?", Date.current).includes(debt: [ :lender, :borrower ]).find_each do |installment|
+    Installment.upcoming
+               .joins(:debt)
+               .merge(Debt.active)
+               .where("installments.due_date < ?", Date.current)
+               .includes(debt: [ :lender, :borrower ])
+               .find_each do |installment|
       next if already_notified?(installment)
 
       installment.update!(status: :overdue)

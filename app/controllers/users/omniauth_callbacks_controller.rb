@@ -13,6 +13,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session["devise.google_oauth2_data"] = auth.except("extra")
       redirect_to new_user_registration_url, alert: user.errors.full_messages.join("\n")
     end
+  rescue ActiveRecord::ActiveRecordError => e
+    Rails.logger.warn("OmniAuth google_oauth2 failed: #{e.class}: #{e.message}")
+    redirect_to new_user_session_path, alert: I18n.t("devise.omniauth_callbacks.failure",
+      kind: "Google", reason: "Could not authenticate you. Please try again.")
   end
 
   def failure

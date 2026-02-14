@@ -140,7 +140,7 @@ class DebtsControllerTest < ActionDispatch::IntegrationTest
 
   test "unauthorized user gets redirected from debt detail" do
     debt = debts(:mutual_debt)
-    unauthorized_user = users(:three)
+    unauthorized_user = users(:four)
     sign_in unauthorized_user
     get debt_url(debt)
     assert_redirected_to debts_path
@@ -150,6 +150,14 @@ class DebtsControllerTest < ActionDispatch::IntegrationTest
     debt = debts(:personal_debt)
     witness_user = users(:three)
     sign_in witness_user
+    get debt_url(debt)
+    assert_response :success
+  end
+
+  test "invited witness can view debt detail" do
+    debt = debts(:mutual_debt)
+    invited_witness_user = users(:three)
+    sign_in invited_witness_user
     get debt_url(debt)
     assert_response :success
   end
@@ -284,6 +292,38 @@ class DebtsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "upgrade_accepted", notification.notification_type
   end
 
+  test "accept upgrade sets lender/borrower correctly when creator_role is borrower" do
+    debt = Debt.create!(
+      lender: @lender, # Personal-mode invariant: creator is stored as lender
+      mode: "personal",
+      creator_role: "borrower",
+      amount: 123.45,
+      currency: "USD",
+      deadline: 30.days.from_now.to_date,
+      installment_type: "lump_sum",
+      status: "active",
+      counterparty_name: "Someone"
+    )
+    recipient = users(:two)
+    debt.update!(upgrade_recipient_id: recipient.id)
+
+    sign_in recipient
+    assert_difference "Notification.count", 1 do
+      post accept_upgrade_debt_url(debt)
+    end
+
+    debt.reload
+    assert_equal "mutual", debt.mode
+    assert_equal recipient.id, debt.lender_id
+    assert_equal @lender.id, debt.borrower_id
+    assert_nil debt.upgrade_recipient_id
+    assert_redirected_to debt_path(debt)
+
+    notification = Notification.last
+    assert_equal @lender.id, notification.user_id
+    assert_equal "upgrade_accepted", notification.notification_type
+  end
+
   test "decline upgrade keeps personal mode" do
     debt = debts(:personal_debt)
     recipient = users(:two)
@@ -297,7 +337,7 @@ class DebtsControllerTest < ActionDispatch::IntegrationTest
     debt.reload
     assert_equal "personal", debt.mode
     assert_nil debt.upgrade_recipient_id
-    assert_redirected_to debt_path(debt)
+    assert_redirected_to notifications_path
 
     notification = Notification.last
     assert_equal @lender.id, notification.user_id

@@ -1,4 +1,4 @@
-import { router, usePage } from '@inertiajs/react'
+import { usePage } from '@inertiajs/react'
 import { useEffect, useRef, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -15,39 +15,6 @@ export default function PersistentLayout({ children }: PersistentLayoutProps) {
   const { flash } = usePage().props as { flash?: { notice?: string; alert?: string } }
 
   const shownFlash = useRef<{ notice?: string; alert?: string }>({})
-
-  useEffect(() => {
-    const handleFinish = () => {
-      // Get fresh flash from the page after navigation
-      const currentFlash = (router.page?.props as { flash?: { notice?: string; alert?: string } } | undefined)?.flash
-
-      // Show notice if it exists and hasn't been shown yet
-      if (currentFlash?.notice && currentFlash.notice !== shownFlash.current.notice) {
-        toast.success(currentFlash.notice)
-        shownFlash.current.notice = currentFlash.notice
-      } else if (!currentFlash?.notice) {
-        shownFlash.current.notice = undefined
-      }
-
-      // Show alert if it exists and hasn't been shown yet
-      if (currentFlash?.alert && currentFlash.alert !== shownFlash.current.alert) {
-        toast.error(currentFlash.alert)
-        shownFlash.current.alert = currentFlash.alert
-      } else if (!currentFlash?.alert) {
-        shownFlash.current.alert = undefined
-      }
-    }
-
-    // Listen to Inertia navigation events
-    const removeListener = router.on('finish', handleFinish)
-
-    // Also check on initial mount
-    handleFinish()
-
-    return () => {
-      removeListener()
-    }
-  }, [])
 
   // Fallback: also check when flash changes (in case router events don't fire)
   useEffect(() => {

@@ -30,6 +30,30 @@ class PaymentTest < ActiveSupport::TestCase
     assert_equal installments(:lump_sum_installment), payment.installment
   end
 
+  test "installment must belong to the same debt" do
+    payment = Payment.new(
+      debt: debts(:mutual_debt),
+      installment: installments(:monthly_installment_one), # belongs to personal_debt
+      submitter: users(:two),
+      amount: 200,
+      submitted_at: Time.current
+    )
+    assert_not payment.valid?
+    assert_includes payment.errors[:installment_id], "must belong to the same debt"
+  end
+
+  test "invalid installment_id is rejected before hitting the database" do
+    payment = Payment.new(
+      debt: debts(:mutual_debt),
+      installment_id: 999_999_999,
+      submitter: users(:two),
+      amount: 200,
+      submitted_at: Time.current
+    )
+    assert_not payment.valid?
+    assert_includes payment.errors[:installment_id], "is invalid"
+  end
+
   # === Validations ===
 
   test "valid payment" do

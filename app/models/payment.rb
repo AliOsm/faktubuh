@@ -12,11 +12,25 @@ class Payment < ApplicationRecord
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :submitted_at, presence: true
   validates :rejection_reason, length: { maximum: 500 }, allow_nil: true
+  validate :installment_must_exist_and_belong_to_debt
   validate :amount_within_remaining_balance, on: :create, unless: :skip_balance_validation
 
   attr_accessor :skip_balance_validation
 
   private
+
+  def installment_must_exist_and_belong_to_debt
+    return if installment_id.blank?
+
+    if installment.nil?
+      errors.add(:installment_id, "is invalid")
+      return
+    end
+
+    return if installment.debt_id == debt_id
+
+    errors.add(:installment_id, "must belong to the same debt")
+  end
 
   def amount_within_remaining_balance
     return unless debt && amount.present? && amount.positive?

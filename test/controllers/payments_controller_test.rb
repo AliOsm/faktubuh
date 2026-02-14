@@ -131,6 +131,38 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @mutual_debt.id, notification.debt_id
   end
 
+  test "cannot approve payment that exceeds remaining balance" do
+    payment1 = Payment.create!(
+      debt: @mutual_debt,
+      submitter: @borrower,
+      amount: 800.00,
+      submitted_at: Time.current,
+      status: "pending"
+    )
+    payment2 = Payment.create!(
+      debt: @mutual_debt,
+      submitter: @borrower,
+      amount: 300.00, # would overpay if approved after payment1
+      submitted_at: Time.current,
+      status: "pending"
+    )
+
+    sign_in @lender
+
+    assert_difference "Notification.count", 1 do
+      post approve_debt_payment_url(@mutual_debt, payment1)
+    end
+
+    assert_no_difference "Notification.count" do
+      post approve_debt_payment_url(@mutual_debt, payment2)
+    end
+
+    payment1.reload
+    payment2.reload
+    assert_equal "approved", payment1.status
+    assert_equal "pending", payment2.status
+  end
+
   test "lender rejects payment with reason — status rejected, borrower notified" do
     sign_in @lender
     pending_payment = payments(:pending_payment)

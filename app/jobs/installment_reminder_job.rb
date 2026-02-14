@@ -7,7 +7,12 @@ class InstallmentReminderJob < ApplicationJob
     reminder_dates = [ 3.days.from_now.to_date, 1.day.from_now.to_date, Date.current ]
 
     reminder_dates.each do |date|
-      Installment.upcoming.where(due_date: date).includes(debt: [ :lender, :borrower ]).find_each do |installment|
+      Installment.upcoming
+                 .joins(:debt)
+                 .merge(Debt.active)
+                 .where(due_date: date)
+                 .includes(debt: [ :lender, :borrower ])
+                 .find_each do |installment|
         next if already_reminded?(installment, date)
 
         debt = installment.debt

@@ -23,6 +23,11 @@ class PaymentsController < InertiaController
       @payment.status = @debt.personal? ? "approved" : "pending"
       @payment.skip_balance_validation = true  # We check manually with lock
 
+      unless @payment.valid?
+        redirect_to debt_path(@debt), inertia: { errors: @payment.errors.to_hash(true) }
+        return
+      end
+
       # Check remaining balance inside transaction to prevent race condition
       remaining = @debt.amount - @debt.payments.approved.sum(:amount)
       if @payment.amount > remaining
@@ -32,8 +37,13 @@ class PaymentsController < InertiaController
       end
 
       if @payment.save
+        if @payment.installment
+          @payment.installment.lock!
+          sync_installment_status!(@payment.installment)
+        end
+
         NotificationService.payment_submitted(@payment) if @debt.mutual?
-        check_auto_settlement if @debt.personal?
+        check_auto_settlement
         redirect_to debt_path(@debt), notice: I18n.t("payments.submitted")
       else
         redirect_to debt_path(@debt), inertia: { errors: @payment.errors.to_hash(true) }
@@ -44,11 +54,24 @@ class PaymentsController < InertiaController
   def approve
     ActiveRecord::Base.transaction do
       @debt.lock!
+      @payment.lock!
+
+      unless @payment.pending?
+        redirect_to debt_path(@debt), alert: I18n.t("payments.not_pending")
+        return
+      end
+
+      remaining = remaining_balance
+      if @payment.amount > remaining
+        redirect_to debt_path(@debt), alert: I18n.t("payments.exceeds_remaining_balance", remaining: format("%.2f", remaining))
+        return
+      end
+
       @payment.update!(status: "approved")
 
       if @payment.installment
         @payment.installment.lock!
-        mark_installment_if_covered(@payment)
+        sync_installment_status!(@payment.installment)
       end
 
       NotificationService.payment_approved(@payment)
@@ -61,10 +84,23 @@ class PaymentsController < InertiaController
   def reject
     ActiveRecord::Base.transaction do
       @debt.lock!
+      @payment.lock!
+
+      unless @payment.pending?
+        redirect_to debt_path(@debt), alert: I18n.t("payments.not_pending")
+        return
+      end
+
       @payment.update!(
         status: "rejected",
         rejection_reason: params[:rejection_reason]
       )
+
+      if @payment.installment
+        @payment.installment.lock!
+        sync_installment_status!(@payment.installment)
+      end
+
       NotificationService.payment_rejected(@payment)
     end
 
@@ -124,16 +160,29 @@ class PaymentsController < InertiaController
 
   def check_auto_settlement
     return unless remaining_balance <= 0
+    return if @debt.settled?
 
     @debt.update!(status: "settled")
+    @debt.installments.update_all(status: "approved") # rubocop:disable Rails/SkipsModelValidations
     NotificationService.debt_settled(@debt)
   end
 
-  def mark_installment_if_covered(payment)
-    return unless payment.installment
+  def sync_installment_status!(installment)
+    approved_total = installment.payments.approved.sum(:amount)
 
-    installment = payment.installment
-    total_approved = installment.payments.approved.sum(:amount)
-    installment.update!(status: "approved") if total_approved >= installment.amount
+    new_status =
+      if approved_total >= installment.amount
+        "approved"
+      elsif installment.payments.pending.exists?
+        "submitted"
+      elsif installment.due_date < Date.current
+        "overdue"
+      else
+        "upcoming"
+      end
+
+    return if installment.status == new_status
+
+    installment.update!(status: new_status)
   end
 end

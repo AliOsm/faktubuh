@@ -49,6 +49,7 @@ en:
     not_borrower: "Only the borrower can submit payments."
     not_lender: "Only the lender can approve or reject payments."
     not_pending: "This payment has already been processed."
+    exceeds_remaining_balance: "This payment exceeds the remaining balance (%{remaining})."
   witnesses:
     invited: "Witness invitation sent successfully."
     confirmed: "You have accepted the witness invitation."

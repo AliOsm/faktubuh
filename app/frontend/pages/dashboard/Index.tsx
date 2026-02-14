@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react'
-import { ArrowRight, Calendar, CreditCard, HandCoins, HandHeart, Plus, TrendingUp } from 'lucide-react'
+import { ArrowRight, Calendar, HandCoins, HandHeart, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import AyatAlDayn from '@/components/ayat-al-dayn'
@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import AppLayout from '@/layouts/app-layout'
+import { formatDate } from '@/lib/utils'
 
 interface CurrencySummary {
   currency: string
@@ -43,14 +44,6 @@ function currencyName(code: string, language: string): string {
 
 function formatCurrency(amount: number, currency: string, language: string): string {
   return `${amount.toLocaleString(language, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencyName(currency, language)}`
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString(document.documentElement.lang, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
 }
 
 function StatusBadge({ status, t }: { status: string; t: (key: string) => string }) {

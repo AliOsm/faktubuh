@@ -3,7 +3,12 @@ class InstallmentScheduleGenerator
     @debt = debt
   end
 
-  def generate!
+  # For mutual debts, installment schedules are generated on confirmation, which can
+  # be days after creation. Allow callers to control the schedule start date so we
+  # don't generate installments that are already overdue at the moment of confirm.
+  def generate!(start_date: nil)
+    @start_date = start_date&.to_date
+
     case @debt.installment_type
     when "lump_sum"
       generate_lump_sum
@@ -29,7 +34,7 @@ class InstallmentScheduleGenerator
   end
 
   def generate_periodic(interval)
-    start_date = @debt.created_at.to_date
+    start_date = @start_date || @debt.created_at.to_date
     due_dates = []
     current_date = start_date + interval
 
