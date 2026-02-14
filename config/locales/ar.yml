@@ -36,6 +36,7 @@ ar:
     upgrade_accepted: "تم قبول الترقية. أصبح هذا الدين مشتركاً."
     upgrade_declined: "تم رفض الترقية. يبقى الدين شخصياً."
     cannot_upgrade_to_self: "لا يمكنك ترقية الدين إلى نفسك."
+    upgrade_already_pending: "يوجد بالفعل طلب ترقية معلق لهذا الدين."
   payments:
     submitted: "تم تقديم الدفعة بنجاح."
     approved: "تمت الموافقة على الدفعة بنجاح."

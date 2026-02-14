@@ -21,6 +21,9 @@
     "error": "خطأ",
     "success": "نجاح"
   },
+  "pagination": {
+    "showing_range": "عرض {{from}} إلى {{to}} من {{count}} نتيجة"
+  },
   "nav": {
     "dashboard": "لوحة التحكم",
     "my_debts": "ديوني",

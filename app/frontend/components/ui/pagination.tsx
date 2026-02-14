@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
 import { router } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 
 interface PaginationMeta {
   page: number
@@ -19,6 +20,8 @@ interface PaginationProps {
 }
 
 export function Pagination({ pagination, paramName = 'page' }: PaginationProps) {
+  const { t } = useTranslation()
+
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(window.location.search)
     params.set(paramName, page.toString())
@@ -37,7 +40,11 @@ export function Pagination({ pagination, paramName = 'page' }: PaginationProps) 
   return (
     <div className="flex items-center justify-between gap-2">
       <div className="text-sm text-muted-foreground">
-        Showing {pagination.from} to {pagination.to} of {pagination.count} results
+        {t('pagination.showing_range', {
+          from: pagination.from,
+          to: pagination.to,
+          count: pagination.count
+        })}
       </div>
 
       <div className="flex items-center gap-1">

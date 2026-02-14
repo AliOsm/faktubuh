@@ -21,6 +21,9 @@
     "error": "Error",
     "success": "Success"
   },
+  "pagination": {
+    "showing_range": "Showing {{from}} to {{to}} of {{count}} results"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "my_debts": "My Debts",

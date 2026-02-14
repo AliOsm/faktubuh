@@ -202,7 +202,7 @@ export default function Index({ debts, pagination, filters }: IndexProps) {
           <>
           <Card>
             <CardHeader>
-              <CardTitle>{t('debts_list.showing', { count: debts.length })}</CardTitle>
+              <CardTitle>{t('debts_list.showing', { count: pagination.count })}</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
               {debts.map((debt) => (

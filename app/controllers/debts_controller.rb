@@ -108,6 +108,11 @@ class DebtsController < InertiaController
       return
     end
 
+    if @debt.upgrade_recipient_id.present?
+      redirect_to debt_path(@debt), alert: I18n.t("debts.upgrade_already_pending")
+      return
+    end
+
     ActiveRecord::Base.transaction do
       @debt.lock!
       @debt.update!(upgrade_recipient_id: recipient.id)
@@ -245,7 +250,7 @@ class DebtsController < InertiaController
       rejection_reason: payment.rejection_reason,
       submitter_name: payment.submitter.full_name,
       installment_id: payment.installment_id,
-      self_reported: payment.submitter_id == @debt.lender_id && payment.status == "approved" && @debt.mutual?
+      self_reported: payment.submitter_id == @debt.lender_id && payment.status == "approved" && @debt.personal?
     }
   end
 
