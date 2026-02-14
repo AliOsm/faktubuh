@@ -42,8 +42,8 @@ class DashboardController < InertiaController
     lent_paid = lent_payments(currency_debts)
     borrowed_paid = borrowed_payments(currency_debts)
 
-    lent_remaining = [lent_amount - lent_paid, 0].max
-    borrowed_remaining = [borrowed_amount - borrowed_paid, 0].max
+    lent_remaining = [ lent_amount - lent_paid, 0 ].max
+    borrowed_remaining = [ borrowed_amount - borrowed_paid, 0 ].max
 
     next_installment = next_upcoming_installment(active)
 
