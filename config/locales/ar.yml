@@ -6,6 +6,10 @@ ar:
           attributes:
             personal_id:
               invalid: "يجب أن يكون من ٣ إلى ١٢ حرفًا باستخدام A-Z و 0-9"
+        debt:
+          attributes:
+            deadline:
+              must_be_future: "يجب أن يكون تاريخًا مستقبليًا"
   app_name: "فاكتبوه"
   errors:
     rate_limit: "عدد كبير جداً من الطلبات. يرجى المحاولة مرة أخرى لاحقاً."

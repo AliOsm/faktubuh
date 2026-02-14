@@ -113,6 +113,7 @@ class DashboardController < InertiaController
     debts.where.not(status: "rejected")
          .order(created_at: :desc)
          .limit(5)
+         .includes(:lender, :borrower)
          .map { |debt| recent_debt_json(debt) }
   end
 

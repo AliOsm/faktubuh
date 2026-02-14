@@ -26,6 +26,7 @@ class Debt < ApplicationRecord
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :currency, presence: true
   validates :deadline, presence: true
+  validate :deadline_must_be_future, on: :create
   validate :mutual_requires_borrower
   validate :personal_requires_counterparty_name
 
@@ -41,5 +42,13 @@ class Debt < ApplicationRecord
     return unless personal?
 
     errors.add(:counterparty_name, "must be present for personal debts") if counterparty_name.blank?
+  end
+
+  def deadline_must_be_future
+    return unless deadline.present?
+
+    if deadline <= Date.current
+      errors.add(:deadline, :must_be_future)
+    end
   end
 end

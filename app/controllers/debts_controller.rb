@@ -180,7 +180,7 @@ class DebtsController < InertiaController
   private
 
   def set_debt
-    @debt = Debt.find(params[:id])
+    @debt = Debt.includes(:lender, :borrower, :upgrade_recipient).find(params[:id])
   end
 
   def authorize_confirmation!
@@ -399,7 +399,8 @@ class DebtsController < InertiaController
   end
 
   def index_debt_json(debt)
-    approved_total = debt.payments.approved.sum(:amount).to_f
+    # Use Ruby's sum on preloaded collection instead of DB query
+    approved_total = debt.payments.select(&:approved?).sum(&:amount).to_f
     progress = debt.amount.to_f > 0 ? ((approved_total / debt.amount.to_f) * 100).round(1) : 0
 
     {

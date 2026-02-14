@@ -6,6 +6,10 @@ en:
           attributes:
             personal_id:
               invalid: "must be 3-12 characters using A-Z and 0-9"
+        debt:
+          attributes:
+            deadline:
+              must_be_future: "must be a future date"
   app_name: "Faktubuh"
   errors:
     rate_limit: "Too many requests. Please try again later."
