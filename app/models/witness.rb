@@ -11,6 +11,8 @@ class Witness < ApplicationRecord
   validates :user_id, uniqueness: { scope: :debt_id }
   validate :user_is_not_debt_party
 
+  def user_name = user.full_name
+
   private
 
   def user_is_not_debt_party

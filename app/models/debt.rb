@@ -31,6 +31,93 @@ class Debt < ApplicationRecord
   validate :mutual_requires_borrower
   validate :personal_requires_counterparty_name
 
+  scope :for_user, ->(user) {
+    where(lender_id: user.id)
+      .or(where(borrower_id: user.id))
+      .or(where(upgrade_recipient_id: user.id))
+  }
+
+  scope :as_lender_for, ->(user) {
+    t = arel_table
+    mutual_as_lender = t[:mode].eq("mutual").and(t[:lender_id].eq(user.id))
+    personal_as_lender = t[:mode].eq("personal")
+                                 .and(t[:lender_id].eq(user.id))
+                                 .and(t[:creator_role].eq("lender"))
+    where(mutual_as_lender.or(personal_as_lender))
+  }
+
+  scope :as_borrower_for, ->(user) {
+    t = arel_table
+    mutual_as_borrower = t[:mode].eq("mutual").and(t[:borrower_id].eq(user.id))
+    personal_as_borrower = t[:mode].eq("personal")
+                                   .and(t[:lender_id].eq(user.id))
+                                   .and(t[:creator_role].eq("borrower"))
+    where(mutual_as_borrower.or(personal_as_borrower))
+  }
+
+  def self.sorted_by(param)
+    case param
+    when "deadline_asc"  then order(deadline: :asc)
+    when "amount_desc"   then order(amount: :desc)
+    else                      order(created_at: :desc)
+    end
+  end
+
+  def creator
+    if personal?
+      lender
+    else
+      creator_role_lender? ? lender : borrower
+    end
+  end
+
+  def confirming_party?(user)
+    if creator_role_lender?
+      borrower_id == user.id
+    else
+      lender_id == user.id
+    end
+  end
+
+  def borrower_for?(user)
+    if mutual?
+      borrower_id == user.id
+    else
+      lender_id == user.id
+    end
+  end
+
+  def remaining_balance = amount - payments.approved.sum(:amount)
+
+  def can_manage_witnesses?(user)
+    return false if settled? || rejected?
+
+    creator&.id == user.id
+  end
+
+  def can_upgrade?(user)
+    personal? && active? && upgrade_recipient_id.nil? && creator&.id == user.id
+  end
+
+  def counterparty_name_for(user)
+    if personal?
+      counterparty_name
+    elsif lender_id == user.id
+      borrower&.full_name || "Unknown"
+    else
+      lender.full_name
+    end
+  end
+
+  def payment_progress
+    approved_total = payments.select(&:approved?).sum(&:amount).to_f
+    amount.to_f > 0 ? ((approved_total / amount.to_f) * 100).round(1) : 0
+  end
+
+  def as_json(options = {})
+    super.tap { it["amount"] = it["amount"].to_f if it.key?("amount") }
+  end
+
   private
 
   def mutual_requires_borrower

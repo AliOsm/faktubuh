@@ -25,12 +25,9 @@ Rails.application.routes.draw do
   get "dashboard", to: "dashboard#index"
   resource :profile, only: %i[show update]
   resources :debts, only: %i[new create show index] do
-    member do
-      post :confirm
-      post :reject
-      post :upgrade
-      post :accept_upgrade
-      post :decline_upgrade
+    scope module: :debts do
+      resource :confirmation, only: %i[create destroy]
+      resource :upgrade, only: %i[create update destroy]
     end
     resources :payments, only: %i[create] do
       member do

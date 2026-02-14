@@ -17,6 +17,16 @@ class Payment < ApplicationRecord
 
   attr_accessor :skip_balance_validation
 
+  def submitter_name = submitter.full_name
+
+  def self_reported
+    debt.personal? && submitter_id == debt.lender_id && approved?
+  end
+
+  def as_json(options = {})
+    super.tap { it["amount"] = it["amount"].to_f if it.key?("amount") }
+  end
+
   private
 
   def installment_must_exist_and_belong_to_debt

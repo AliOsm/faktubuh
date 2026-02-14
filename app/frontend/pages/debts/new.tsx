@@ -386,7 +386,7 @@ function DetailsForm({ role, mode, onBack }: { role: Role; mode: Mode; onBack: (
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-[var(--radix-popover-trigger-width)] p-0"
+                className="w-(--radix-popover-trigger-width) p-0"
                 align="start"
               >
                 <Command>

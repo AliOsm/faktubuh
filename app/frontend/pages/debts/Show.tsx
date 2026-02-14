@@ -238,7 +238,7 @@ function ConfirmationBanner({ debt }: { debt: DebtData }) {
   function handleConfirm() {
     setProcessing('confirm')
     router.post(
-      `/debts/${debt.id}/confirm`,
+      `/debts/${debt.id}/confirmation`,
       {},
       {
         preserveScroll: true,
@@ -249,9 +249,8 @@ function ConfirmationBanner({ debt }: { debt: DebtData }) {
 
   function handleReject() {
     setProcessing('reject')
-    router.post(
-      `/debts/${debt.id}/reject`,
-      {},
+    router.delete(
+      `/debts/${debt.id}/confirmation`,
       {
         preserveScroll: true,
         onFinish: () => setProcessing(null)
@@ -874,8 +873,8 @@ function UpgradeRequestBanner({ debt }: { debt: DebtData }) {
 
   function handleAccept() {
     setProcessing('accept')
-    router.post(
-      `/debts/${debt.id}/accept_upgrade`,
+    router.patch(
+      `/debts/${debt.id}/upgrade`,
       {},
       {
         preserveScroll: true,
@@ -886,9 +885,8 @@ function UpgradeRequestBanner({ debt }: { debt: DebtData }) {
 
   function handleDecline() {
     setProcessing('decline')
-    router.post(
-      `/debts/${debt.id}/decline_upgrade`,
-      {},
+    router.delete(
+      `/debts/${debt.id}/upgrade`,
       {
         preserveScroll: true,
         onFinish: () => setProcessing(null)
