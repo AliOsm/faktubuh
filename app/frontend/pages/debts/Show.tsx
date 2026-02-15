@@ -74,6 +74,7 @@ interface DebtData {
   borrower: UserSummary | null
   upgrade_recipient_id: number | null
   created_at: string
+  witnesses: WitnessData[]
 }
 
 interface InstallmentData {
@@ -119,7 +120,6 @@ interface ShowProps {
   installments: InstallmentData[]
   installments_pagination: PaginationMeta
   payments: PaymentData[]
-  witnesses: WitnessData[]
   current_user_id: number
   is_confirming_party: boolean
   is_creator: boolean
@@ -1017,7 +1017,6 @@ export default function Show({
   installments,
   installments_pagination,
   payments,
-  witnesses,
   is_confirming_party,
   is_creator,
   is_borrower,
@@ -1030,6 +1029,7 @@ export default function Show({
   upgrade_recipient_name
 }: ShowProps) {
   const { t, i18n } = useTranslation()
+  const witnesses = debt.witnesses
 
   const installmentTypeLabel = t(`debt_creation.details.installment.${debt.installment_type}`, debt.installment_type)
 
