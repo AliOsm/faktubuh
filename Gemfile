@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "devise", "~> 5.0", ">= 5.0.1"
+gem "devise", "~> 5.0"
 gem "devise-i18n", "~> 1.12"
 gem "good_job", "~> 4.13", ">= 4.13.2"
 gem "inertia_rails", "~> 3.17"
