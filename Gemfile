@@ -8,7 +8,7 @@ gem "js-routes", "~> 2.3", ">= 2.3.6"
 gem "omniauth", "~> 2.1", ">= 2.1.4"
 gem "omniauth-google-oauth2", "~> 1.2", ">= 1.2.1"
 gem "omniauth-rails_csrf_protection", "~> 2.0", ">= 2.0.1"
-gem "pagy", "~> 9.4"
+gem "pagy", "~> 43.2"
 gem "vite_rails", "~> 3.0", ">= 3.0.20"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
