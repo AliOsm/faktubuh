@@ -252,7 +252,7 @@ GEM
       logger
       rack (>= 2.2.3)
       rack-protection
-    omniauth-google-oauth2 (1.2.1)
+    omniauth-google-oauth2 (1.2.2)
       jwt (>= 2.9.2)
       oauth2 (~> 2.0)
       omniauth (~> 2.0)
@@ -292,7 +292,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.2.4)
+    rack (3.2.5)
     rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
@@ -485,7 +485,7 @@ DEPENDENCIES
   js-routes (~> 2.3, >= 2.3.6)
   kamal
   omniauth (~> 2.1, >= 2.1.4)
-  omniauth-google-oauth2 (~> 1.2, >= 1.2.1)
+  omniauth-google-oauth2 (~> 1.2)
   omniauth-rails_csrf_protection (~> 2.0, >= 2.0.1)
   pagy (~> 9.4)
   pg (~> 1.1)
