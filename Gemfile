@@ -9,7 +9,7 @@ gem "omniauth", "~> 2.1", ">= 2.1.4"
 gem "omniauth-google-oauth2", "~> 1.2", ">= 1.2.1"
 gem "omniauth-rails_csrf_protection", "~> 2.0", ">= 2.0.1"
 gem "pagy", "~> 9.4"
-gem "vite_rails", "~> 3.0", ">= 3.0.20"
+gem "vite_rails", "~> 3.10"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.2"
